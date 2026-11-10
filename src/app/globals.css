@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. One dark theme: near-black ink, warm bone type, one lime
+ * accent. Use the Tailwind utilities these generate (bg-ink, text-bone,
+ * text-bone-dim, border-line, text-lime, font-display, font-mono …) rather
+ * than hard-coded colours.
+ */
+@theme inline {
+  --color-ink: #060706;
+  --color-ink-raised: #0d0f0d;
+  --color-ink-glass: rgb(13 15 13 / 0.62);
+  --color-bone: #ecebe3;
+  --color-bone-dim: #a4a69d;
+  --color-bone-faint: #6f716a;
+  --color-line: rgb(236 235 227 / 0.1);
+  --color-line-strong: rgb(236 235 227 / 0.22);
+  --color-lime: #c5f82a;
+  --color-lime-deep: #7ea516;
+  --color-lime-glow: rgb(197 248 42 / 0.16);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 3px;
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
