@@ -19,8 +19,10 @@ export type NeighbourPair = readonly [number, number];
 
 const FACE_SHRINK = 0.94;
 const INNER_RADIUS = 0.58;
-const SCATTER_DISTANCE = { min: 1.2, max: 3.2 } as const;
-const SCATTER_SIDEWAYS = { min: 0.2, max: 0.9 } as const;
+// Kept tight on purpose: the scattered cloud should read as one object that
+// has not come together yet, about twice the assembled size, not as debris.
+const SCATTER_DISTANCE = { min: 0.45, max: 1.2 } as const;
+const SCATTER_SIDEWAYS = { min: 0.08, max: 0.4 } as const;
 const SCATTER_ANGLE = { min: 0.5, max: 1.2 } as const;
 /** Latest start so that start + window length never exceeds 1. */
 const LATEST_WINDOW_START = 0.55;

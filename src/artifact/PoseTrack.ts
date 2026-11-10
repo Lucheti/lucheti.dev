@@ -14,15 +14,17 @@ export type PoseValues = {
 type PoseTable = Readonly<Record<ChapterId, Readonly<PoseValues>>>;
 
 const WIDE_TABLE: PoseTable = {
-  hero: { x: 0.72, y: 0.5, scale: 1.0, assembly: 0.0, spin: 0.0 },
+  hero: { x: 0.74, y: 0.5, scale: 0.85, assembly: 0.0, spin: 0.0 },
   method: { x: 0.77, y: 0.52, scale: 0.9, assembly: 0.35, spin: 0.7 },
   work: { x: 0.86, y: 0.46, scale: 0.72, assembly: 0.68, spin: 1.5 },
   lab: { x: 0.75, y: 0.5, scale: 0.95, assembly: 0.9, spin: 2.3 },
-  contact: { x: 0.5, y: 0.34, scale: 1.1, assembly: 1.0, spin: 3.1 },
+  // Comes to rest over the bright core of the backdrop's final frames.
+  contact: { x: 0.76, y: 0.47, scale: 1.05, assembly: 1.0, spin: 3.1 },
 };
 
-const NARROW_ANCHOR = { x: 0.5, y: 0.3 } as const;
-const NARROW_SCALE = 0.8;
+// On a single column the object sits behind the text, so it stays small and high.
+const NARROW_ANCHOR = { x: 0.5, y: 0.26 } as const;
+const NARROW_SCALE = 0.62;
 
 /** Canvases narrower than this (CSS px) use the single-column table. */
 export const NARROW_BELOW_PX = 1024;

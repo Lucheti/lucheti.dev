@@ -131,8 +131,8 @@ glow is done with additive sprites.
   face triangle shrunk 6% toward its centroid, extruded inward to 58% of the radius, so the assembled object is a
   faceted shell with hairline seams and a hollow core. Flat shaded. `MeshStandardMaterial`, colour `#1c1e1b`,
   roughness 0.85, metalness 0.1. It should read as matte charcoal ceramic.
-- **Assembly** is a `Progress`. At 0 every shard is scattered: pushed 1.2–3.2 radii out along its face normal with
-  sideways jitter, and rotated up to about 1.2 rad around a random axis. At 1 every shard is exactly home. Each
+- **Assembly** is a `Progress`. At 0 every shard is scattered: pushed 0.45–1.2 radii out along its face normal with
+  slight sideways jitter (the cloud reads as one unfinished object, about twice the assembled size), and rotated up to about 1.2 rad around a random axis. At 1 every shard is exactly home. Each
   shard has its own window inside the assembly (staggered starts, each about 45% long, eased) so they arrive in
   sequence rather than all at once. Scatter values come from a seeded PRNG so the layout is identical every load.
 - **Idle life.** Scattered shards drift slightly (slow sine bob and wobble), scaled by `1 − assembly` so the
@@ -142,8 +142,10 @@ glow is done with additive sprites.
   about 0.55 while scattered, fading to about 0.12 when assembled.
 - **Nodes.** About 18 small bright dots travelling along the threads at different speeds and phases, each with an
   additive radial-gradient sprite for glow (generate the texture on a small canvas, once).
-- **Core.** A small lime emissive sphere at the centre plus a lime point light. Both grow with assembly (light
-  intensity from about 2 to about 14), so the seams glow when the object is whole. Add a large, faint additive
+- **Core and seams.** A lime emissive sphere at the centre plus a lime point light. Both grow with assembly (light
+  intensity from about 2 to about 14); the sphere stays a spark while scattered and swells to nearly fill the
+  hollow shell at the end. Lime hairlines along the 30 shell edges fade in over the last tenth of the assembly, so
+  the threads visibly hand over to glowing seams. Add a large, faint additive
   glow sprite behind the object that also grows with assembly.
 - **Lighting.** Very low ambient; a dim neutral key light from the upper left; a lime point light below and in
   front for the underlighting seen in the reference. Shards must not look grey or flat-lit.
@@ -152,17 +154,19 @@ glow is done with additive sprites.
 
   | Chapter | anchor x, y (viewport fraction) | scale | assembly | spin (rad) |
   |---|---|---|---|---|
-  | hero | 0.72, 0.50 | 1.00 | 0.00 | 0.0 |
+  | hero | 0.74, 0.50 | 0.85 | 0.00 | 0.0 |
   | method | 0.77, 0.52 | 0.90 | 0.35 | 0.7 |
   | work | 0.86, 0.46 | 0.72 | 0.68 | 1.5 |
   | lab | 0.75, 0.50 | 0.95 | 0.90 | 2.3 |
-  | contact | 0.50, 0.34 | 1.10 | 1.00 | 3.1 |
+  | contact | 0.76, 0.47 | 1.05 | 1.00 | 3.1 |
+
+  The contact pose rests the finished object on the bright core of the backdrop's final frames.
 
   Anchor is where the object's centre sits on screen: convert to world units on the z = 0 plane with R3F's
   `viewport` (`x = (ax − 0.5) × viewport.width`, `y = (0.5 − ay) × viewport.height`). At scale 1 the assembled
   object's diameter is 42% of the viewport height, and never more than 70% of the viewport width.
-  When the canvas is narrower than 1024 CSS px, use a second table: every chapter anchored at x 0.5, y 0.30,
-  scales 0.8 of the above, same assembly and spin.
+  When the canvas is narrower than 1024 CSS px, use a second table: every chapter anchored at x 0.5, y 0.26,
+  scales 0.62 of the above, same assembly and spin. The stage is `opacity-40` below `lg`.
 - **Interaction.** The object leans toward the pointer: listen to `pointermove` on `window`, normalise to −1…1,
   and damp a tilt of up to ±0.22 rad (x) and ±0.32 rad (y). Scattered shards also part slightly from the pointer.
   Ignore touch pointers.
@@ -182,8 +186,8 @@ Everything the reader reads. Uses `motion/react` for animation.
 - `Sections({ content })` keeps its current signature and renders: skip link, fixed nav, `<main class="relative
   z-20">` with five `<Chapter>`s in order (hero, method, work, lab, contact), and the footnote.
 - **Layout.** Container `max-w-[1400px] mx-auto px-6 md:px-10 lg:px-16`. From `lg` up, the artifact owns the right
-  side of the screen, so hero, method, work and lab keep their content in the **left 56%** of the container.
-  Contact is centred, with its content in the lower half of a full-height section (the artifact sits above it).
+  side of the screen, so every chapter keeps its content in the **left 56%** of the container.
+  Contact is a full-height section with its content vertically centred in that column.
   Below `lg` everything is a single full-width column. Chapters breathe: `py-28 lg:py-44`; hero and contact are
   `min-h-dvh`.
 - **Nav.** Name on the left (`font-display`), chapter links on the right (`font-mono` labels). The active chapter

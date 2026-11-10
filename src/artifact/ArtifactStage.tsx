@@ -14,7 +14,7 @@ export function ArtifactStage(): ReactNode {
   const reducedMotion = useReducedMotion() ?? false;
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-10 opacity-60 lg:opacity-100">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-10 opacity-40 lg:opacity-100">
       <ArtifactScene story={story} reducedMotion={reducedMotion} />
     </div>
   );

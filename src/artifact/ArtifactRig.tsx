@@ -4,6 +4,8 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   AdditiveBlending,
+  EdgesGeometry,
+  IcosahedronGeometry,
   MathUtils,
   MeshStandardMaterial,
   type Group,
@@ -47,6 +49,12 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
     placement: { x: 0, y: 0, scale: 1 },
   }));
   const [glow] = useState(() => createGlowTexture());
+  const [seams] = useState(() => {
+    const shell = new IcosahedronGeometry(LOOK.seams.radius, 0);
+    const edges = new EdgesGeometry(shell);
+    shell.dispose();
+    return edges;
+  });
   const [shardMaterial] = useState(
     () =>
       new MeshStandardMaterial({
@@ -61,6 +69,7 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
   const inner = useRef<Group>(null);
   const meshes = useRef<Array<Mesh | null>>([]);
   const lineMaterial = useRef<LineBasicMaterial>(null);
+  const seamMaterial = useRef<LineBasicMaterial>(null);
   const core = useRef<Mesh>(null);
   const coreLight = useRef<PointLight>(null);
   const halo = useRef<SpriteMaterial>(null);
@@ -75,9 +84,10 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
       field.dispose();
       threads.dispose();
       glow.dispose();
+      seams.dispose();
       shardMaterial.dispose();
     },
-    [field, threads, glow, shardMaterial],
+    [field, threads, glow, seams, shardMaterial],
   );
 
   useFrame((state, delta) => {
@@ -118,7 +128,10 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
     if (lineMaterial.current) {
       lineMaterial.current.opacity = MathUtils.lerp(LOOK.threads.opacityScattered, LOOK.threads.opacityAssembled, a);
     }
-    if (core.current) core.current.scale.setScalar(MathUtils.lerp(LOOK.core.scaleFrom, LOOK.core.scaleTo, a));
+    // The threads hand over to the seams: they only light once the shards are nearly home.
+    if (seamMaterial.current) seamMaterial.current.opacity = LOOK.seams.opacity * Math.pow(a, 8);
+    // Cubed so the core stays a spark while the shards are apart and only swells as the shell closes round it.
+    if (core.current) core.current.scale.setScalar(MathUtils.lerp(LOOK.core.scaleFrom, LOOK.core.scaleTo, a * a * a));
     if (coreLight.current) coreLight.current.intensity = MathUtils.lerp(LOOK.core.lightFrom, LOOK.core.lightTo, a);
     if (halo.current) halo.current.opacity = MathUtils.lerp(LOOK.halo.opacityFrom, LOOK.halo.opacityTo, a);
   });
@@ -174,6 +187,18 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
               depthWrite={false}
               blending={AdditiveBlending}
               opacity={LOOK.threads.opacityScattered}
+              toneMapped={false}
+            />
+          </lineSegments>
+
+          <lineSegments geometry={seams}>
+            <lineBasicMaterial
+              ref={seamMaterial}
+              color={LOOK.lime}
+              transparent
+              depthWrite={false}
+              blending={AdditiveBlending}
+              opacity={0}
               toneMapped={false}
             />
           </lineSegments>
