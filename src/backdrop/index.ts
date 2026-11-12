@@ -1,1 +1,2 @@
-export { Backdrop } from "./Backdrop";
+export { FrameSequencePlayer } from "./FrameSequencePlayer";
+export { StillProgress } from "./StillProgress";

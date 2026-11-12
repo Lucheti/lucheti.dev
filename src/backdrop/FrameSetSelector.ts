@@ -11,7 +11,7 @@ const MAX_DEVICE_PIXEL_RATIO = 2;
 export class FrameSetSelector {
   public constructor(private readonly sets: readonly FrameSet[]) {
     if (sets.length === 0) {
-      throw new RangeError("A backdrop needs at least one frame set");
+      throw new RangeError("A frame sequence needs at least one frame set");
     }
     for (let i = 1; i < sets.length; i += 1) {
       if (sets[i].width <= sets[i - 1].width) {
