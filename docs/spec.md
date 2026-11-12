@@ -51,8 +51,8 @@ Do not edit `src/story`, `src/content`, `src/app`, `src/ui`, `src/artifact`, `do
   and registers it). It accepts normal section props (`className`, `style`, `ref` is internal).
 - **Scroll:**
   - `useStory().through("orchestra")` is a `Signal<Progress>` running 0 → 1 from when the chapter's top meets the
-    viewport top until the next chapter's top does. For a pinned (sticky) chapter that is exactly "progress
-    through the pin". Read `.current().toNumber()` in animation frames; never put per-scroll values in React state.
+    viewport top until the next chapter's top does. For a pinned (sticky) chapter the pin ends one viewport earlier
+    (at `(height − 100dvh) / height`), so rescale to pin progress (see `src/orchestra/PinProgress.ts`). Read `.current().toNumber()` in animation frames; never put per-scroll values in React state.
   - Motion's `useScroll({ target, offset })` is also fine inside your own component, and is simpler for the
     timeline's horizontal pin.
   - `useActiveChapter()` re-renders only when the chapter changes (nav).

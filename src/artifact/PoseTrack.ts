@@ -1,5 +1,5 @@
 import { MathUtils } from "three";
-import type { ChapterId, ChapterPosition } from "@/story";
+import type { ChapterId, ChapterPosition, Progress } from "@/story";
 
 /** Where the object is on screen and how assembled, for one moment of the story. */
 export type PoseValues = {
@@ -40,6 +40,9 @@ const NARROW_TABLE: PoseTable = {
   contact: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 3.4 },
 };
 
+/** Share of a chapter transition over which the object folds or unfolds. */
+const FOLD_SPAN = 0.3;
+
 /** Canvases narrower than this (CSS px) use the single-column table. */
 export const NARROW_BELOW_PX = 1024;
 
@@ -63,14 +66,30 @@ export class PoseTrack {
     return cssPixels < NARROW_BELOW_PX ? PoseTrack.narrow() : PoseTrack.wide();
   }
 
+  /**
+   * The object may only overlap a chapter where it is meant to be visible. So
+   * it unfolds in the last stretch before a chapter that shows it, and folds
+   * away in the first stretch after one; elsewhere scale follows the blend.
+   */
+  private static foldBlend(travelled: Progress, fromScale: number, toScale: number): Progress {
+    if (fromScale === 0 && toScale > 0) {
+      return travelled.within(1 - FOLD_SPAN, 1).eased();
+    }
+    if (toScale === 0 && fromScale > 0) {
+      return travelled.within(0, FOLD_SPAN).eased();
+    }
+    return travelled.eased();
+  }
+
   /** Writes the pose at `position` into `out`: chapter pose → upcoming pose by the eased blend. */
   public sample(position: ChapterPosition, out: PoseValues): void {
     const from = this.table[position.chapter()];
     const to = this.table[position.upcoming()];
-    const blend = position.blend().eased();
+    const travelled = position.blend();
+    const blend = travelled.eased();
     out.x = blend.mix(from.x, to.x);
     out.y = blend.mix(from.y, to.y);
-    out.scale = blend.mix(from.scale, to.scale);
+    out.scale = PoseTrack.foldBlend(travelled, from.scale, to.scale).mix(from.scale, to.scale);
     out.assembly = blend.mix(from.assembly, to.assembly);
     out.spin = blend.mix(from.spin, to.spin);
   }

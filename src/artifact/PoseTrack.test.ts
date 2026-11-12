@@ -25,12 +25,19 @@ describe("PoseTrack", () => {
 
   it("is halfway between two chapters at their midpoint (smoothstep is symmetric)", () => {
     const mid = sample(wide, 3.5);
-    expect(mid.scale).toBeCloseTo(0.5, 10);
     expect(mid.spin).toBeCloseTo((2.0 + 2.6) / 2, 10);
+    expect(mid.x).toBeCloseTo((0.8 + 0.74) / 2, 10);
   });
 
-  it("eases rather than interpolating linearly", () => {
-    expect(sample(wide, 3.25).scale).toBeLessThan(0.25);
+  it("unfolds only in the last stretch before a chapter that shows it", () => {
+    expect(sample(wide, 3.6).scale).toBe(0);
+    expect(sample(wide, 3.85).scale).toBeGreaterThan(0.3);
+    expect(sample(wide, 3.85).scale).toBeLessThan(1);
+  });
+
+  it("folds away in the first stretch after a chapter that shows it", () => {
+    expect(sample(wide, 0.15).scale).toBeGreaterThan(0);
+    expect(sample(wide, 0.4).scale).toBe(0);
   });
 
   it("chooses the narrow table below 1024 px and the wide one from 1024", () => {

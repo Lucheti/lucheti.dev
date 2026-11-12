@@ -23,7 +23,8 @@ export const LOOK = {
     scaleFrom: 0.4,
     scaleTo: 5.2,
   },
-  halo: { size: 7, depth: -1.6, opacityFrom: 0.0, opacityTo: 0.16 },
+  // Faint: it reads as warmth on graphite but as a smudge on paper.
+  halo: { size: 7, depth: -1.6, opacityFrom: 0.0, opacityTo: 0.08 },
   threads: { opacityScattered: 0.75, opacityAssembled: 0.2 },
   /** Hairlines along the shell's edges that light up as the last shards close. */
   seams: { radius: 0.992, opacity: 0.95 },
