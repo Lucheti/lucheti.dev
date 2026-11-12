@@ -3,7 +3,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
-  AdditiveBlending,
+  NormalBlending,
   EdgesGeometry,
   IcosahedronGeometry,
   MathUtils,
@@ -143,25 +143,25 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
 
       <group ref={outer}>
         <pointLight
-          color={LOOK.lime}
+          color={LOOK.signal}
           intensity={LOOK.underlight.intensity}
           distance={LOOK.underlight.distance}
           decay={2}
           position={LOOK.underlight.position}
         />
-        <pointLight ref={coreLight} color={LOOK.lime} intensity={LOOK.core.lightFrom} decay={2} />
+        <pointLight ref={coreLight} color={LOOK.signal} intensity={LOOK.core.lightFrom} decay={2} />
         <mesh ref={core}>
           <sphereGeometry args={[LOOK.core.radius, 24, 16]} />
-          <meshBasicMaterial color={LOOK.lime} toneMapped={false} />
+          <meshBasicMaterial color={LOOK.signal} toneMapped={false} />
         </mesh>
         <sprite position={[0, 0, LOOK.halo.depth]} scale={[LOOK.halo.size, LOOK.halo.size, 1]}>
           <spriteMaterial
             ref={halo}
             map={glow}
-            color={LOOK.lime}
+            color={LOOK.signal}
             transparent
             depthWrite={false}
-            blending={AdditiveBlending}
+            blending={NormalBlending}
             opacity={LOOK.halo.opacityFrom}
             toneMapped={false}
           />
@@ -182,10 +182,10 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
           <lineSegments geometry={threads.lines()} frustumCulled={false}>
             <lineBasicMaterial
               ref={lineMaterial}
-              color={LOOK.lime}
+              color={LOOK.signal}
               transparent
               depthWrite={false}
-              blending={AdditiveBlending}
+              blending={NormalBlending}
               opacity={LOOK.threads.opacityScattered}
               toneMapped={false}
             />
@@ -194,10 +194,10 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
           <lineSegments geometry={seams}>
             <lineBasicMaterial
               ref={seamMaterial}
-              color={LOOK.lime}
+              color={LOOK.signal}
               transparent
               depthWrite={false}
-              blending={AdditiveBlending}
+              blending={NormalBlending}
               opacity={0}
               toneMapped={false}
             />
@@ -211,12 +211,12 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
               >
                 <pointsMaterial
                   map={glow}
-                  color={LOOK.lime}
+                  color={LOOK.signal}
                   size={LOOK.nodes.glowSize}
                   transparent
                   opacity={LOOK.nodes.glowOpacity}
                   depthWrite={false}
-                  blending={AdditiveBlending}
+                  blending={NormalBlending}
                   toneMapped={false}
                 />
               </points>
@@ -230,7 +230,7 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
                   size={LOOK.nodes.dotSize}
                   transparent
                   depthWrite={false}
-                  blending={AdditiveBlending}
+                  blending={NormalBlending}
                   toneMapped={false}
                 />
               </points>
