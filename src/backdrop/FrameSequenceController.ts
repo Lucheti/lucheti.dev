@@ -13,32 +13,32 @@ const MAX_DEVICE_PIXEL_RATIO = 2;
 const MAX_REQUESTS_IN_FLIGHT = 6;
 const COARSE_STRIDE = 8;
 const INERTIA_RATE = 0.12;
-const FOCAL_X = 0.62;
-const FOCAL_Y = 0.5;
 const FIRST_TICK_MS = 1000 / 60;
 
 type Image = HTMLImageElement;
 
 type ControllerParts = Readonly<{
   canvas: HTMLCanvasElement;
-  page: Signal<Progress>;
-  manifest: FrameSequence;
+  progress: Signal<Progress>;
+  sequence: FrameSequence;
   source: ImageSource<Image>;
-  /** Follow the page with inertia, or snap straight to wherever the page is. */
+  /** Follow the signal with inertia, or snap straight to wherever it is. */
   scrubbing: boolean;
+  /** Which part of the frame stays in view when it is cropped to fit. */
+  focal: Readonly<{ x: number; y: number }>;
 }>;
 
 /**
- * Drives one backdrop canvas: sizing, frame loading, easing and painting.
+ * Drives one frame-sequence canvas: sizing, frame loading, easing and painting.
  *
  * It repaints only when the eased position, the loaded frames or the canvas
  * size changed, and its animation-frame loop stops as soon as it settles.
  */
-export class BackdropController {
+export class FrameSequenceController {
   private readonly ctx: CanvasRenderingContext2D | null;
   private readonly selector: FrameSetSelector;
   private readonly order: LoadOrder;
-  private readonly fit = new CoverFit(FOCAL_X, FOCAL_Y);
+  private readonly fit: CoverFit;
   private readonly inertia: Inertia;
   private readonly cleanups: Unsubscribe[] = [];
 
@@ -55,11 +55,12 @@ export class BackdropController {
   private disposed = false;
 
   public constructor(private readonly parts: ControllerParts) {
-    const { manifest } = parts;
+    const { sequence } = parts;
     this.ctx = parts.canvas.getContext("2d", { alpha: false });
-    this.selector = new FrameSetSelector(manifest.sets);
-    this.order = new LoadOrder(manifest.frameCount, COARSE_STRIDE);
-    this.store = new FrameStore<Image>(manifest.frameCount);
+    this.fit = new CoverFit(parts.focal.x, parts.focal.y);
+    this.selector = new FrameSetSelector(sequence.sets);
+    this.order = new LoadOrder(sequence.frameCount, COARSE_STRIDE);
+    this.store = new FrameStore<Image>(sequence.frameCount);
     this.inertia = new Inertia(this.targetPosition(), parts.scrubbing ? INERTIA_RATE : 1);
   }
 
@@ -70,7 +71,7 @@ export class BackdropController {
     const observer = new ResizeObserver(() => this.resize());
     observer.observe(this.parts.canvas);
     this.cleanups.push(() => observer.disconnect());
-    this.cleanups.push(this.parts.page.subscribe(() => this.schedule()));
+    this.cleanups.push(this.parts.progress.subscribe(() => this.schedule()));
     this.resize();
   }
 
@@ -114,7 +115,7 @@ export class BackdropController {
       this.outgoing = this.store;
     }
     this.setIndex = index;
-    this.store = new FrameStore<Image>(this.parts.manifest.frameCount);
+    this.store = new FrameStore<Image>(this.parts.sequence.frameCount);
     const urls = new FrameUrls(this.selector.setAt(index));
     this.loader = new FrameLoader<Image>({
       source: this.parts.source,
@@ -161,8 +162,8 @@ export class BackdropController {
   }
 
   private targetPosition(): number {
-    const { page, manifest } = this.parts;
-    return FramePosition.fromProgress(page.current(), manifest.frameCount).toNumber();
+    const { progress, sequence } = this.parts;
+    return FramePosition.fromProgress(progress.current(), sequence.frameCount).toNumber();
   }
 
   private paint(): void {
@@ -170,7 +171,7 @@ export class BackdropController {
     if (ctx === null || this.pixelWidth === 0) {
       return;
     }
-    const position = new FramePosition(this.inertia.current(), this.parts.manifest.frameCount);
+    const position = new FramePosition(this.inertia.current(), this.parts.sequence.frameCount);
     const source = this.outgoing ?? this.store;
     const floorIndex = source.nearestIndex(position.floorIndex());
     if (floorIndex === undefined) {
