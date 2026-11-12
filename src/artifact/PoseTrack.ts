@@ -19,7 +19,8 @@ type PoseTable = Readonly<Record<ChapterId, Readonly<PoseValues>>>;
  * Agents chapter, where it rests on the orange core of the video.
  */
 const WIDE_TABLE: PoseTable = {
-  hero: { x: 0.86, y: 0.3, scale: 0.5, assembly: 0.0, spin: 0.0 },
+  // A small loose cluster in the empty top-right corner, clear of the face.
+  hero: { x: 0.9, y: 0.3, scale: 0.3, assembly: 0.0, spin: 0.0 },
   timeline: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.8, y: 0.45, scale: 0.0, assembly: 0.85, spin: 2.0 },
@@ -29,7 +30,7 @@ const WIDE_TABLE: PoseTable = {
 
 /** Single column: only where nothing sits under it. */
 const NARROW_TABLE: PoseTable = {
-  hero: { x: 0.5, y: 0.2, scale: 0.5, assembly: 0.0, spin: 0.0 },
+  hero: { x: 0.84, y: 0.15, scale: 0.28, assembly: 0.0, spin: 0.0 },
   timeline: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.5, y: 0.3, scale: 0.0, assembly: 0.85, spin: 2.0 },

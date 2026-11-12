@@ -101,7 +101,8 @@ function HeroName({ name }: { readonly name: Hero["name"] }): ReactNode {
   return (
     <h1
       aria-label={name.join(" ")}
-      className="font-display text-[clamp(5rem,19vw,21rem)] font-bold uppercase leading-[0.82] tracking-[-0.06em] text-ink"
+      // Capped by height as well as width: two lines must end above the copy block on short screens.
+      className="font-display text-[clamp(4.5rem,min(19vw,23dvh),21rem)] font-bold uppercase leading-[0.82] tracking-[-0.06em] text-ink"
     >
       <NameLine text={first} firstIndex={0} />
       <NameLine text={last} firstIndex={Array.from(first).length} />

@@ -14,7 +14,7 @@ export const LOOK = {
   ambient: { intensity: 0.9 },
   key: { color: "#ffffff", intensity: 2.4, position: [-4, 5, 4] as const },
   /** Orange light from below and in front; the rim on the graphite shards. */
-  underlight: { intensity: 30, distance: 9, position: [0.6, -2.4, 2.8] as const },
+  underlight: { intensity: 16, distance: 9, position: [0.6, -2.4, 2.8] as const },
   core: {
     radius: 0.09,
     lightFrom: 2,
