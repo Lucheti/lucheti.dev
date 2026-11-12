@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Hero } from "@/content";
 import { Chapter } from "@/story";
+import { HeroStage } from "./HeroStage";
 
 type HeroSectionProps = Readonly<{
   hero: Hero;
@@ -8,11 +9,11 @@ type HeroSectionProps = Readonly<{
   city: string;
 }>;
 
-/** Placeholder until WP-H lands. */
+/** Chapter 01: name, face and tagline, composed in layers on a spec sheet. */
 export function HeroSection({ hero }: HeroSectionProps): ReactNode {
   return (
-    <Chapter id="hero" className="min-h-dvh p-16">
-      <h1 className="font-display text-7xl font-semibold">{hero.name.join(" ")}</h1>
+    <Chapter id="hero">
+      <HeroStage hero={hero} />
     </Chapter>
   );
 }
