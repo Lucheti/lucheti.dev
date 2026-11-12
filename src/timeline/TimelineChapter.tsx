@@ -1,12 +1,15 @@
 import type { ReactNode } from "react";
 import type { Timeline } from "@/content";
 import { Chapter } from "@/story";
+import { PinnedTimeline } from "./PinnedTimeline";
+import { VerticalTimeline } from "./VerticalTimeline";
 
-/** Placeholder until WP-T lands. */
+/** 02 — the build log. Both layouts are in the markup; CSS shows the one that fits. */
 export function TimelineChapter({ timeline }: { readonly timeline: Timeline }): ReactNode {
   return (
-    <Chapter id="timeline" className="min-h-dvh p-16">
-      <h2 className="font-display text-5xl font-semibold">{timeline.heading}</h2>
+    <Chapter id="timeline" className="bg-paper">
+      <VerticalTimeline timeline={timeline} />
+      <PinnedTimeline timeline={timeline} />
     </Chapter>
   );
 }
