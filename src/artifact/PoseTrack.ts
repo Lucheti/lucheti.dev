@@ -30,12 +30,14 @@ const WIDE_TABLE: PoseTable = {
 
 /** Single column: only where nothing sits under it. */
 const NARROW_TABLE: PoseTable = {
-  hero: { x: 0.84, y: 0.15, scale: 0.28, assembly: 0.0, spin: 0.0 },
+  // The phone hero is name, face and copy stacked edge to edge: no free corner.
+  hero: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.0, spin: 0.0 },
   timeline: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.5, y: 0.3, scale: 0.0, assembly: 0.85, spin: 2.0 },
-  orchestra: { x: 0.5, y: 0.3, scale: 0.7, assembly: 1.0, spin: 2.6 },
-  contact: { x: 0.5, y: 0.25, scale: 0.6, assembly: 1.0, spin: 3.4 },
+  // Phones: the only free space is the gap between the stats and the pipeline rail.
+  orchestra: { x: 0.76, y: 0.79, scale: 0.32, assembly: 1.0, spin: 2.6 },
+  contact: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 3.4 },
 };
 
 /** Canvases narrower than this (CSS px) use the single-column table. */

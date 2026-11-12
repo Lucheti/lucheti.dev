@@ -10,7 +10,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import type { Hero } from "@/content";
 import { ButtonLink, Container, EASE_OUT_EXPO, Label, Reveal, cx } from "@/ui";
 import { SheetFrame } from "./SheetFrame";
@@ -29,6 +29,22 @@ const HEAD = { x: "52%", y: "30%" } as const;
 const DISC_RATIO = 0.46;
 
 type Pointer = Readonly<{ x: MotionValue<number>; y: MotionValue<number> }>;
+
+/** Tailwind's `lg` breakpoint, where the copy overlays the portrait. */
+const WIDE_QUERY = "(min-width: 1024px)";
+
+/** Whether a media query matches; false on the server and before hydration. */
+function useMatchesQuery(query: string): boolean {
+  return useSyncExternalStore(
+    (onChange) => {
+      const list = window.matchMedia(query);
+      list.addEventListener("change", onChange);
+      return () => list.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
 
 /** Normalised pointer position (-1 … 1), damped by a spring. Idle for touch and reduced motion. */
 function usePointerDepth(enabled: boolean): Pointer {
@@ -158,7 +174,10 @@ export function HeroStage({ hero }: { readonly hero: Hero }): ReactNode {
   const portraitScale = useTransform(scrollYProgress, [0, 1], [1, reduced ? 1 : 0.94]);
   const discY = useTransform(scrollYProgress, [0, 1], ["0%", reduced ? "0%" : "-30%"]);
   const discScale = useTransform(scrollYProgress, [0, 1], [1, reduced ? 1 : 1.25]);
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.6], [1, reduced ? 1 : 0]);
+  // Only fade the copy where it overlays the portrait (lg); on phones it sits
+  // below the portrait and would be gone before the reader reaches it.
+  const wide = useMatchesQuery(WIDE_QUERY);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.6], [1, reduced || !wide ? 1 : 0]);
 
   const { portrait } = hero;
 

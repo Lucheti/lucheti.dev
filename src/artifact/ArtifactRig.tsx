@@ -25,6 +25,9 @@ import { ThreadNetwork } from "./ThreadNetwork";
 
 type Props = Readonly<{ story: Story; reducedMotion: boolean }>;
 
+/** Below this pose scale the object is folded away and not drawn at all. */
+const MIN_VISIBLE_SCALE = 0.02;
+
 /** Mutable scratch shared by every frame so the loop allocates nothing. */
 type FrameScratch = {
   readonly target: PoseValues;
@@ -106,6 +109,9 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
     const frame = outer.current;
     const spinner = inner.current;
     if (!frame || !spinner) return;
+    // Points keep their screen size whatever the group's scale, so a folded-away
+    // object must be hidden outright or its nodes linger as stray dots.
+    frame.visible = pose.scale > MIN_VISIBLE_SCALE;
     frame.position.set(scratch.placement.x, scratch.placement.y, 0);
     frame.scale.setScalar(scratch.placement.scale);
     frame.rotation.set(-lean.y() * LOOK.motion.tiltX, lean.x() * LOOK.motion.tiltY, 0);

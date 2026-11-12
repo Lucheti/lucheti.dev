@@ -71,6 +71,8 @@ export function PipelineRail({ stages, ticket, progress, timeline, litStages }: 
             <span
               className={cx(
                 "absolute top-[50px] whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] transition-colors duration-300 md:text-[11px]",
+                // Seven labels do not fit a phone; there only the current stage is named.
+                index === Math.max(0, litStages - 1) ? "block" : "hidden sm:block",
                 labelAlignment(index, stages.length),
                 lit ? "text-fog" : "text-fog-dim",
               )}
