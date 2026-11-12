@@ -34,7 +34,8 @@ describe("PoseTrack", () => {
   });
 
   it("chooses the narrow table below 1024 px and the wide one from 1024", () => {
-    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 4).x).toBe(0.5);
+    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 4).x).toBe(0.76);
+    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 0).scale).toBe(0);
     expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX), 4)).toEqual(sample(wide, 4));
   });
 });
