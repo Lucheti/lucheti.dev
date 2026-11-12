@@ -1,4 +1,4 @@
-import type { BackdropFrameSet } from "@/content";
+import type { FrameSet } from "@/content";
 
 const MAX_DEVICE_PIXEL_RATIO = 2;
 
@@ -9,7 +9,7 @@ const MAX_DEVICE_PIXEL_RATIO = 2;
  * lets "the smallest that is wide enough" be a single forward scan.
  */
 export class FrameSetSelector {
-  public constructor(private readonly sets: readonly BackdropFrameSet[]) {
+  public constructor(private readonly sets: readonly FrameSet[]) {
     if (sets.length === 0) {
       throw new RangeError("A backdrop needs at least one frame set");
     }
@@ -27,7 +27,7 @@ export class FrameSetSelector {
     return index === -1 ? this.sets.length - 1 : index;
   }
 
-  public setAt(index: number): BackdropFrameSet {
+  public setAt(index: number): FrameSet {
     return this.sets[index];
   }
 }

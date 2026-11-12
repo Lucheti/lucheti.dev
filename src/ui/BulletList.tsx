@@ -1,18 +1,22 @@
 import type { ReactNode } from "react";
+import { cx } from "./cx";
+import type { Tone } from "./Tone";
 
-/** List with small lime square markers. Renders nothing when empty. */
-export function BulletList({ items }: { readonly items: readonly string[] }): ReactNode {
+/** Numbered list with mono indices. Renders nothing when empty. */
+export function BulletList({ items, tone = "light" }: { readonly items: readonly string[]; readonly tone?: Tone }): ReactNode {
   if (items.length === 0) {
     return null;
   }
   return (
-    <ul className="flex flex-col gap-3">
-      {items.map((item) => (
-        <li key={item} className="flex gap-4 leading-[1.6] text-bone-dim">
-          <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-lime" />
+    <ol className="flex flex-col gap-3">
+      {items.map((item, index) => (
+        <li key={item} className={cx("flex gap-4 leading-[1.5]", tone === "light" ? "text-ink-soft" : "text-fog-dim")}>
+          <span aria-hidden className="w-6 shrink-0 pt-[0.2em] font-mono text-[11px] text-signal">
+            {String(index + 1).padStart(2, "0")}
+          </span>
           <span>{item}</span>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }

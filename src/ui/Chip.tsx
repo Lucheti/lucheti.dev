@@ -1,9 +1,16 @@
 import type { ReactNode } from "react";
+import { cx } from "./cx";
+import type { Tone } from "./Tone";
 
-/** Small hairline pill for tags and sources. */
-export function Chip({ children }: { readonly children: ReactNode }): ReactNode {
+/** Small hairline tag for stacks and sources. */
+export function Chip({ children, tone = "light" }: { readonly children: ReactNode; readonly tone?: Tone }): ReactNode {
   return (
-    <span className="inline-flex items-center rounded-full border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-dim">
+    <span
+      className={cx(
+        "inline-flex items-center rounded-[3px] border px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em]",
+        tone === "light" ? "border-line-strong text-ink-soft" : "border-line-dark-strong text-fog-dim",
+      )}
+    >
       {children}
     </span>
   );

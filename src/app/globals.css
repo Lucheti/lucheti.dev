@@ -1,51 +1,86 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. One dark theme: near-black ink, warm bone type, one lime
- * accent. Use the Tailwind utilities these generate (bg-ink, text-bone,
- * text-bone-dim, border-line, text-lime, font-display, font-mono …) rather
- * than hard-coded colours.
+ * Design tokens: a technical spec sheet. Warm paper, near-black ink, graphite
+ * for the dark chapters, one signal orange. Use the Tailwind utilities these
+ * generate (bg-paper, text-ink, text-ink-soft, border-line, bg-graphite,
+ * text-fog, text-signal, font-dot …) rather than hard-coded colours.
  */
 @theme inline {
-  --color-ink: #060706;
-  --color-ink-raised: #0d0f0d;
-  --color-ink-glass: rgb(13 15 13 / 0.62);
-  --color-bone: #ecebe3;
-  --color-bone-dim: #a4a69d;
-  --color-bone-faint: #6f716a;
-  --color-line: rgb(236 235 227 / 0.1);
-  --color-line-strong: rgb(236 235 227 / 0.22);
-  --color-lime: #c5f82a;
-  --color-lime-deep: #7ea516;
-  --color-lime-glow: rgb(197 248 42 / 0.16);
+  /* Light chapters */
+  --color-paper: #f3f2ee;
+  --color-paper-raised: #fbfaf7;
+  --color-paper-sunk: #e7e6e0;
+  --color-ink: #0e0e0e;
+  --color-ink-soft: #46463f;
+  --color-mute: #6f6f68;
+  --color-line: rgb(14 14 14 / 0.12);
+  --color-line-strong: rgb(14 14 14 / 0.3);
 
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  /* Dark chapters */
+  --color-graphite: #121212;
+  --color-graphite-raised: #1c1c1b;
+  --color-fog: #eeede8;
+  --color-fog-dim: #a7a69f;
+  --color-line-dark: rgb(238 237 232 / 0.12);
+  --color-line-dark-strong: rgb(238 237 232 / 0.28);
+
+  /* The one accent. signal-ink is the same hue dark enough for small text on paper. */
+  --color-signal: #ff5a1f;
+  --color-signal-ink: #c2410c;
+  --color-signal-soft: rgb(255 90 31 / 0.14);
+
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Dot-matrix numerals: years, counters, readouts. Never for sentences. */
+  --font-dot: var(--font-doto), var(--font-geist-mono), ui-monospace, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
-  background: var(--color-ink);
-  color-scheme: dark;
+  background: var(--color-paper);
+  color-scheme: light;
 }
 
 body {
-  background: var(--color-ink);
-  color: var(--color-bone);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: var(--color-lime);
+  background: var(--color-signal);
   color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-lime);
+  outline: 2px solid var(--color-signal);
   outline-offset: 3px;
+}
+
+/* Hairline blueprint grid for light chapters: 8px minor dots, 96px major lines. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(14 14 14 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(14 14 14 / 0.06) 1px, transparent 1px),
+    radial-gradient(circle, rgb(14 14 14 / 0.1) 0.6px, transparent 0.8px);
+  background-size:
+    96px 96px,
+    96px 96px,
+    16px 16px;
+  background-position: -1px -1px;
+}
+
+/* The same grid for dark chapters. */
+@utility bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgb(238 237 232 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(238 237 232 / 0.05) 1px, transparent 1px);
+  background-size: 96px 96px;
+  background-position: -1px -1px;
 }
 
 /* Lenis smooth scrolling */

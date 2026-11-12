@@ -1,7 +1,7 @@
 import { Progress } from "./Progress";
 
 /** The chapters of the page, in scroll order. */
-export const CHAPTER_IDS = ["hero", "method", "work", "lab", "contact"] as const;
+export const CHAPTER_IDS = ["hero", "timeline", "craft", "systems", "orchestra", "contact"] as const;
 
 export type ChapterId = (typeof CHAPTER_IDS)[number];
 
@@ -47,6 +47,22 @@ export class ChapterPosition {
 
   /** How far the reader has travelled from `chapter()` toward `upcoming()`. */
   public blend(): Progress {
+    return this.travelled;
+  }
+
+  /**
+   * How far the reader is through one chapter: 0 before it, 1 once the next
+   * chapter has been reached, the blend while inside it. The final chapter
+   * has no next chapter, so it reads 0 until it is reached and 1 after.
+   */
+  public through(id: ChapterId): Progress {
+    const target = CHAPTER_IDS.indexOf(id);
+    if (this.index < target) {
+      return Progress.START;
+    }
+    if (this.index > target || target === CHAPTER_IDS.length - 1) {
+      return Progress.END;
+    }
     return this.travelled;
   }
 

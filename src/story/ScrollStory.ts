@@ -1,4 +1,5 @@
 import { CHAPTER_IDS, ChapterPosition, type ChapterId } from "./ChapterPosition";
+import { ChapterProgress } from "./ChapterProgress";
 import { Progress } from "./Progress";
 import { Emitter, type Signal, type Unsubscribe } from "./Signal";
 import type { Story } from "./Story";
@@ -17,6 +18,7 @@ export class ScrollStory implements Story {
     (a, b) => a.equals(b),
   );
   private readonly anchors: Map<ChapterId, ChapterAnchor> = new Map();
+  private readonly progressById: Map<ChapterId, ChapterProgress> = new Map();
 
   public constructor(private readonly viewport: Viewport) {}
 
@@ -26,6 +28,15 @@ export class ScrollStory implements Story {
 
   public chapters(): Signal<ChapterPosition> {
     return this.chapterSignal;
+  }
+
+  public through(id: ChapterId): Signal<Progress> {
+    let progress = this.progressById.get(id);
+    if (!progress) {
+      progress = new ChapterProgress(this.chapterSignal, id);
+      this.progressById.set(id, progress);
+    }
+    return progress;
   }
 
   /** Begins following the viewport. Call the returned function to stop. */

@@ -15,63 +15,121 @@ export type Fact = Readonly<{
   value: string;
 }>;
 
+export type Portrait = Readonly<{
+  /** A cutout with a transparent background. */
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}>;
+
 export type Hero = Readonly<{
-  eyebrow: string;
-  /** One entry per display line; the last line takes the accent treatment. */
-  headline: readonly string[];
-  lede: string;
+  /** First and last name, set on two display lines. */
+  name: readonly [string, string];
+  role: string;
+  /** Two short sentences; the second takes the accent. */
+  tagline: readonly [string, string];
+  portrait: Portrait;
+  facts: readonly Fact[];
   primary: Link;
   secondary: Link;
-  facts: readonly Fact[];
+  /** Corner annotations of the spec-sheet frame. */
+  sheet: Readonly<{ code: string; title: string; revision: string; scroll: string }>;
 }>;
 
-export type MethodStep = Readonly<{
-  number: string;
-  title: string;
-  claim: string;
-  proof: string;
-  /** Where the proof comes from, e.g. a company name. */
-  source: string;
-}>;
+export type Era = "pre-ai" | "ai";
 
-export type Method = Readonly<{
-  label: string;
-  heading: string;
-  intro: string;
-  steps: readonly MethodStep[];
-}>;
+export type StopKind = "job" | "project";
 
-export type CaseStudy = Readonly<{
+export type TimelineStop = Readonly<{
+  /** Four-digit year shown in dot-matrix numerals. */
+  year: string;
+  /** When it started, e.g. "Oct 2019" or "Now". */
+  period: string;
   company: string;
   role: string;
-  period: string;
-  headline: string;
-  summary: string;
-  highlights: readonly string[];
-  tags: readonly string[];
+  /** What I did. One sentence. */
+  did: string;
+  /** What the industry was doing. One sentence. */
+  trend: string;
+  era: Era;
+  kind: StopKind;
 }>;
 
-export type Work = Readonly<{
+export type TimelineMarker = Readonly<{
+  date: string;
+  label: string;
+  note: string;
+  /** The marker sits between stop `afterStop` and the stop after it. */
+  afterStop: number;
+}>;
+
+export type Timeline = Readonly<{
   label: string;
   heading: string;
   intro: string;
-  cases: readonly CaseStudy[];
+  lanes: Readonly<{ world: string; me: string }>;
+  eras: Readonly<Record<Era, string>>;
+  stops: readonly TimelineStop[];
+  marker: TimelineMarker;
 }>;
 
-export type LabProject = Readonly<{
-  name: string;
-  tagline: string;
-  description: string;
-  highlights: readonly string[];
-  /** The featured project gets the large card. Exactly one should be true. */
-  featured: boolean;
+export type SpecNote = Readonly<{
+  /** Stable key the specimen uses to place the annotation. */
+  id: "padding" | "radius" | "type" | "contrast" | "focus" | "motion" | "role";
+  label: string;
+  value: string;
 }>;
 
-export type Lab = Readonly<{
+export type Craft = Readonly<{
   label: string;
   heading: string;
   intro: string;
-  projects: readonly LabProject[];
+  specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
+  notes: readonly SpecNote[];
+  toggle: Readonly<{ show: string; hide: string }>;
+  stack: readonly string[];
+}>;
+
+export type SagaStep = Readonly<{
+  service: string;
+  action: string;
+  /** The undo; empty when the step has nothing to compensate. */
+  compensation: string;
+}>;
+
+export type Systems = Readonly<{
+  label: string;
+  heading: string;
+  intro: string;
+  edge: Readonly<{ client: string; gateway: string; bus: string; orchestrator: string }>;
+  steps: readonly SagaStep[];
+  /** Index into `steps` of the step that fails in the failure run. */
+  failingStep: number;
+  controls: Readonly<{ run: string; fail: string }>;
+  outcomes: Readonly<{ committed: string; rolledBack: string }>;
+  principles: readonly string[];
+  stack: readonly string[];
+}>;
+
+export type Stat = Readonly<{
+  value: string;
+  label: string;
+}>;
+
+export type LogLine = Readonly<{
+  actor: string;
+  message: string;
+}>;
+
+export type Orchestra = Readonly<{
+  label: string;
+  heading: string;
+  intro: string;
+  principles: readonly string[];
+  stats: readonly Stat[];
+  stages: readonly string[];
+  log: readonly LogLine[];
 }>;
 
 export type Contact = Readonly<{
@@ -79,30 +137,37 @@ export type Contact = Readonly<{
   heading: string;
   body: string;
   links: readonly Link[];
+  signoff: string;
   footnote: string;
 }>;
 
 export type SiteContent = Readonly<{
   name: string;
   role: string;
+  description: string;
+  /** IANA time zone for the live clock. */
+  timeZone: string;
+  city: string;
   nav: readonly NavItem[];
   hero: Hero;
-  method: Method;
-  work: Work;
-  lab: Lab;
+  timeline: Timeline;
+  craft: Craft;
+  systems: Systems;
+  orchestra: Orchestra;
   contact: Contact;
 }>;
 
-export type BackdropFrameSet = Readonly<{
+export type FrameSet = Readonly<{
   /** Pixel width of every frame in the set. */
   width: number;
   /** Public directory holding 0001.webp … NNNN.webp. */
   directory: string;
 }>;
 
-export type BackdropManifest = Readonly<{
+/** A video exported as numbered still frames, scrubbed by scroll. */
+export type FrameSequence = Readonly<{
   frameCount: number;
   aspectRatio: number;
   /** Ordered from the smallest set to the largest. */
-  sets: readonly BackdropFrameSet[];
+  sets: readonly FrameSet[];
 }>;

@@ -1,228 +1,302 @@
-# Portfolio build spec
+# Portfolio build spec — v2 "Spec sheet"
 
-Personal portfolio for Lucas Garcia, positioned as a **Product Engineer** who uses AI agents to automate delivery.
+Personal portfolio and CV for Lucas Garcia, **Product Engineer** (Buenos Aires). It must read in under a minute,
+tell one story, and prove two things by being built well: front-end craft, and back-end distributed-systems depth.
+It ends on AI: Lucas builds agent harnesses (Orchestra).
 
-## Concept
+## The idea: a technical spec sheet with a person on it
 
-The page is one continuous scroll. A single 3D object, "the artifact", starts as scattered fragments and assembles
-itself as the reader scrolls, wired together by thin lime threads. Behind it, a video of a camera gliding into a
-network of lime threads is scrubbed by the same scroll. Idea → shipped, in one image.
+The whole site looks like an engineering document: warm paper, hairline grids, mono annotations, corner crop marks,
+part numbers, dimension lines. One signal orange. Dot-matrix numerals for years and counters. Then, near the end, the
+page goes dark (graphite) for the AI chapter, as if the lights went down for the demo.
 
-## Layers
+**What gives it personality (keep these, they are the point):**
+- His real face, big, in the hero, layered with type and an orange disc.
+- The story line: *"Learned to build before AI. Now I build with it."* The timeline is split by one orange line:
+  **Nov 30, 2022 — ChatGPT ships.** Left of it is "Pre-AI", right of it "AI-native".
+- A live Buenos Aires clock in the chrome. "Hecho en Buenos Aires" at the end.
+- Interactive proofs instead of paragraphs: a spec overlay you can toggle, a saga you can break, a pipeline you can
+  scroll through.
 
-`src/app/page.tsx` is the composition root. It stacks three layers inside `<StoryProvider>`:
+**What to avoid (this is why v1 felt generic):** paragraphs, card grids of bullet lists, centred hero text over a
+gradient, glassmorphism, glow, rounded pill buttons, emoji, icons from icon sets. Every chapter shows one idea, with
+at most ~30 words of prose on screen at once. Whitespace is a feature.
 
-| z | Layer | Owner | Notes |
-|---|---|---|---|
-| 0 | `<Backdrop manifest>` | `src/backdrop` | fixed, full viewport, canvas drawing video frames |
-| 10 | `<ArtifactStage />` | `src/artifact` | fixed, full viewport, transparent WebGL canvas |
-| 20 | `<Sections content>` | `src/sections`, `src/ui` | normal document flow; the only layer that takes pointer events |
-| 30 | nav | `src/sections` | fixed |
+## Chapters (in order) and owners
 
-Layers 0 and 10 are `aria-hidden`, `pointer-events-none`, and must never block text selection or links.
+| # | Chapter id | What it is | Ground | Owner |
+|---|---|---|---|---|
+| 01 | `hero` | Name, face, tagline | paper + grid | WP-H |
+| 02 | `timeline` | Pinned horizontal build log 2019 → now | paper | WP-T |
+| 03 | `craft` | Front end: a specimen with a toggleable spec overlay | paper-raised | WP-S |
+| 04 | `systems` | Back end: a saga diagram you can break | paper-sunk | WP-S |
+| 05 | `orchestra` | Agents: pinned dark chapter with scrubbed orange video | graphite | WP-O |
+| 06 | `contact` | One line, one button, sign-off | paper | WP-H |
 
-## Shared contracts (already written, do not change)
+Chapter numbers ("02 — Build log") are shown in each chapter's label via `SectionHeader`'s `index` prop.
 
-Import everything from `@/story` and `@/content`. Do not edit those directories, `src/app`, or config files. If a
-contract is wrong or missing something, say so in your final report instead of changing it.
+Layers (already wired in `src/app/page.tsx` and `src/sections/Sections.tsx`, do not change): chapters in `<main
+class="relative z-20">`; the fixed WebGL artifact above them at `z-30` with `pointer-events-none` (it folds away to
+nothing during chapters 02–04, so it never covers their text); nav at `z-40`; skip link `z-50`.
 
-```ts
-import { useStory, useActiveChapter, Chapter, Progress, ChapterPosition, CHAPTER_IDS, type ChapterId } from "@/story";
+## Shared contracts (written; do not change them)
 
-const story = useStory();
-story.page().current();          // Progress, 0 → 1 over the whole document
-story.page().subscribe(fn);      // returns an unsubscribe function
-story.chapters().current();      // ChapterPosition
-position.chapter();              // "hero" | "method" | "work" | "lab" | "contact"
-position.upcoming();             // the chapter being approached
-position.blend();                // Progress from chapter() toward upcoming()
-progress.toNumber(); progress.within(0.2, 0.6); progress.eased(); progress.mix(a, b);
-```
+Do not edit `src/story`, `src/content`, `src/app`, `src/ui`, `src/artifact`, `docs`, config files or `package.json`
+(WP-H is the exception for `src/ui`, see below). If a contract is wrong or missing something, say so in your report.
 
-- Read `current()` inside animation loops (`requestAnimationFrame`, R3F `useFrame`). Never put scroll values in
-  React state; nothing should re-render per scroll event.
-- `<Chapter id="work">` renders a `<section id="work">` and registers it with the story. Every chapter id must be
-  rendered exactly once, in `CHAPTER_IDS` order.
-- `useActiveChapter()` re-renders only when the reader crosses into another chapter (for the nav).
-- All copy lives in `src/content/site.ts` and arrives through props. Never hard-code copy in components.
+- **Copy:** everything comes from `src/content/site.ts` through props (types in `src/content/types.ts`). Never
+  hard-code copy, except tiny presentational strings a component owns (axis ticks, "On/Off" state words, ARIA
+  labels); keep those as named constants.
+- **Chapters:** render your chapter with `<Chapter id="…">` from `@/story` (it renders the `<section>` with that id
+  and registers it). It accepts normal section props (`className`, `style`, `ref` is internal).
+- **Scroll:**
+  - `useStory().through("orchestra")` is a `Signal<Progress>` running 0 → 1 from when the chapter's top meets the
+    viewport top until the next chapter's top does. For a pinned (sticky) chapter that is exactly "progress
+    through the pin". Read `.current().toNumber()` in animation frames; never put per-scroll values in React state.
+  - Motion's `useScroll({ target, offset })` is also fine inside your own component, and is simpler for the
+    timeline's horizontal pin.
+  - `useActiveChapter()` re-renders only when the chapter changes (nav).
+- **UI primitives** in `@/ui`: `Container` (page gutter, max 1400px), `LeftColumn`, `Label` (mono caption, `marked`
+  adds an orange square, `tone`), `SectionHeader` (`label`, `heading`, `intro`, `index`, `tone`), `ButtonLink`
+  (squared mono button with arrow, `variant`, `tone`), `Chip`, `BulletList` (numbered), `Reveal` (fade + rise once in
+  view), `cx`, `EASE_OUT_EXPO`, and `type Tone = "light" | "dark"`.
 
-## Design language
-
-Dark, quiet, precise. Near-black ink, warm bone type, **one** accent: electric lime. No gradients of other hues, no
-purple or blue, no drop shadows, no emoji, no stock icons. The lime is rare: accents, one word of the headline,
-active states, thin lines. If lime covers more than about 5% of a screen, there is too much of it.
-
-Tokens are defined in `src/app/globals.css` and exposed as Tailwind v4 utilities:
+## Design tokens (`src/app/globals.css`, Tailwind v4 utilities)
 
 | Utility | Value | Use |
 |---|---|---|
-| `bg-ink` | `#060706` | page background |
-| `bg-ink-raised` | `#0d0f0d` | solid panels |
-| `bg-ink-glass` | ink at 62% | panels over the backdrop, with `backdrop-blur-md` |
-| `text-bone` | `#ecebe3` | primary text |
-| `text-bone-dim` | `#a4a69d` | secondary text |
-| `text-bone-faint` | `#6f716a` | metadata only, never body text |
-| `border-line` / `border-line-strong` | bone at 10% / 22% | hairlines |
-| `text-lime` / `bg-lime` | `#c5f82a` | the accent |
-| `font-display` | Bricolage Grotesque | headlines |
-| `font-sans` | Geist | body |
-| `font-mono` | Geist Mono | labels, metadata, numbers |
-| `ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | the house easing |
+| `bg-paper` | `#f3f2ee` | page ground |
+| `bg-paper-raised` / `bg-paper-sunk` | `#fbfaf7` / `#e7e6e0` | alternate light grounds |
+| `text-ink` | `#0e0e0e` | primary text on paper |
+| `text-ink-soft` | `#46463f` | secondary text on paper |
+| `text-mute` | `#6f6f68` | metadata only (≥ 11px mono), never sentences |
+| `border-line` / `border-line-strong` | ink 12% / 30% | hairlines on paper |
+| `bg-graphite` / `bg-graphite-raised` | `#121212` / `#1c1c1b` | dark chapter |
+| `text-fog` / `text-fog-dim` | `#eeede8` / `#a7a69f` | text on graphite |
+| `border-line-dark` / `-strong` | fog 12% / 28% | hairlines on graphite |
+| `bg-signal` / `text-signal` | `#ff5a1f` | the accent: fills, lines, large type, dots |
+| `text-signal-ink` | `#c2410c` | orange for small text on paper (contrast) |
+| `bg-signal-soft` | orange 14% | tints |
+| `bg-grid` / `bg-grid-dark` | | hairline blueprint grid (96px lines, 16px dots) |
+| `font-display` / `font-sans` | Geist | headlines (600–700, tracking −0.04em to −0.05em, leading 0.9–1) / body |
+| `font-mono` | Geist Mono | labels, annotations, buttons: 11–12px uppercase, tracking 0.12–0.16em |
+| `font-dot` | Doto (dot matrix, weights 600 and 900) | years, counters, readouts only |
+| `ease-out-expo` | `cubic-bezier(0.16,1,0.3,1)`; in Motion use `EASE_OUT_EXPO` | |
 
-Type: headlines are `font-display`, weight 600, tight tracking (`-0.03em` to `-0.045em`), leading 0.9–1.0. Labels
-are `font-mono`, 11–12px, uppercase, tracking `0.14em`. Body is 16–18px, leading 1.6, max width about 34rem.
+Shapes are square-ish: radius 3–4px for controls, 0–8px for panels. Lines are 1px. Orange is rare: one or two marks
+per screen, plus the timeline's AI side.
 
-Motion: things arrive once and stay. Durations 0.6–1.0s with the house easing, staggers of 60–90ms, travel of
-16–32px. Nothing bounces, nothing loops for decoration except the artifact and the Orchestra pipeline pulse.
-Everything respects `prefers-reduced-motion`.
+Motion: arrivals once, 0.6–1.0s, house easing, 60–90ms staggers, 16–32px travel. Continuous motion only where it
+carries meaning (tokens on wires, the pipeline). Everything respects `prefers-reduced-motion` (`MotionConfig
+reducedMotion="user"` is already at the root; for hand-written rAF/scroll effects check `useReducedMotion()`).
+
+Responsive: must look deliberate at 390, 768, 1280 and 1920 px wide. No horizontal page scroll at any width.
 
 ## Coding rules
 
 - TypeScript strict. No `any`, no non-null `!` unless a comment proves it safe.
-- When data varies use a discriminated union; when behaviour varies use an interface. A `switch` over a union ends
-  in an `assertNever` default.
-- A class must guard a rule or own behaviour. A value with no rule is a type alias. Entities are `Readonly` types.
-- Class fields are `private` (or `protected`) and `readonly` where possible; every member has an explicit
-  visibility modifier. No generic setters; mutate through named domain methods.
-- Nothing is instantiated at module load. Construct objects inside components (`useState(() => new X())`,
-  `useMemo`) or inside the classes that own them.
-- Keep pure logic (maths, sequencing, layout) in plain classes or functions with unit tests (`*.test.ts`, vitest,
-  node environment, no DOM). Components stay thin.
-- No per-frame allocations in animation loops: reuse vectors, quaternions and arrays.
-- Client components only where needed (`"use client"`). No new dependencies without saying so in your report.
-- Comments explain why, not what. No commented-out code, no TODOs.
+- Data varies → discriminated union; behaviour varies → interface. A `switch` over a union ends with an
+  `assertNever` default.
+- A class must guard a rule or own behaviour; a value with no rule is a type alias. Fields `private`/`readonly`,
+  explicit visibility on every member, no generic setters.
+- Nothing instantiated at module load. Construct in components (`useState(() => new X())`) or in owning classes.
+- Pure logic (timelines, sequencing, geometry, layout maths) lives in plain classes/functions with vitest unit tests
+  (`*.test.ts`, node environment, no DOM). Components stay thin.
+- No per-frame allocations in animation loops. Server components by default; `"use client"` only where needed.
+- No new dependencies. Comments explain why, not what. No commented-out code, no TODOs.
+- Accessibility: one `<h1>` (hero); an `<h2>` per chapter; real buttons for controls (`aria-pressed` /
+  `role="switch"` + `aria-checked`), visible focus (global), decorative SVG `aria-hidden`, diagrams get a short
+  `aria-label` or visually hidden description.
 
-## WP-A — Backdrop (`src/backdrop/**`)
+## WP-H — Chrome, hero, contact (`src/sections/**`, may refine `src/ui/**`)
 
-A scroll-scrubbed image sequence on a 2D canvas, Apple-product-page style.
+Owns `Nav.tsx`, `HeroSection.tsx`, `ContactSection.tsx` and any helpers in `src/sections`. May polish `src/ui`
+primitives but must keep every export and prop that exists today (other packages use them). Keep the prop
+signatures of `Nav`, `HeroSection`, `ContactSection` exactly as the placeholders declare them. Do not edit
+`Sections.tsx`.
 
-- `Backdrop({ manifest })` keeps its current signature. Root: `fixed inset-0 z-0 pointer-events-none`,
-  `aria-hidden`.
-- Frames are `{set.directory}/{0001…NNNN}.webp`, four-digit, 1-based, `manifest.frameCount` of them.
-- Pick the smallest set whose width covers `viewport width × min(devicePixelRatio, 2)`, else the largest.
-- Loading: first frame immediately; then a coarse pass (every 8th frame); then the rest, at most 6 requests in
-  flight, without blocking first paint. If the wanted frame is not loaded yet, draw the nearest loaded one. The
-  canvas is never blank once the first frame has arrived.
-- Frame position is `story.page()` mapped across all frames. Draw the floor frame, then the next frame on top with
-  `globalAlpha` equal to the fractional part, so scrubbing looks continuous rather than stepped.
-- Ease the displayed position toward the target each animation frame (about 12% of the remaining distance) so the
-  scrub has inertia. Only repaint when something changed (position, a newly loaded frame, a resize); do not run a
-  permanent 60fps loop when idle.
-- Cover-fit the frame to the canvas with focal point x = 62%, y = 50%, so the bright core stays visible on portrait
-  screens. Canvas backing store follows the element size × `min(devicePixelRatio, 2)` via `ResizeObserver`.
-- On top of the canvas, in CSS: a left-to-right scrim (`ink` at about 70% on the left edge fading to transparent
-  by 60% width) for text legibility, a soft vignette, a bottom fade to `ink` (last 20% of height), and a very faint
-  static grain (inline SVG noise, opacity ≤ 0.06). On screens narrower than `lg`, add a uniform `ink` veil at about
-  45% so text is readable over the centre of the frame.
-- Reduced motion: draw one still frame (35% through the sequence) and do not scrub.
-- Unit tests: frame-position maths (floor, next, mix, clamping at the ends), set selection, cover-fit rectangle,
-  nearest-loaded lookup.
+**Nav (fixed, z-40, h-14).** Left: a small "LG" monogram square (ink, 28px, mono) + name. Centre (md+): the nav
+items as mono labels; the active chapter (`useActiveChapter()`) gets ink text and an orange square, others
+`text-mute`. Right: live clock "Buenos Aires 19:56" (mono, updates each minute, `Intl.DateTimeFormat` with the given
+time zone; render a stable placeholder like "--:--" on the server and fill on mount to avoid hydration mismatch).
+Paper background at 80% with backdrop blur and a bottom hairline once past the hero; transparent on the hero. In the
+`orchestra` chapter it switches to the dark tone (graphite 80%, fog text). Below md: monogram + clock only.
 
-## WP-B — Artifact (`src/artifact/**`)
+**Hero (min-h-dvh, `bg-grid`).** A layered composition, the most important screen of the site:
+1. **Sheet frame:** four corner crop marks (L-shaped 16px hairlines) inset 24px; mono annotations in the corners:
+   top-left `hero.sheet.code — hero.sheet.title`, top-right `hero.sheet.revision`, bottom-right `hero.sheet.scroll`
+   with a short animated vertical tick. Sits under the nav height, so offset the top marks below the nav.
+2. **Name, huge, behind the portrait:** `hero.name` as two lines, `font-display` 700, uppercase, size
+   `clamp(5rem, 19vw, 21rem)`, leading 0.82, tracking −0.06em, ink. Left-aligned at the container's left edge. The
+   portrait overlaps the right part of the letters (name below the portrait in z-order).
+3. **Orange disc:** a perfect circle of `bg-signal`, diameter ≈ 46% of the portrait height, centred behind the
+   portrait's head (head centre ≈ 30% from the top and 52% from the left of the portrait image), behind the
+   portrait, in front of the name.
+4. **Portrait:** `next/image` of `hero.portrait` (transparent cutout, 1280×1589), `priority`, bottom-anchored to the
+   hero's bottom edge, height ≈ 92dvh on lg, right side (its centre at ~66% of the viewport width). On < lg it is
+   centred, height ≈ 62dvh, still bottom-anchored, with the name above/behind it.
+5. **Copy block, bottom-left, above the portrait in z-order:** `Label` with `hero.role` (marked), then the tagline
+   as two lines at `clamp(1.5rem, 2.6vw, 2.25rem)`, `font-display` 600, tracking −0.03em: first sentence ink, second
+   sentence `text-signal`. Then the two `ButtonLink`s. Then `hero.facts` as a compact 3-column mono list
+   (label `text-mute`, value ink, 12–13px). Max width ~30rem. On < lg the copy block sits below the portrait
+   (the hero may be taller than the viewport on phones).
+6. **Depth and movement:**
+   - Entrance: name letters rise from a mask (stagger 40ms/letter); the disc scales from 0 to 1 (0.9s); the
+     portrait rises 40px and fades in after 150ms; corner marks draw in; copy fades up last.
+   - Scroll (`useScroll` on the hero, `["start start", "end start"]`): name moves up slower than the page (parallax
+     −10%), the portrait faster (−18%) and scales to 0.94, the disc grows to 1.25× and slides up, the copy fades out
+     by 60%.
+   - Pointer (fine pointers only, skip for reduced motion): portrait ±10px, disc ∓18px, name ±6px, damped with a
+     spring, so the layers separate in depth.
+   - Keep all of it on transforms/opacity only.
 
-The 3D object, with react-three-fiber. **No postprocessing** (the canvas must stay transparent over the backdrop);
-glow is done with additive sprites.
+**Contact (min-h-[80dvh], paper, `bg-grid`).** Chapter label "06 — Contact". Heading at `clamp(3rem, 8vw, 8rem)`,
+display 700, tracking −0.05em, with the last word in `text-signal`. One line of body. The link buttons. A bottom
+rail: `contact.signoff` · live clock · `contact.footnote`, mono, hairline above. The right ~40% of the screen stays
+empty on lg (the assembled artifact rests there).
 
-- `ArtifactStage()` keeps its current signature. Root: `fixed inset-0 z-10 pointer-events-none`, `aria-hidden`,
-  `opacity-60 lg:opacity-100`. Load the scene with `next/dynamic` and `ssr: false` from a client component.
-  `<Canvas dpr={[1, 1.75]} gl={{ alpha: true, antialias: true }}>`, perspective camera, fov 35, on the +z axis
-  looking at the origin.
-- **Shards.** Start from an icosahedron (radius 1, detail 0): 20 triangular faces. Each face becomes one shard: the
-  face triangle shrunk 6% toward its centroid, extruded inward to 58% of the radius, so the assembled object is a
-  faceted shell with hairline seams and a hollow core. Flat shaded. `MeshStandardMaterial`, colour `#1c1e1b`,
-  roughness 0.85, metalness 0.1. It should read as matte charcoal ceramic.
-- **Assembly** is a `Progress`. At 0 every shard is scattered: pushed 0.45–1.2 radii out along its face normal with
-  slight sideways jitter (the cloud reads as one unfinished object, about twice the assembled size), and rotated up to about 1.2 rad around a random axis. At 1 every shard is exactly home. Each
-  shard has its own window inside the assembly (staggered starts, each about 45% long, eased) so they arrive in
-  sequence rather than all at once. Scatter values come from a seeded PRNG so the layout is identical every load.
-- **Idle life.** Scattered shards drift slightly (slow sine bob and wobble), scaled by `1 − assembly` so the
-  finished object is still. The whole object turns slowly (about 0.05 rad/s) on top of the pose's spin.
-- **Threads.** The icosahedron has 30 edges; each joins two neighbouring faces. Draw one lime line between the
-  centroids of each neighbouring pair of shards, updated every frame. Additive blending, colour `#c5f82a`. Opacity
-  about 0.55 while scattered, fading to about 0.12 when assembled.
-- **Nodes.** About 18 small bright dots travelling along the threads at different speeds and phases, each with an
-  additive radial-gradient sprite for glow (generate the texture on a small canvas, once).
-- **Core and seams.** A lime emissive sphere at the centre plus a lime point light. Both grow with assembly (light
-  intensity from about 2 to about 14); the sphere stays a spark while scattered and swells to nearly fill the
-  hollow shell at the end. Lime hairlines along the 30 shell edges fade in over the last tenth of the assembly, so
-  the threads visibly hand over to glowing seams. Add a large, faint additive
-  glow sprite behind the object that also grows with assembly.
-- **Lighting.** Very low ambient; a dim neutral key light from the upper left; a lime point light below and in
-  front for the underlighting seen in the reference. Shards must not look grey or flat-lit.
-- **Pose** follows `story.chapters()`. Interpolate between the pose of `chapter()` and the pose of `upcoming()` by
-  `blend().eased()`, then damp toward that target every frame (`THREE.MathUtils.damp`, lambda about 4).
+## WP-T — Timeline (`src/timeline/**`)
 
-  | Chapter | anchor x, y (viewport fraction) | scale | assembly | spin (rad) |
-  |---|---|---|---|---|
-  | hero | 0.74, 0.50 | 0.85 | 0.00 | 0.0 |
-  | method | 0.77, 0.52 | 0.90 | 0.35 | 0.7 |
-  | work | 0.86, 0.46 | 0.72 | 0.68 | 1.5 |
-  | lab | 0.75, 0.50 | 0.95 | 0.90 | 2.3 |
-  | contact | 0.76, 0.47 | 1.05 | 1.00 | 3.1 |
+`TimelineChapter({ timeline })` (keep the signature). The centrepiece of the story.
 
-  The contact pose rests the finished object on the bright core of the backdrop's final frames.
+**Desktop and tablet (md+): pinned horizontal scroll.**
+- The chapter is tall; inside it a `sticky top-0 h-dvh overflow-hidden` frame. Vertical scroll through the chapter
+  translates a horizontal track from x = 0 to x = −(trackWidth − viewportWidth). Measure the track with a
+  `ResizeObserver` and set the chapter's height to `100dvh + (trackWidth − viewportWidth)` so the pin lasts exactly
+  as long as the track. Drive x from `useScroll({ target: chapterRef, offset: ["start start", "end end"] })` +
+  `useTransform`; smooth it lightly with `useSpring` (stiffness ~200, damping ~40), not for reduced motion.
+- **Fixed parts of the frame (do not move with the track):**
+  - Top-left: `SectionHeader` (index "02", heading, intro), compact.
+  - Top-right: a big dot-matrix year readout (`font-dot` 900, `clamp(4rem, 9vw, 8rem)`) showing the year of the
+    stop nearest the reading line, with the stop's `period` under it in mono; a thin progress bar under that (scaleX
+    = progress), ink before the marker, orange after.
+  - Left edge, vertically: lane labels `lanes.world` (above the axis) and `lanes.me` (below it), mono `text-mute`,
+    rotated −90° or as small tags.
+  - A faint vertical **reading line** at ~42% of the viewport width (1px dashed `line-strong`). The stop whose
+    column is closest to it is "active".
+- **The track:** a horizontal axis line across the middle of the frame (1px ink), with stops spaced ~38vw apart
+  (min 340px), starting at ~45vw so the first stop begins near the reading line. Each stop is a column:
+  - on the axis: a node (10px square). Pre-AI: hollow ink square. AI: filled orange square.
+  - above the axis (world lane): `trend`, 15–16px, `text-ink-soft`, max 26ch, bottom-aligned to the axis with 28px
+    gap.
+  - below the axis (me lane): `year` in `font-dot` 600 at 40px `text-mute`, then `company` (display 600, 24–28px,
+    ink), `role` (mono 11px uppercase, `text-mute`), then `did` (16–17px ink, max 28ch).
+  - `kind: "project"` stops get a small mono tag "Side project" and a dashed node.
+  - The active stop is fully opaque; others fade to ~0.35 opacity; transitions 300ms. Active is decided per animation
+    frame from the track x (a pure function: given x, column positions and the reading line → active index; unit
+    test it). Update the active index with a ref + direct style writes or a state change only when the index changes.
+- **The marker:** between stop `marker.afterStop` and the next. A full-height vertical orange line (2px) with,
+  at the top, mono `marker.date` and a display-600 `marker.label` in orange, and `marker.note` (14px, ink-soft,
+  max 24ch). From the marker onward the axis line is orange. Era captions sit on the axis: `eras["pre-ai"]` near the
+  start, `eras.ai` just after the marker (mono 11px, with a small arrow →).
+- Entrance: when the pin starts, the axis draws from left to right (scaleX 0 → 1, 1s) and the first stop rises in.
+- Reduced motion: keep the pin (it is reader-driven) but no spring, no draw-ins.
 
-  Anchor is where the object's centre sits on screen: convert to world units on the z = 0 plane with R3F's
-  `viewport` (`x = (ax − 0.5) × viewport.width`, `y = (0.5 − ay) × viewport.height`). At scale 1 the assembled
-  object's diameter is 42% of the viewport height, and never more than 70% of the viewport width.
-  When the canvas is narrower than 1024 CSS px, use a second table: every chapter anchored at x 0.5, y 0.26,
-  scales 0.62 of the above, same assembly and spin. The stage is `opacity-40` below `lg`.
-- **Interaction.** The object leans toward the pointer: listen to `pointermove` on `window`, normalise to −1…1,
-  and damp a tilt of up to ±0.22 rad (x) and ±0.32 rad (y). Scattered shards also part slightly from the pointer.
-  Ignore touch pointers.
-- **Reduced motion.** No idle drift, no slow turn, no pointer lean, no travelling nodes. The pose still follows
-  the chapters (that motion is driven by the reader).
-- Pause rendering when the tab is hidden. No per-frame allocations.
-- Structure: pure classes for the shard geometry and scatter (`ShardField`), the per-shard transform at a given
-  assembly and time (`AssemblyChoreography`), and pose interpolation (`PoseTrack`); thin R3F components on top.
-- Unit tests: 20 shards and 30 neighbour pairs; assembly 1 puts every shard exactly home; assembly 0 puts every
-  shard at least 1.2 radii out; pose interpolation at chapter boundaries and midpoints; the narrow table is chosen
-  below 1024.
+**Phones (< md): no pin.** A vertical timeline: the axis is a vertical line on the left, each stop a block with the
+year (dot font), company, role, `did`, and `trend` in a smaller "The industry:" line. The marker is a horizontal
+orange rule across the width with its date, label and note, and the stops after it have orange nodes. Reveal each
+stop as it enters view.
 
-## WP-C — Sections (`src/sections/**`, `src/ui/**`)
+Unit-test the pure maths (track length from stop count and widths, x → active index, x → progress, marker position).
 
-Everything the reader reads. Uses `motion/react` for animation.
+## WP-S — Front end and back end (`src/craft/**`, `src/systems/**`)
 
-- `Sections({ content })` keeps its current signature and renders: skip link, fixed nav, `<main class="relative
-  z-20">` with five `<Chapter>`s in order (hero, method, work, lab, contact), and the footnote.
-- **Layout.** Container `max-w-[1400px] mx-auto px-6 md:px-10 lg:px-16`. From `lg` up, the artifact owns the right
-  side of the screen, so every chapter keeps its content in the **left 56%** of the container.
-  Contact is a full-height section with its content vertically centred in that column.
-  Below `lg` everything is a single full-width column. Chapters breathe: `py-28 lg:py-44`; hero and contact are
-  `min-h-dvh`.
-- **Nav.** Name on the left (`font-display`), chapter links on the right (`font-mono` labels). The active chapter
-  (from `useActiveChapter()`) gets bone text and a small lime dot; others are `text-bone-dim`. Transparent over
-  the hero, `bg-ink-glass backdrop-blur-md` with a bottom hairline once past it. Below `md`, show the name and the
-  Contact link only. Links are plain `#chapter` anchors (smooth scrolling is already handled).
-- **Hero.** Eyebrow label; `<h1>` with one block per headline line at `clamp(3.5rem, 11vw, 10rem)`, the last line
-  in lime; lede in `text-bone-dim`; primary button (lime pill, ink text) and secondary button (hairline pill);
-  the facts as a three-column mono row pinned near the bottom with a hairline above; a small "Scroll" cue.
-  Entrance: each headline line rises from behind a mask (y 110% → 0, 0.9s, house easing, 80ms stagger); the rest
-  fade up after it.
-- **Method.** Label, `<h2>`, intro, then the four steps as a vertical list with a hairline rail on the left. A lime
-  line fills the rail as the reader scrolls through the list (`useScroll` with the list as target, `scaleY`). Each
-  step: large mono number in `text-bone-faint`, title (`<h3>`, display), claim in bone at about 20px, proof in
-  `text-bone-dim`, and the source as a small mono chip. Steps reveal as they enter the viewport.
-- **Work.** Label, `<h2>`, intro, then one card per case study, stacked. Card: `bg-ink-glass backdrop-blur-md
-  border border-line rounded-2xl`, generous padding. Top row: company (`font-display`, large) and period (mono).
-  Then role (mono, dim), headline (`<h3>`), summary, highlights as a list with small lime square markers, and tags
-  as hairline chips. On hover the border goes `line-strong` and a 1px lime line draws across the top edge.
-- **Lab.** Label, `<h2>`, intro. The featured project is a large card with a pipeline diagram: six stages
-  (`Idea`, `PRD`, `Cards`, `Review`, `QA`, `Release`) as small nodes on a hairline, with a lime pulse travelling
-  from left to right on a loop and each node lighting as the pulse passes (static, all lit, under reduced motion).
-  The stage names are presentation detail and may live in the component. The other projects sit in a two-column
-  grid of smaller cards below it. A project with no highlights simply shows none.
-- **Contact.** Label, very large `<h2>` (`clamp(2.75rem, 7vw, 6.5rem)`), body, link buttons (external links get
-  `target="_blank" rel="noopener noreferrer"`), and the footnote in `text-bone-faint` at the bottom.
-- **Reveals.** One shared `Reveal` component in `src/ui` (fade + 24px rise, `whileInView`, `once: true`, margin
-  `-10% 0px`). Wrap the tree in `<MotionConfig reducedMotion="user">`.
-- **Accessibility.** One `<h1>`; `<h2>` per chapter; `<h3>` for items. Visible focus states (already global).
-  Text over the backdrop must stay readable: use `text-bone` or `text-bone-dim`, never `text-bone-faint`, for
-  sentences.
-- Server components by default; `"use client"` only for files that animate or read the story.
-- Unit tests are not required here, but the gate must pass.
+Two chapters. Keep the signatures `CraftChapter({ craft })` and `SystemsChapter({ systems })`.
+
+### Craft (`bg-paper-raised`, py-32 lg:py-48)
+
+Two columns on lg (stack on smaller): left 5/12 = `SectionHeader` (index "03") + `craft.stack` as `Chip`s + the
+spec toggle button; right 7/12 = **the specimen stage**: a `bg-paper-sunk bg-grid` panel (aspect ~4:3, radius 8px)
+with a real, working mini UI card centred in it:
+- The card (paper-raised, 1px line, radius 16px, padding 24px, width ~360px): a small square glyph (draw a simple
+  speech-bubble mark in SVG, not a brand logo), `specimen.title` (15/24 semibold), `specimen.subtitle` (13px
+  ink-soft), a status pill (`specimen.status` with a pulsing 6px orange dot), a switch row (`specimen.switchLabel` +
+  a real `role="switch"` toggle that animates its thumb with the house easing over 320ms; on = ink track, off =
+  line-strong), and a secondary button `specimen.action`.
+- **The spec overlay** (toggled by the "Show spec / Hide spec" button, `aria-pressed`; turns on by itself once when
+  the stage is 50% in view): SVG redlines drawn over the card in orange, 1px, with mono 10–11px labels on small
+  paper tags:
+  - `padding`: dimension lines showing the 24px insets on the left and top;
+  - `radius`: a quarter-arc callout on a corner;
+  - `type`: a leader line to the title;
+  - `contrast`: a tag next to the subtitle;
+  - `focus`: the action button shows its focus ring (2px orange, 3px offset) while the spec is on;
+  - `motion`: a tiny plotted easing curve (cubic-bezier(0.16,1,0.3,1)) next to the switch, with a dot that runs
+    along the curve each time the switch is toggled;
+  - `role`: a tag on the switch.
+  Lines draw in with stroke-dashoffset (0.6s, staggered 60ms); labels fade in after their line. Values come from
+  `craft.notes` by `id`. Positions must follow the real card: measure it (ResizeObserver) and compute annotation
+  geometry in a pure, tested function from the card's box; don't hard-code pixel offsets.
+- Below lg the overlay labels may wrap under the card as a numbered legend (numbers on the redlines).
+
+### Systems (`bg-paper-sunk`, py-32 lg:py-48)
+
+`SectionHeader` (index "04") top-left, `systems.principles` as a `BulletList` top-right on lg. Below, full width,
+**the saga diagram** (SVG + HTML, responsive):
+- Top row: `edge.client` → `edge.gateway` (label "JWT" as a tiny mono tag on the gateway).
+- A horizontal bus line labelled `edge.bus` across the width; `edge.orchestrator` node sits on the bus at the
+  left, hosting the saga.
+- One service node per `steps[i]` along the bus (`service` name in display 600, a tiny mono caption "Postgres ·
+  Redis" under it), each with a status light (idle: hollow; running: ink pulse; done: ink check; failed: orange ✕;
+  compensated: orange ↺).
+- Under the diagram: the two controls (`controls.run`, `controls.fail`) as `ButtonLink`-styled `<button>`s, the
+  outcome readout (`outcomes.committed` or `outcomes.rolledBack`, mono, orange for rolled back) and an event log
+  (mono 12px, last 6 lines, newest at the bottom, e.g. `orchestrator → Payments  Charge card` /
+  `Inventory  ✕ failed` / `orchestrator → Payments  Refund`), `aria-live="polite"`.
+- **Run (happy path):** a small ink token travels client → gateway → orchestrator, then for each step the token goes
+  orchestrator → service along the bus and back (≈450ms each way), the service shows running then done; ends with
+  "Committed".
+- **Fail:** same until `steps[failingStep]`, which fails (orange ✕, short shake). Then the orchestrator sends
+  **orange** compensation tokens back through the completed steps **in reverse order**, each running its
+  `compensation` (skip steps whose compensation is empty); they show the ↺ state; ends with "Rolled back ·
+  consistent".
+- The run plays automatically once (happy path) when the diagram is 40% in view; the buttons replay either path;
+  buttons are disabled while a run is in progress.
+- Model the run as a pure sequencer: a class that, given the steps, the failing index (or none) and a time `t`,
+  returns the token position (segment + fraction), every node's status and the log lines so far. Unit-test it
+  (happy path order, failure stops forward progress, compensation is reverse order and skips empty compensations,
+  log contents). The component just advances `t` with rAF and renders.
+- Under the diagram, `systems.stack` as `Chip`s.
+- Below md the diagram goes vertical: the bus is a vertical line, services stacked.
+- Reduced motion: no travelling tokens; statuses change step by step every ~400ms.
+
+## WP-O — Agents (`src/orchestra/**`, `src/backdrop/**`)
+
+`OrchestraChapter({ orchestra, sequence })` (keep the signature). The dark chapter.
+
+**Backdrop refactor (`src/backdrop`).** Turn the old fixed, page-wide `Backdrop` into a positioned
+`FrameSequencePlayer({ sequence, progress, className, focalX?, focalY? })` that fills its parent (`absolute
+inset-0`), takes any `Signal<Progress>`, and keeps everything the controller already does (set selection, loading
+order, nearest-loaded fallback, inertia, cover fit, repaint only on change). Remove the old full-page overlays (the
+chapter owns its own scrims) and the old `Backdrop` export. Keep the existing tests passing and update them for any
+renamed pieces. Frames are in `public/sequence/orchestra/854/0001.webp…0145.webp` (an orange network, camera flying
+in toward a glowing core on the centre-right).
+
+**The chapter.** `bg-graphite`, height 320dvh, with a `sticky top-0 h-dvh overflow-hidden` frame:
+- Background: the `FrameSequencePlayer` scrubbed by `useStory().through("orchestra")`, focal point x 0.62. Scrims:
+  graphite from the left (85% → 0 by 55% width), from the bottom (last 30%), and a faint `bg-grid-dark` on top.
+  Reduced motion: hold the frame at 70% of the sequence.
+- Left column (lg: 44% width; full width below): `SectionHeader` (index "05", `tone="dark"`), then the three
+  `principles` revealed one by one as progress passes 0.2, 0.35 and 0.5 (each line: an orange mono index and 17–18px
+  fog text; previous ones stay visible).
+- Stats row (from 0.55): three items, value in `font-dot` 900 at `clamp(3rem, 6vw, 5rem)` fog, counting up from
+  "00" over 0.8s when they appear, label in mono `text-fog-dim`.
+- **Pipeline rail** along the bottom of the frame (full container width, above the bottom scrim): the seven
+  `stages` as small square nodes on a 1px `line-dark-strong` line, with mono labels under them. A **ticket token**
+  (orange square with a mono id "F-12") moves along the rail driven directly by scroll progress (0.15 → 0.95 maps
+  to the first → last stage); the rail behind the token turns orange; each stage node lights (filled orange) as the
+  token passes. This is scroll-linked, not time-based: scrubbing back moves it back.
+- **Agent log**, bottom-right above the rail on lg (hidden below md): a small terminal panel (`bg-graphite-raised`,
+  1px `line-dark`, radius 6px, mono 12px, ~320px wide, 7 lines tall) that reveals `log` lines in order as progress
+  passes evenly spaced thresholds (scroll-linked; scrolling back hides them). `actor` in orange, message in fog.
+  A blinking block cursor on the last line.
+- Keep the right ~40% of the frame above the rail free of text: the assembled 3D artifact rests there (around
+  x 74%, y 42%).
+- Map progress to discrete UI state (which principles, stats, active stage, visible log lines) with a pure, tested
+  function; drive the token position and rail fill by writing transforms in a `subscribe` callback or rAF, not via
+  React state per frame. Update React state only when a discrete step changes.
 
 ## Gate
 
-`pnpm gate` runs typecheck, lint, tests and a production build. It must pass before you commit. Do not start a
-dev server; visual review happens at integration.
+`pnpm gate` runs typecheck, lint, tests and a production build. It must pass before you commit. Do not start a dev
+server or open a browser; visual review happens at integration.

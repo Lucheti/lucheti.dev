@@ -39,9 +39,10 @@ const anchorAt = (top: number): ChapterAnchor => ({ top: () => top });
 function storyWithChapters(viewport: Viewport): ScrollStory {
   const story = new ScrollStory(viewport);
   story.anchor("hero", anchorAt(0));
-  story.anchor("method", anchorAt(1000));
-  story.anchor("work", anchorAt(3000));
-  story.anchor("lab", anchorAt(4000));
+  story.anchor("timeline", anchorAt(1000));
+  story.anchor("craft", anchorAt(3000));
+  story.anchor("systems", anchorAt(3500));
+  story.anchor("orchestra", anchorAt(4000));
   // Shorter than the screen: its top can never reach the top of the viewport.
   story.anchor("contact", anchorAt(5400));
   story.follow();
@@ -65,9 +66,17 @@ describe("Progress", () => {
 describe("ChapterPosition", () => {
   it("splits a continuous number into chapter and blend", () => {
     const position = ChapterPosition.at(1.25);
-    expect(position.chapter()).toBe("method");
-    expect(position.upcoming()).toBe("work");
+    expect(position.chapter()).toBe("timeline");
+    expect(position.upcoming()).toBe("craft");
     expect(position.blend().toNumber()).toBe(0.25);
+  });
+
+  it("reports progress through one chapter", () => {
+    const position = ChapterPosition.at(1.25);
+    expect(position.through("hero").toNumber()).toBe(1);
+    expect(position.through("timeline").toNumber()).toBe(0.25);
+    expect(position.through("craft").toNumber()).toBe(0);
+    expect(ChapterPosition.at(99).through("contact").toNumber()).toBe(1);
   });
 
   it("holds at the final chapter", () => {
@@ -91,6 +100,7 @@ describe("ScrollStory", () => {
     viewport.scrollTo(2000);
     expect(story.page().current().toNumber()).toBe(0.4);
     expect(story.chapters().current().toNumber()).toBe(1.5);
+    expect(story.through("timeline").current().toNumber()).toBe(0.5);
   });
 
   it("reaches the final chapter at the end of the page", () => {
@@ -109,6 +119,20 @@ describe("ScrollStory", () => {
     viewport.scrollTo(2500);
     viewport.scrollTo(2500);
     expect(seen).toEqual([0.5]);
+  });
+
+  it("tracks one chapter and only notifies when that chapter moves", () => {
+    const viewport = new FakeViewport(0, 5000);
+    const story = storyWithChapters(viewport);
+    const timeline = story.through("timeline");
+    const seen: number[] = [];
+    timeline.subscribe((progress) => seen.push(progress.toNumber()));
+    viewport.scrollTo(500);
+    viewport.scrollTo(2000);
+    viewport.scrollTo(4500);
+    viewport.scrollTo(4600);
+    expect(seen).toEqual([0.5, 1]);
+    expect(story.through("timeline")).toBe(timeline);
   });
 
   it("stays at the start when the page cannot scroll", () => {

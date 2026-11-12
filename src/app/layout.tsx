@@ -1,13 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Doto, Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { SITE } from "@/content";
 import "./globals.css";
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,22 +14,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const doto = Doto({
+  variable: "--font-doto",
+  subsets: ["latin"],
+  weight: ["600", "900"],
+});
+
 export const metadata: Metadata = {
   title: `${SITE.name} — ${SITE.role}`,
-  description: SITE.hero.lede,
+  description: SITE.description,
 };
 
 export const viewport: Viewport = {
-  themeColor: "#060706",
-  colorScheme: "dark",
+  themeColor: "#f3f2ee",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${bricolage.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${doto.variable} antialiased`}>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

@@ -8,3 +8,4 @@ export { EASE_OUT_EXPO } from "./motion";
 export { MotionRoot } from "./MotionRoot";
 export { Reveal } from "./Reveal";
 export { SectionHeader } from "./SectionHeader";
+export type { Tone } from "./Tone";

@@ -2,14 +2,14 @@
 
 import { useReducedMotion } from "motion/react";
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
-import type { BackdropManifest } from "@/content";
+import type { FrameSequence } from "@/content";
 import { useStory } from "@/story";
 import { BackdropController } from "./BackdropController";
 import { BrowserImageSource } from "./BrowserImageSource";
 import { StillProgress } from "./StillProgress";
 
 type BackdropProps = Readonly<{
-  manifest: BackdropManifest;
+  manifest: FrameSequence;
 }>;
 
 /** Where the reduced-motion backdrop rests: a frame with the core clearly visible. */

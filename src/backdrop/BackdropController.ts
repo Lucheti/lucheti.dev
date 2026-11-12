@@ -1,4 +1,4 @@
-import type { BackdropManifest } from "@/content";
+import type { FrameSequence } from "@/content";
 import type { Progress, Signal, Unsubscribe } from "@/story";
 import { CoverFit } from "./CoverFit";
 import { FrameLoader, type ImageSource } from "./FrameLoader";
@@ -22,7 +22,7 @@ type Image = HTMLImageElement;
 type ControllerParts = Readonly<{
   canvas: HTMLCanvasElement;
   page: Signal<Progress>;
-  manifest: BackdropManifest;
+  manifest: FrameSequence;
   source: ImageSource<Image>;
   /** Follow the page with inertia, or snap straight to wherever the page is. */
   scrubbing: boolean;

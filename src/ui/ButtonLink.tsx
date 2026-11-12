@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx";
+import type { Tone } from "./Tone";
 
 type ButtonVariant = "primary" | "secondary";
 
@@ -7,29 +8,37 @@ type ButtonLinkProps = Readonly<{
   href: string;
   children: ReactNode;
   variant?: ButtonVariant;
+  tone?: Tone;
 }>;
 
-const VARIANT_CLASSES: Readonly<Record<ButtonVariant, string>> = {
-  primary: "bg-lime text-ink hover:bg-bone",
-  secondary: "border border-line-strong text-bone hover:border-bone",
+const VARIANT_CLASSES: Readonly<Record<Tone, Readonly<Record<ButtonVariant, string>>>> = {
+  light: {
+    primary: "bg-ink text-paper hover:bg-signal hover:text-ink",
+    secondary: "border border-line-strong text-ink hover:border-ink",
+  },
+  dark: {
+    primary: "bg-fog text-graphite hover:bg-signal",
+    secondary: "border border-line-dark-strong text-fog hover:border-fog",
+  },
 };
 
 function isExternal(href: string): boolean {
   return /^https?:\/\//.test(href);
 }
 
-/** Pill-shaped link. External destinations open in a new tab. */
-export function ButtonLink({ href, children, variant = "primary" }: ButtonLinkProps): ReactNode {
+/** Squared-off link button. External destinations open in a new tab. */
+export function ButtonLink({ href, children, variant = "primary", tone = "light" }: ButtonLinkProps): ReactNode {
   const classes = cx(
-    "inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium",
+    "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] px-5 font-mono text-xs uppercase tracking-[0.14em]",
     "transition-colors duration-300 ease-out-expo",
-    VARIANT_CLASSES[variant],
+    VARIANT_CLASSES[tone][variant],
   );
 
   if (isExternal(href)) {
     return (
       <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
         {children}
+        <span aria-hidden>↗</span>
       </a>
     );
   }
@@ -37,6 +46,7 @@ export function ButtonLink({ href, children, variant = "primary" }: ButtonLinkPr
   return (
     <a href={href} className={classes}>
       {children}
+      <span aria-hidden>→</span>
     </a>
   );
 }
