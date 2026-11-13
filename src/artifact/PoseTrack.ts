@@ -18,8 +18,8 @@ type PoseTable = Readonly<Record<ChapterId, Readonly<PoseValues>>>;
  * the middle chapters, and re-forms whole beside the contact line.
  */
 const WIDE_TABLE: PoseTable = {
-  // A small loose cluster in the empty top-right corner, clear of the face.
-  hero: { x: 0.9, y: 0.3, scale: 0.3, assembly: 0.0, spin: 0.0 },
+  // A small loose cluster in the gap between the name and the portrait circle.
+  hero: { x: 0.52, y: 0.24, scale: 0.2, assembly: 0.0, spin: 0.0 },
   timeline: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.8, y: 0.45, scale: 0.0, assembly: 0.85, spin: 2.0 },
