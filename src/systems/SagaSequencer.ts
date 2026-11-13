@@ -6,6 +6,11 @@ export function serviceNode(index: number): NodeId {
   return `service:${index}`;
 }
 
+/** The step index a service node stands for, or null for the edge and the hub. */
+export function serviceIndex(id: NodeId): number | null {
+  return id.startsWith("service:") ? Number(id.slice("service:".length)) : null;
+}
+
 export type ServiceStatus = "idle" | "running" | "done" | "failed" | "compensating" | "compensated";
 
 export type Outcome = "idle" | "running" | "committed" | "rolledBack";

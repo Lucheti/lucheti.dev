@@ -1,14 +1,18 @@
 import { serviceNode, type NodeId } from "./SagaSequencer";
 
-export type Orientation = "horizontal" | "vertical";
+/** `wide` puts the gateway to the left of the hub; `narrow` stacks it above. */
+export type Orientation = "wide" | "narrow";
 
 /** A position as a fraction (0..1) of the diagram's width and height. */
 export type Point = Readonly<{ x: number; y: number }>;
 
 export type MutablePoint = { x: number; y: number };
 
-/** Where a node's card sits relative to its anchor on the wires. */
-export type CardPlacement = "centered" | "hanging" | "beside";
+/** A node's footprint as fractions of the diagram: its centre and full size. */
+export type NodeBox = Readonly<{ x: number; y: number; width: number; height: number }>;
+
+/** The NATS ring in layout units (the diagram is `width` × `height` units). */
+export type Ring = Readonly<{ cx: number; cy: number; radius: number }>;
 
 /** A polyline the token can be located along. */
 export class Route {
@@ -59,105 +63,149 @@ export class Route {
   }
 }
 
-const HORIZONTAL_HEIGHT_PX = 400;
-const VERTICAL_ROW_PX = 88;
-const TOP_ROW_Y = 0.14;
-const ELBOW_Y = 0.3;
-const BUS_Y = 0.5;
-const FIRST_X = 0.1;
-const LAST_X = 0.9;
-const GATEWAY_X = 0.3;
-const VERTICAL_X = 0.07;
-const BUS_OVERHANG = 0.08;
+/** A node's centre and half extents, in layout units. */
+type Footprint = Readonly<{ cx: number; cy: number; halfWidth: number; halfHeight: number }>;
+
+type Size = Readonly<{ halfWidth: number; halfHeight: number }>;
+
+type Blueprint = Readonly<{
+  width: number;
+  height: number;
+  client: Readonly<{ cx: number; cy: number }> & Size;
+  gateway: Readonly<{ cx: number; cy: number }> & Size;
+  hub: Readonly<{ cx: number; cy: number }> & Size;
+  service: Size;
+  /** Offset of the diagonal services from the hub centre. */
+  serviceOffset: Readonly<{ dx: number; dy: number }>;
+  ringRadius: number;
+}>;
+
+const BLUEPRINTS: Readonly<Record<Orientation, Blueprint>> = {
+  wide: {
+    width: 1000,
+    height: 520,
+    client: { cx: 65, cy: 260, halfWidth: 46, halfHeight: 20 },
+    gateway: { cx: 250, cy: 260, halfWidth: 88, halfHeight: 20 },
+    hub: { cx: 600, cy: 260, halfWidth: 90, halfHeight: 40 },
+    service: { halfWidth: 84, halfHeight: 32 },
+    serviceOffset: { dx: 230, dy: 185 },
+    ringRadius: 135,
+  },
+  narrow: {
+    width: 340,
+    height: 500,
+    client: { cx: 170, cy: 26, halfWidth: 50, halfHeight: 18 },
+    gateway: { cx: 170, cy: 92, halfWidth: 84, halfHeight: 20 },
+    hub: { cx: 170, cy: 300, halfWidth: 75, halfHeight: 36 },
+    service: { halfWidth: 65, halfHeight: 28 },
+    serviceOffset: { dx: 95, dy: 130 },
+    ringRadius: 100,
+  },
+};
+
+/** The first service sits at the top-left; the rest follow clockwise. */
+const FIRST_ANGLE = -Math.PI * 0.75;
+const DIAGONAL = Math.SQRT1_2;
+
+/** Where the line from a footprint's centre toward `target` leaves its rectangle. */
+function edgePoint(from: Footprint, target: Footprint): Point {
+  const dx = target.cx - from.cx;
+  const dy = target.cy - from.cy;
+  const scaleX = dx === 0 ? Number.POSITIVE_INFINITY : from.halfWidth / Math.abs(dx);
+  const scaleY = dy === 0 ? Number.POSITIVE_INFINITY : from.halfHeight / Math.abs(dy);
+  const scale = Math.min(scaleX, scaleY);
+  return { x: from.cx + dx * scale, y: from.cy + dy * scale };
+}
 
 /**
- * Where everything sits in the diagram, in fractions of its box, for one orientation.
- * Horizontal: client and gateway on a top row, the bus below it with the orchestrator
- * at its left end and one service per step along it. Vertical: one line, top to bottom.
+ * Where everything sits in the diagram, for one orientation: the orchestrator is the hub in
+ * the middle of a NATS ring, the services sit around it joined by spokes, and the client
+ * and gateway feed the hub from the left (wide) or from above (narrow).
+ * Positions are exposed as fractions of the box so the view can place them with percentages;
+ * the box keeps a fixed aspect ratio so the ring stays a circle.
  */
 export class DiagramLayout {
   private readonly routes = new Map<string, Route>();
 
   private constructor(
-    private readonly orientation: Orientation,
+    private readonly blueprint: Blueprint,
     private readonly stepCount: number,
-    private readonly points: ReadonlyMap<NodeId, Point>,
+    private readonly footprints: ReadonlyMap<NodeId, Footprint>,
   ) {}
 
   public static create(orientation: Orientation, stepCount: number): DiagramLayout {
     if (!Number.isInteger(stepCount) || stepCount < 1) {
       throw new Error("A layout needs at least one step.");
     }
-    const points = new Map<NodeId, Point>();
-    if (orientation === "horizontal") {
-      points.set("client", { x: FIRST_X, y: TOP_ROW_Y });
-      points.set("gateway", { x: GATEWAY_X, y: TOP_ROW_Y });
-      points.set("orchestrator", { x: FIRST_X, y: BUS_Y });
-      const pitch = (LAST_X - FIRST_X) / stepCount;
-      for (let index = 0; index < stepCount; index += 1) {
-        points.set(serviceNode(index), { x: FIRST_X + pitch * (index + 1), y: BUS_Y });
-      }
-    } else {
-      const rows = stepCount + 3;
-      const order: readonly NodeId[] = [
-        "client",
-        "gateway",
-        "orchestrator",
-        ...Array.from({ length: stepCount }, (_, index) => serviceNode(index)),
-      ];
-      order.forEach((id, row) => points.set(id, { x: VERTICAL_X, y: (row + 0.5) / rows }));
+    const blueprint = BLUEPRINTS[orientation];
+    const footprints = new Map<NodeId, Footprint>();
+    footprints.set("client", blueprint.client);
+    footprints.set("gateway", blueprint.gateway);
+    footprints.set("orchestrator", blueprint.hub);
+    for (let index = 0; index < stepCount; index += 1) {
+      const angle = FIRST_ANGLE + (index * 2 * Math.PI) / stepCount;
+      footprints.set(serviceNode(index), {
+        cx: blueprint.hub.cx + (blueprint.serviceOffset.dx / DIAGONAL) * Math.cos(angle),
+        cy: blueprint.hub.cy + (blueprint.serviceOffset.dy / DIAGONAL) * Math.sin(angle),
+        ...blueprint.service,
+      });
     }
-    return new DiagramLayout(orientation, stepCount, points);
+    return new DiagramLayout(blueprint, stepCount, footprints);
   }
 
-  public get heightPx(): number {
-    return this.orientation === "horizontal" ? HORIZONTAL_HEIGHT_PX : (this.stepCount + 3) * VERTICAL_ROW_PX;
+  /** Width and height of the layout units; also the SVG viewBox. */
+  public get width(): number {
+    return this.blueprint.width;
   }
 
-  /** Width of one service column as a fraction of the diagram (horizontal only). */
-  public get columnWidth(): number {
-    return (LAST_X - FIRST_X) / this.stepCount;
+  public get height(): number {
+    return this.blueprint.height;
+  }
+
+  public get ring(): Ring {
+    const { hub, ringRadius } = this.blueprint;
+    return { cx: hub.cx, cy: hub.cy, radius: ringRadius };
+  }
+
+  public toUnits(point: Point): Point {
+    return { x: point.x * this.width, y: point.y * this.height };
   }
 
   public point(id: NodeId): Point {
-    const found = this.points.get(id);
-    if (found === undefined) {
-      throw new Error(`Unknown node ${id}.`);
-    }
-    return found;
+    const footprint = this.footprint(id);
+    return { x: footprint.cx / this.width, y: footprint.cy / this.height };
   }
 
-  public placement(id: NodeId): CardPlacement {
-    if (this.orientation === "vertical") {
-      return "beside";
-    }
-    return id === "client" || id === "gateway" ? "centered" : "hanging";
+  public box(id: NodeId): NodeBox {
+    const footprint = this.footprint(id);
+    return {
+      x: footprint.cx / this.width,
+      y: footprint.cy / this.height,
+      width: (footprint.halfWidth * 2) / this.width,
+      height: (footprint.halfHeight * 2) / this.height,
+    };
   }
 
-  /** The bus itself: orchestrator to past the last service, overhanging both ends slightly. */
-  public bus(): readonly Point[] {
-    const last = this.point(serviceNode(this.stepCount - 1));
-    const orchestrator = this.point("orchestrator");
-    if (this.orientation === "horizontal") {
-      return [{ x: orchestrator.x - BUS_OVERHANG, y: BUS_Y }, { x: Math.min(1, last.x + BUS_OVERHANG), y: BUS_Y }];
-    }
-    return [orchestrator, { x: last.x, y: last.y + 0.5 / (this.stepCount + 3) }];
-  }
-
-  /** The static wires drawn before the bus: client, gateway and the path down to the orchestrator. */
+  /** The static wires of the edge: client to gateway, gateway to the hub. */
   public edgeWires(): readonly (readonly Point[])[] {
-    const wires = [this.route("client", "gateway").waypoints, this.route("gateway", "orchestrator").waypoints];
-    return wires;
+    return [this.route("client", "gateway").waypoints, this.route("gateway", "orchestrator").waypoints];
   }
 
-  /** Where the bus label sits. */
-  public busLabelPoint(): Point {
-    if (this.orientation === "horizontal") {
-      return { x: (FIRST_X + this.point(serviceNode(0)).x) / 2, y: BUS_Y };
-    }
-    const orchestrator = this.point("orchestrator");
-    const first = this.point(serviceNode(0));
-    return { x: orchestrator.x, y: (orchestrator.y + first.y) / 2 };
+  /** One wire per service, from the hub's edge to the service's edge. */
+  public spokes(): readonly (readonly Point[])[] {
+    return Array.from({ length: this.stepCount }, (_, index) => this.route("orchestrator", serviceNode(index)).waypoints);
+  }
+
+  /** Where the HTTP label sits: halfway along the client wire. */
+  public edgeLabelPoint(): Point {
+    const waypoints = this.route("client", "gateway").waypoints;
+    return { x: (waypoints[0].x + waypoints[1].x) / 2, y: (waypoints[0].y + waypoints[1].y) / 2 };
+  }
+
+  /** Where the ring's label sits: the bottom of the ring, clear of the incoming edge. */
+  public ringLabelPoint(): Point {
+    const { cx, cy, radius } = this.ring;
+    return { x: cx / this.width, y: (cy + radius) / this.height };
   }
 
   /** The path a token takes between two neighbouring nodes, in either direction. */
@@ -167,8 +215,7 @@ export class DiagramLayout {
     if (cached !== undefined) {
       return cached;
     }
-    const direct = this.canonical(from, to);
-    const route = direct ?? this.canonical(to, from)?.reversed();
+    const route = this.canonical(from, to) ?? this.canonical(to, from)?.reversed();
     if (route === undefined) {
       throw new Error(`No route from ${from} to ${to}.`);
     }
@@ -177,20 +224,27 @@ export class DiagramLayout {
   }
 
   private canonical(from: NodeId, to: NodeId): Route | undefined {
-    const start = this.point(from);
-    const end = this.point(to);
-    if (from === "client" && to === "gateway") {
-      return Route.through([start, end]);
+    const linked =
+      (from === "client" && to === "gateway") ||
+      (from === "gateway" && to === "orchestrator") ||
+      (from === "orchestrator" && to.startsWith("service:"));
+    if (!linked) {
+      return undefined;
     }
-    if (from === "gateway" && to === "orchestrator") {
-      if (this.orientation === "vertical") {
-        return Route.through([start, end]);
-      }
-      return Route.through([start, { x: start.x, y: ELBOW_Y }, { x: end.x, y: ELBOW_Y }, end]);
+    const start = this.footprint(from);
+    const end = this.footprint(to);
+    return Route.through([this.fraction(edgePoint(start, end)), this.fraction(edgePoint(end, start))]);
+  }
+
+  private fraction(unit: Point): Point {
+    return { x: unit.x / this.width, y: unit.y / this.height };
+  }
+
+  private footprint(id: NodeId): Footprint {
+    const found = this.footprints.get(id);
+    if (found === undefined) {
+      throw new Error(`Unknown node ${id}.`);
     }
-    if (from === "orchestrator" && to.startsWith("service:")) {
-      return Route.through([start, end]);
-    }
-    return undefined;
+    return found;
   }
 }

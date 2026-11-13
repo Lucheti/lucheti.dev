@@ -3,13 +3,14 @@
 import { useInView, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { Systems } from "@/content";
-import { cx } from "@/ui";
+import { ButtonLink, cx } from "@/ui";
 import { DiagramLayout, type MutablePoint, type Orientation } from "./DiagramLayout";
 import { SagaPlayback, type PlaybackListener } from "./SagaPlayback";
 import {
   ANIMATED_TIMING,
   idleFrame,
   SagaSequencer,
+  serviceIndex,
   STEPPED_TIMING,
   type LogTone,
   type Outcome,
@@ -18,12 +19,14 @@ import {
   type SagaTiming,
 } from "./SagaSequencer";
 import { SagaStage } from "./SagaStage";
+import { SpokeHighlighter } from "./SpokeHighlighter";
 
 const VISIBLE_LOG_LINES = 6;
 const AUTOPLAY_AMOUNT = 0.4;
 const IDLE_WORD = "Ready";
 const RUNNING_WORD = "Running";
-const LABEL = "Saga diagram: a client request passes the API gateway to the orchestrator, which calls each service over the bus.";
+const LABEL =
+  "Saga diagram: a client request passes the API gateway to the saga orchestrator at the centre of a NATS ring, which calls the four services around it.";
 
 const LOG_TONE_CLASSES: Readonly<Record<LogTone, string>> = {
   normal: "text-ink-soft",
@@ -37,7 +40,19 @@ type TokenSurface = Readonly<{
   orientation: Orientation;
   layout: DiagramLayout;
   element: RefObject<HTMLDivElement | null>;
+  highlighter: SpokeHighlighter;
 }>;
+
+/** The service doing work right now, for the stretch where no token is travelling. */
+function workingIndex(frame: SagaFrame): number | null {
+  for (let index = 0; index < frame.statuses.length; index += 1) {
+    const status = frame.statuses[index];
+    if (status === "running" || status === "compensating") {
+      return index;
+    }
+  }
+  return null;
+}
 
 const BUTTON_BASE =
   "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] px-5 font-mono text-xs uppercase tracking-[0.14em] transition-colors duration-300 ease-out-expo disabled:pointer-events-none disabled:opacity-40";
@@ -88,17 +103,22 @@ function outcomeText(outcome: Outcome, outcomes: Systems["outcomes"]): string {
 
 /** The breakable saga: two orientations of the same diagram, a player and the controls. */
 export function SagaDiagram({ systems }: { readonly systems: Systems }): ReactNode {
-  const { steps, edge, failingStep, controls, outcomes } = systems;
+  const { steps, edge, failingStep, controls, outcomes, repo } = systems;
   const reducedMotion = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { amount: AUTOPLAY_AMOUNT, once: true });
 
-  const horizontalToken = useRef<HTMLDivElement>(null);
-  const verticalToken = useRef<HTMLDivElement>(null);
+  const wideToken = useRef<HTMLDivElement>(null);
+  const narrowToken = useRef<HTMLDivElement>(null);
   const surfaces = useMemo<readonly TokenSurface[]>(
     () => [
-      { orientation: "horizontal", layout: DiagramLayout.create("horizontal", steps.length), element: horizontalToken },
-      { orientation: "vertical", layout: DiagramLayout.create("vertical", steps.length), element: verticalToken },
+      { orientation: "wide", layout: DiagramLayout.create("wide", steps.length), element: wideToken, highlighter: new SpokeHighlighter() },
+      {
+        orientation: "narrow",
+        layout: DiagramLayout.create("narrow", steps.length),
+        element: narrowToken,
+        highlighter: new SpokeHighlighter(),
+      },
     ],
     [steps.length],
   );
@@ -111,9 +131,12 @@ export function SagaDiagram({ systems }: { readonly systems: Systems }): ReactNo
     const point: MutablePoint = { x: 0, y: 0 };
     const listener: PlaybackListener = {
       onTick(sequencer, timeMs) {
-        setFrame(sequencer.frameAt(timeMs));
+        const current = sequencer.frameAt(timeMs);
+        setFrame(current);
         const segment = sequencer.segmentAt(timeMs);
+        const active = segment === null ? workingIndex(current) : (serviceIndex(segment.from) ?? serviceIndex(segment.to));
         for (const surface of surfaces) {
+          surface.highlighter.activate(active);
           const token = surface.element.current;
           if (token === null) {
             continue;
@@ -181,34 +204,22 @@ export function SagaDiagram({ systems }: { readonly systems: Systems }): ReactNo
             edge={edge}
             steps={steps}
             frame={frame}
+            outcomeLabel={outcomeText(frame.outcome, outcomes)}
             tokenRef={surface.element}
-            className={surface.orientation === "horizontal" ? "hidden md:block" : "md:hidden"}
+            highlighter={surface.highlighter}
+            className={surface.orientation === "wide" ? "hidden lg:block" : "lg:hidden"}
           />
         ))}
       </div>
 
       <div className="grid gap-8 md:grid-cols-[auto_1fr] md:gap-12">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap gap-3">
-            <Control variant="primary" mark="→" disabled={running} onPress={() => play("commit")}>
-              {controls.run}
-            </Control>
-            <Control variant="secondary" mark="✕" disabled={running} onPress={() => play("break")}>
-              {controls.fail}
-            </Control>
-          </div>
-          <p
-            className={cx(
-              "flex items-center gap-3 font-mono text-xs uppercase tracking-[0.14em]",
-              frame.outcome === "rolledBack" ? "text-signal-ink" : "text-ink",
-            )}
-          >
-            <span
-              aria-hidden
-              className={cx("size-1.5", frame.outcome === "rolledBack" ? "bg-signal" : frame.outcome === "idle" ? "bg-line-strong" : "bg-ink")}
-            />
-            {outcomeText(frame.outcome, outcomes)}
-          </p>
+        <div className="flex flex-wrap content-start gap-3">
+          <Control variant="primary" mark="→" disabled={running} onPress={() => play("commit")}>
+            {controls.run}
+          </Control>
+          <Control variant="secondary" mark="✕" disabled={running} onPress={() => play("break")}>
+            {controls.fail}
+          </Control>
         </div>
 
         <ol aria-live="polite" className="flex min-h-[8.5rem] flex-col justify-end gap-1 font-mono text-xs leading-5">
@@ -219,6 +230,13 @@ export function SagaDiagram({ systems }: { readonly systems: Systems }): ReactNo
             </li>
           ))}
         </ol>
+      </div>
+
+      <div className="flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:gap-6">
+        <ButtonLink href={repo.href} variant="secondary">
+          {repo.label}
+        </ButtonLink>
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-mute">{repo.note}</p>
       </div>
     </div>
   );
