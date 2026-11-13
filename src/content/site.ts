@@ -183,17 +183,6 @@ export const SITE: SiteContent = {
       { value: "16", label: "Agents" },
       { value: "03", label: "Parallel workflows" },
     ],
-    stages: ["Intake", "PRD", "Cards", "Build", "Review", "QA", "Release"],
-    log: [
-      { actor: "head-of-product", message: "idea accepted → feature F-12" },
-      { actor: "product-manager", message: "PRD delivered for F-12" },
-      { actor: "head-of-eng", message: "F-12 split into 4 cards" },
-      { actor: "engineer", message: "card C-31 → needs_review" },
-      { actor: "review-panel", message: "3 lenses · 0 blocking" },
-      { actor: "qa-tester", message: "6 / 6 criteria pass" },
-      { actor: "orch", message: "evidence verified · merged" },
-      { actor: "orch", message: "released · health checks green" },
-    ],
     departments: [
       { id: "product", name: "Product", agents: ["head-of-product", "product-manager", "researcher"] },
       { id: "design", name: "Design", agents: ["head-of-design", "designer"] },

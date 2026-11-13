@@ -1,0 +1,91 @@
+/*
+ * Looping "workers working" activity. Time-driven and compositor-only
+ * (transform and opacity). Each row sets its own --fill, --delay, --pulse,
+ * --spin and --still, so parallel workers never tick in unison.
+ *
+ * The project loads every stylesheet as global CSS (CSS modules are not
+ * hashed), so every class and keyframe here carries the `orchestra-` prefix.
+ * Import the names from ActivityClasses.ts, never as literals.
+ */
+
+.orchestra-fill {
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: orchestra-fill calc(var(--fill) * 1s) linear calc(var(--delay) * 1s) infinite;
+}
+
+.orchestra-pulse {
+  animation: orchestra-pulse calc(var(--pulse) * 1s) ease-in-out infinite;
+}
+
+/* A strip of four glyphs, one line each, stepped up one line at a time. */
+.orchestra-spin {
+  animation: orchestra-spin calc(var(--spin) * 1s) steps(4, end) infinite;
+}
+
+.orchestra-blink {
+  animation: orchestra-blink 1.1s steps(1, end) infinite;
+}
+
+/* Off screen nothing moves. */
+.orchestra-paused .orchestra-fill,
+.orchestra-paused .orchestra-pulse,
+.orchestra-paused .orchestra-spin,
+.orchestra-paused .orchestra-blink {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orchestra-fill {
+    animation: none;
+    transform: scaleX(var(--still));
+  }
+
+  .orchestra-pulse,
+  .orchestra-spin,
+  .orchestra-blink {
+    animation: none;
+  }
+}
+
+@keyframes orchestra-fill {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  86% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes orchestra-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes orchestra-spin {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes orchestra-blink {
+  50% {
+    opacity: 0;
+  }
+}

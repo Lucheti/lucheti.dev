@@ -50,14 +50,14 @@ export function CountStat({ stat, shown, delay }: CountStatProps): ReactNode {
       style={{ transitionDelay: shown ? `${delay}s` : "0s" }}
     >
       <p
-        className="font-dot text-[clamp(2.5rem,min(6vw,9dvh),5rem)] font-black leading-none text-fog"
+        className="font-dot text-[clamp(2.25rem,min(5vw,7dvh),4.5rem)] font-black leading-none text-fog"
         aria-label={stat.value}
       >
         <span ref={valueRef} aria-hidden>
           {count ? count.at(0) : stat.value}
         </span>
       </p>
-      <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-fog-dim">{stat.label}</p>
+      <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-fog-dim">{stat.label}</p>
     </div>
   );
 }
