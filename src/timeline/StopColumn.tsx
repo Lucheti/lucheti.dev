@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import type { TimelineStop } from "@/content";
 import { cx } from "@/ui";
-import { sideProjectTag } from "./sideProjectTag";
 
 type StopColumnProps = Readonly<{
   stop: TimelineStop;
@@ -14,9 +13,7 @@ type StopColumnProps = Readonly<{
 
 /** One stop of the pinned track: node on the axis, the world above it, me below it. */
 export function StopColumn({ stop, x, active, shown }: StopColumnProps): ReactNode {
-  const isProject = stop.kind === "project";
   const isAi = stop.era === "ai";
-  const tag = sideProjectTag(stop);
 
   return (
     <li className="absolute top-[52%] h-0 list-none" style={{ left: x }}>
@@ -24,9 +21,7 @@ export function StopColumn({ stop, x, active, shown }: StopColumnProps): ReactNo
         aria-hidden
         className={cx(
           "absolute left-0 top-0 size-2.5 -translate-x-1/2 -translate-y-1/2 border",
-          isProject ? "border-dashed" : "border-solid",
-          isAi ? "border-signal" : "border-ink",
-          isAi && !isProject ? "bg-signal" : "bg-paper",
+          isAi ? "border-signal bg-signal" : "border-ink bg-paper",
         )}
       />
       <div
@@ -50,12 +45,10 @@ export function StopColumn({ stop, x, active, shown }: StopColumnProps): ReactNo
           <h3 className="mt-3 font-display text-2xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink md:text-[28px]">
             {stop.company}
           </h3>
-          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-mute">{stop.role}</p>
-          {tag !== null && (
-            <p className="mt-1.5 inline-block border border-dashed border-line-strong px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-mute">
-              {tag}
-            </p>
-          )}
+          <p className="mt-2.5 flex items-center gap-2.5 font-display text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-signal-ink md:text-[22px]">
+            <span aria-hidden className="size-2 shrink-0 bg-signal" />
+            {stop.role}
+          </p>
           <p className="mt-4 max-w-[28ch] text-base leading-[1.45] text-ink md:text-[17px]">{stop.did}</p>
         </div>
       </div>

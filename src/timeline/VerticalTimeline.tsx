@@ -1,14 +1,12 @@
 import type { ReactNode } from "react";
 import type { Timeline, TimelineStop } from "@/content";
 import { Container, cx, Label, Reveal, SectionHeader } from "@/ui";
-import { sideProjectTag } from "./sideProjectTag";
 import { splitAtMarker } from "./splitAtMarker";
 
 const INDUSTRY_PREFIX = "The industry:";
 
 function VerticalStop({ stop }: { readonly stop: TimelineStop }): ReactNode {
   const isAi = stop.era === "ai";
-  const tag = sideProjectTag(stop);
 
   return (
     <li className="relative pb-12 pl-8 last:pb-0">
@@ -16,9 +14,7 @@ function VerticalStop({ stop }: { readonly stop: TimelineStop }): ReactNode {
         aria-hidden
         className={cx(
           "absolute -left-[5.5px] top-3 size-2.5 border",
-          stop.kind === "project" ? "border-dashed" : "border-solid",
-          isAi ? "border-signal" : "border-ink",
-          isAi && stop.kind !== "project" ? "bg-signal" : "bg-paper",
+          isAi ? "border-signal bg-signal" : "border-ink bg-paper",
         )}
       />
       <Reveal>
@@ -28,10 +24,11 @@ function VerticalStop({ stop }: { readonly stop: TimelineStop }): ReactNode {
         <h3 className="mt-3 font-display text-2xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
           {stop.company}
         </h3>
-        <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-mute">
-          {stop.period} · {stop.role}
-          {tag !== null && ` · ${tag}`}
+        <p className="mt-2.5 flex items-center gap-2.5 font-display text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-signal-ink">
+          <span aria-hidden className="size-2 shrink-0 bg-signal" />
+          {stop.role}
         </p>
+        <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-mute">{stop.period}</p>
         <p className="mt-3 max-w-[32ch] text-base leading-[1.5] text-ink">{stop.did}</p>
         <p className="mt-3 max-w-[34ch] text-sm leading-[1.5] text-ink-soft">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-mute">{INDUSTRY_PREFIX}</span>{" "}

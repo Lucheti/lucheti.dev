@@ -27,8 +27,6 @@ export type Hero = Readonly<{
   /** First and last name, set on two display lines. */
   name: readonly [string, string];
   role: string;
-  /** Two short sentences; the second takes the accent. */
-  tagline: readonly [string, string];
   /** One factual sentence under the role. */
   summary: string;
   portrait: Portrait;
@@ -40,8 +38,6 @@ export type Hero = Readonly<{
 }>;
 
 export type Era = "pre-ai" | "ai";
-
-export type StopKind = "job" | "project";
 
 export type TimelineStop = Readonly<{
   /** Four-digit year shown in dot-matrix numerals. */
@@ -55,7 +51,6 @@ export type TimelineStop = Readonly<{
   /** What the industry was doing. One sentence. */
   trend: string;
   era: Era;
-  kind: StopKind;
 }>;
 
 export type TimelineMarker = Readonly<{

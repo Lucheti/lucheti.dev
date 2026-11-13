@@ -23,7 +23,6 @@ export const SITE: SiteContent = {
   hero: {
     name: ["Lucas", "Garcia"],
     role: "Product Engineer",
-    tagline: ["Learned to build before AI.", "Now I build with it."],
     summary: "Seven years shipping React front ends and distributed back ends at Salesforce, Clarifai and Front.",
     portrait: {
       src: "/portrait/lucas.webp",
@@ -60,7 +59,6 @@ export const SITE: SiteContent = {
         did: "Wrote the test strategy for Anypoint Platform components.",
         trend: "React Hooks ship. Components go functional.",
         era: "pre-ai",
-        kind: "job",
       },
       {
         year: "2020",
@@ -70,7 +68,6 @@ export const SITE: SiteContent = {
         did: "React interfaces on top of Java and Scala services.",
         trend: "Everyone goes remote. TypeScript becomes the default.",
         era: "pre-ai",
-        kind: "job",
       },
       {
         year: "2021",
@@ -80,7 +77,6 @@ export const SITE: SiteContent = {
         did: "Full stack on Anypoint, with accessibility across my team's components.",
         trend: "API-led connectivity and microservices everywhere.",
         era: "pre-ai",
-        kind: "job",
       },
       {
         year: "2023",
@@ -90,7 +86,6 @@ export const SITE: SiteContent = {
         did: "Led the team that made computer vision usable.",
         trend: "GPT-4 lands. Every product wants an AI feature.",
         era: "ai",
-        kind: "job",
       },
       {
         year: "2024",
@@ -100,7 +95,6 @@ export const SITE: SiteContent = {
         did: "Built the front-end frameworks the AI platform ran on.",
         trend: "RAG, tool use and the first agents.",
         era: "ai",
-        kind: "job",
       },
       {
         year: "2025",
@@ -110,7 +104,6 @@ export const SITE: SiteContent = {
         did: "Shipped WhatsApp and Zoom Contact Center channels, with agents in my build and review loop.",
         trend: "Agentic coding goes mainstream.",
         era: "ai",
-        kind: "job",
       },
     ],
     marker: {
