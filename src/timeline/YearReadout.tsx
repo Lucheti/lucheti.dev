@@ -4,15 +4,15 @@ import type { ReactNode } from "react";
 type YearReadoutProps = Readonly<{
   year: string;
   period: string;
-  /** Where along the bar (0..1) the marker sits, so the colour can change there. */
-  markerFraction: number;
+  /** Where along the bar (0..1) the era turns, so the colour can change there. */
+  eraFraction: number;
   inkScale: MotionValue<number>;
   orangeScale: MotionValue<number>;
 }>;
 
 /** Top-right dot-matrix year of the stop at the reading line, with a progress bar. */
-export function YearReadout({ year, period, markerFraction, inkScale, orangeScale }: YearReadoutProps): ReactNode {
-  const split = `${markerFraction * 100}%`;
+export function YearReadout({ year, period, eraFraction, inkScale, orangeScale }: YearReadoutProps): ReactNode {
+  const split = `${eraFraction * 100}%`;
   return (
     <div className="pointer-events-none absolute right-6 top-[88px] z-10 flex flex-col items-end bg-paper pl-4 md:right-10 lg:right-16">
       <p

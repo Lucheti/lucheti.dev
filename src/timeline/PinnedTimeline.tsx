@@ -12,6 +12,8 @@ import {
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { Timeline } from "@/content";
 import { EASE_OUT_EXPO, SectionHeader } from "@/ui";
+import { eraBoundary } from "./eraBoundary";
+import { MilestoneStrip } from "./MilestoneStrip";
 import { StopColumn } from "./StopColumn";
 import { TimelineGeometry } from "./TimelineGeometry";
 import { YearReadout } from "./YearReadout";
@@ -28,13 +30,14 @@ type TrackVars = CSSProperties & { "--stop-gap": string; "--travel": string };
 
 /** The pinned horizontal build log for md and up; phones get the vertical one. */
 export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): ReactNode {
-  const { stops, marker, eras, lanes } = timeline;
+  const { stops, milestones, milestoneKinds, eras, lanes } = timeline;
+  const eraAfter = eraBoundary(stops);
   const reducedMotion = useReducedMotion() === true;
 
   const pinRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const [geometry, setGeometry] = useState(
-    () => new TimelineGeometry(FALLBACK_VIEWPORT_WIDTH, stops.length, marker.afterStop),
+    () => new TimelineGeometry(FALLBACK_VIEWPORT_WIDTH, stops.length, eraAfter),
   );
   const geometryRef = useRef(geometry);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,12 +53,12 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
       const width = entry?.contentRect.width ?? 0;
       // A hidden frame (phones) reports zero; keep the last geometry.
       if (width > 0) {
-        setGeometry(new TimelineGeometry(width, stops.length, marker.afterStop));
+        setGeometry(new TimelineGeometry(width, stops.length, eraAfter));
       }
     });
     observer.observe(frame);
     return () => observer.disconnect();
-  }, [stops.length, marker.afterStop]);
+  }, [stops.length, eraAfter]);
 
   const { scrollYProgress } = useScroll({ target: pinRef, offset: ["start start", "end end"] });
   const rawX = useMotionValue(0);
@@ -83,8 +86,8 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
     springX.jump(x);
   }, [geometry, scrollYProgress, rawX, springX]);
 
-  const markerLeft = geometry.markerX();
-  const markerFraction = geometry.markerProgress();
+  const eraLeft = geometry.eraX();
+  const eraFraction = geometry.eraProgress();
   const vars: TrackVars = {
     "--stop-gap": `${geometry.spacing()}px`,
     "--travel": `${geometry.travel()}px`,
@@ -112,10 +115,10 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
             animate={{ scaleX: played ? 1 : 0 }}
             transition={{ duration: AXIS_DRAW_SECONDS, ease: EASE_OUT_EXPO }}
           >
-            <span className="absolute left-0 top-0 h-px bg-ink" style={{ width: markerLeft }} />
+            <span className="absolute left-0 top-0 h-px bg-ink" style={{ width: eraLeft }} />
             <span
               className="absolute top-0 h-px bg-signal"
-              style={{ left: markerLeft, width: geometry.trackWidth() - markerLeft }}
+              style={{ left: eraLeft, width: geometry.trackWidth() - eraLeft }}
             />
           </motion.div>
           <p
@@ -126,7 +129,7 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
           </p>
           <p
             className="absolute top-[52%] -translate-y-1/2 bg-paper px-2 font-mono text-[11px] uppercase tracking-[0.16em] text-signal-ink"
-            style={{ left: markerLeft + 16 }}
+            style={{ left: eraLeft + 16 }}
           >
             {eras.ai} →
           </p>
@@ -145,19 +148,14 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
             ))}
           </motion.ol>
           <motion.div className="absolute inset-y-0 left-0" style={{ ...vars, x: trackX }}>
-            <span aria-hidden className="absolute inset-y-0 w-0.5 bg-signal" style={{ left: markerLeft - 1 }} />
-            <div
-              className="absolute top-[36%] pl-4"
-              style={{ left: markerLeft, width: "calc(var(--stop-gap) * 0.5)" }}
-            >
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-signal-ink">{marker.date}</p>
-              <p className="mt-1.5 font-display text-2xl font-semibold leading-[1.05] tracking-[-0.03em] text-signal md:text-[28px]">
-                {marker.label}
-              </p>
-              <p className="mt-2 text-sm leading-[1.45] text-ink-soft" style={{ maxWidth: "min(24ch, 100%)" }}>
-                {marker.note}
-              </p>
-            </div>
+            {milestones.map((milestone) => (
+              <MilestoneStrip
+                key={`${milestone.date}-${milestone.label}`}
+                milestone={milestone}
+                kindLabel={milestoneKinds[milestone.kind]}
+                x={geometry.gapX(milestone.afterStop)}
+              />
+            ))}
           </motion.div>
         </div>
 
@@ -168,7 +166,7 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
         <YearReadout
           year={activeStop?.year ?? ""}
           period={activeStop?.period ?? ""}
-          markerFraction={markerFraction}
+          eraFraction={eraFraction}
           inkScale={inkScale}
           orangeScale={orangeScale}
         />

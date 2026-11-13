@@ -5,9 +5,9 @@ const SPACING_RATIO = 0.38;
 const MIN_SPACING_PX = 340;
 
 export type BarFill = Readonly<{
-  /** 0..1 fill of the ink segment, which ends at the marker. */
+  /** 0..1 fill of the ink segment, which ends where the era turns. */
   before: number;
-  /** 0..1 fill of the orange segment, which starts at the marker. */
+  /** 0..1 fill of the orange segment, which starts where the era turns. */
   after: number;
 }>;
 
@@ -24,7 +24,7 @@ export class TimelineGeometry {
   public constructor(
     private readonly viewportWidth: number,
     private readonly stopCount: number,
-    private readonly markerAfterStop: number,
+    private readonly eraTurnsAfterStop: number,
   ) {
     if (!(viewportWidth > 0)) {
       throw new RangeError("viewportWidth must be positive");
@@ -32,8 +32,8 @@ export class TimelineGeometry {
     if (!Number.isInteger(stopCount) || stopCount < 1) {
       throw new RangeError("stopCount must be a positive integer");
     }
-    if (!Number.isInteger(markerAfterStop) || markerAfterStop < 0 || markerAfterStop >= stopCount) {
-      throw new RangeError("markerAfterStop must index an existing stop");
+    if (!Number.isInteger(eraTurnsAfterStop) || eraTurnsAfterStop < 0 || eraTurnsAfterStop >= stopCount) {
+      throw new RangeError("eraTurnsAfterStop must index an existing stop");
     }
   }
 
@@ -59,9 +59,17 @@ export class TimelineGeometry {
     return this.viewportWidth + this.travel();
   }
 
-  /** Halfway between the stop before the marker and the one after it. */
-  public markerX(): number {
-    return this.stopX(this.markerAfterStop) + this.spacing() / 2;
+  /** Halfway between the last stop of the old era and the first of the new one. */
+  public eraX(): number {
+    return this.stopX(this.eraTurnsAfterStop) + this.spacing() / 2;
+  }
+
+  /** The midpoint between stop `afterStop` and the stop after it. */
+  public gapX(afterStop: number): number {
+    if (!Number.isInteger(afterStop) || afterStop < 0 || afterStop > this.stopCount - 2) {
+      throw new RangeError("afterStop must be between the first stop and the one before the last");
+    }
+    return this.stopX(afterStop) + this.spacing() / 2;
   }
 
   /** Track offset (zero or negative) for a scroll progress of 0..1. */
@@ -89,19 +97,19 @@ export class TimelineGeometry {
     return best;
   }
 
-  /** The scroll progress at which the reading line meets the marker. */
-  public markerProgress(): number {
+  /** The scroll progress at which the reading line meets the era turn. */
+  public eraProgress(): number {
     const travel = this.travel();
-    return travel === 0 ? 0 : clamp01((this.markerX() - this.readingX()) / travel);
+    return travel === 0 ? 0 : clamp01((this.eraX() - this.readingX()) / travel);
   }
 
   /** Splits one progress value across the ink and orange segments of the progress bar. */
   public barFill(progress: number): BarFill {
     const at = clamp01(progress);
-    const marker = this.markerProgress();
+    const era = this.eraProgress();
     return {
-      before: marker === 0 ? 1 : clamp01(at / marker),
-      after: marker === 1 ? 0 : clamp01((at - marker) / (1 - marker)),
+      before: era === 0 ? 1 : clamp01(at / era),
+      after: era === 1 ? 0 : clamp01((at - era) / (1 - era)),
     };
   }
 }

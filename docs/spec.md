@@ -410,3 +410,11 @@ so the whole frame is yours.
   active step index, per-department status, visited departments, packet route), and the channel/packet geometry
   if you compute it. React state changes only when the discrete state changes; packet motion and activity bars
   via transforms/CSS animations, not per-frame state.
+
+### v2.2 — career milestones
+
+The single "ChatGPT ships" marker is gone. `timeline.milestones` lists promotions and company changes, each drawn as
+an orange strip in the gap between the two stops it separates (`afterStop`): a strip from the top of the frame to
+the axis, a diamond node on the axis, and a kind · date line, label and note. On phones each is a short orange rule
+with a diamond on the axis. The Pre-AI / AI-native split is now derived from the stops' `era` (`eraBoundary`), and a
+milestone takes the era of the stop after it, so "Salesforce → Clarifai" opens the AI-native era.
