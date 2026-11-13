@@ -300,3 +300,113 @@ in toward a glowing core on the centre-right).
 
 `pnpm gate` runs typecheck, lint, tests and a production build. It must pass before you commit. Do not start a dev
 server or open a browser; visual review happens at integration.
+
+---
+
+# v2.1 — the owner's review (2026-11-13)
+
+The owner liked v2 and asked for five changes. The content contracts for all of them are already on `main`
+(`src/content/types.ts`, `src/content/site.ts`): new fields were added **alongside** the old ones so `main` still
+compiles. Each work package deletes the old fields it retires, in both files, as its last step. Touch only your own
+hunks of those two files. Everything in "Shared contracts", "Design tokens" and "Coding rules" above still applies.
+
+## WP-H2 — Hero, contact, timeline (`src/sections/**`, `src/timeline/**`)
+
+**1. Hero: the name is never covered; the portrait sits inside the orange circle as a frame.**
+- Retire `hero.tagline` (delete it from the type and the content). Use `hero.role` and the new `hero.summary`.
+- lg and up: a two-column composition on `bg-grid`, inside `Container`, vertically centred in `min-h-dvh`
+  (leave room for the nav at the top and the sheet frame's corner annotations).
+  - **Left (~58%)**: the `<h1>` name, two lines, uppercase, as big as it can be while staying inside its column
+    and never overlapped by any layer (size by both `vw` and `dvh`; at 1280×720, 1440×900 and 1920×1080 the whole
+    left column must fit without overlapping the circle). Under it, **the role with real presence**: "Product
+    Engineer" in `font-display`, weight 600, `text-signal`, around `clamp(2rem, 4vw, 4rem)`, tracking −0.04em.
+    Then `summary` in `text-ink-soft`, 17–19px, max ~38ch. Then the two buttons, then the facts row (as today).
+  - **Right (~42%)**: the circular frame. An orange disc (`bg-signal`) about `min(34vw, 62dvh)` across. The
+    portrait cutout is clipped to the circle (`rounded-full overflow-hidden`), scaled so the face sits a little
+    above the centre and the shoulders run off the bottom edge of the circle; the head must not be cropped at the
+    top. Around it, spec-sheet annotation in hairlines: a thin ring (`border-line-strong`) ~14px outside the disc
+    with four short tick marks at 12, 3, 6 and 9 o'clock, a dashed outer ring that turns slowly (one turn per ~90s;
+    static under reduced motion), and one mono caption at the bottom-right of the ring, e.g. `FIG. 01 — PORTRAIT`
+    (a named constant).
+  - Keep the depth: scroll parallax (the circle group drifts up slower than the page) and pointer depth (inside the
+    clip the portrait shifts a few px opposite to the disc, so the frame feels like a window). Transforms and
+    opacity only. Keep the letter-by-letter name entrance; the disc scales in from 0, the portrait rises inside
+    the clip, the role/summary/buttons/facts reveal after.
+- Below lg: name (two lines, fits the width) → circle centred at ~78vw → role → summary → buttons → facts. No
+  horizontal scroll at 375px.
+- Remove now-unused code (the old HEAD/DISC_RATIO layout, `copyOpacity` fade if it no longer applies).
+
+**2. Contact: add the email.**
+- `contact.email` is new; `contact.links` now starts with a `mailto:` link. Buttons: the first link primary, the
+  rest secondary (as today). Under the buttons, show the address in `font-mono` 14–15px `text-ink` with a small
+  "Copy" button next to it (a real `<button>`; uses `navigator.clipboard.writeText`; on success its label becomes
+  "Copied" for 2s, announced through an `aria-live="polite"` region; if the clipboard is unavailable it does
+  nothing). Button words are named constants.
+
+**3. Timeline: no Orchestra stop; roles get the accent and more presence.**
+- The Orchestra stop is already gone from the content. Retire `StopKind` and `TimelineStop.kind` (types and
+  content), delete `sideProjectTag.ts` and every project-specific branch (dashed nodes, the tag).
+- In both the pinned track (`StopColumn`) and the phone list (`VerticalTimeline`): year → company (`h3`, as today)
+  → **role** in `font-display` 20–22px, weight 600, `text-signal-ink` (orange that passes contrast on paper), with
+  an 8px `bg-signal` square before it → `did`. The role must read as the second most prominent line of a stop.
+
+## WP-S2 — Back end diagram (`src/systems/**`)
+
+**The orchestrator is the hub; the services sit around it.** The current diagram puts the orchestrator in a row
+with the services, which reads as if it were one of them. Redraw it as a hub and spokes; keep the saga semantics,
+the controls, the outcomes and `SagaSequencer` (adjust its tests only where node ids/geometry change).
+- Wide (lg+): `Client → API gateway` on the left (HTTP edge, labelled in mono), then one edge from the gateway into
+  the **Saga orchestrator** hub in the centre of the remaining space. The hub is the largest node (orange 1px
+  outline, `bg-paper-raised`), with a thin circular **NATS** ring around it (labelled "NATS" in mono). The four
+  services sit around the hub at the diagonals in step order, clockwise from top-left: Orders (NW), Payments
+  (NE), Inventory (SE), Shipping (SW). Each is joined to the hub by a spoke that crosses the NATS ring.
+- Narrow (< lg): the same ring, square, with the gateway above it (`Client → API gateway` stacked above the hub).
+  Must fit 375px without horizontal scroll; service cards may shrink to name + action.
+- Playback (unchanged semantics, new geometry): for each step a command token travels hub → service along its
+  spoke, the service lights, a reply token returns service → hub. Failure run: Inventory fails (red ✕ as today),
+  then compensations run **in reverse** — hub → Payments ("Refund"), hub → Orders ("Cancel order") — each
+  compensation labelled in mono next to its service. The outcome ("Committed" / "Rolled back · consistent") shows
+  in or just under the hub. Reduced motion: jump to each state without tokens.
+- The geometry lives in a pure, tested layout (`DiagramLayout`): positions for wide and narrow, spoke routes, ring
+  radius. Keep tokens driven by rAF/transforms, not React state per frame.
+- **PoC link.** Under the controls/diagram, add `systems.repo`: a secondary `ButtonLink` with `repo.label` (it is
+  external, so `ButtonLink` already opens a new tab with ↗) and `repo.note` in mono `text-mute` beside it.
+
+## WP-O2 — Agents chapter as an SDLC with workers working (`src/orchestra/**`)
+
+The owner wants it framed as a software development lifecycle — independent departments that hand work to each
+other to deliver one feature — and the UI to show **workers working**, not a linear loader. Retire
+`orchestra.stages` and `orchestra.log` (and `LogLine`) from types and content, and delete `PipelineRail` and
+whatever only it used. The new content is `orchestra.departments` (7, each with a roster of agents) and
+`orchestra.steps` (10 beats: the department holding the work, the workers busy in it — a name may repeat for
+parallel instances; empty means code does it, not an agent — a ticket id and a short message).
+
+Keep: the chapter shell (`h-[320dvh]`, sticky frame, `FrameSequencePlayer` background, scrims, `PinProgress`),
+`SectionHeader` (index "05", dark), the principles and the stats. The 3D artifact is now hidden in this chapter,
+so the whole frame is yours.
+
+**Layout (lg+).** Left column (~36%): header, principles, stats (tighten spacing so they fit at 1440×900 and
+1280×720). Right (~60%): **the department board** and, under it, **the dispatch log**.
+- **Board:** seven department cards in a grid (e.g. 4 + 3, or a 3×3 with the centre left for the ticket), each a
+  small panel (`bg-graphite-raised/80`, 1px `line-dark`, radius 6px): mono department name, a status pill
+  (`idle` / `working` / `handing off` / `automated`), and its roster as rows (agent name in mono 11–12px). Hairline
+  **channels** connect departments that hand off to each other in `steps`.
+- **Scroll drives the story** (pin progress 0.15 → 0.95 spread evenly over the steps; scrubbing back rewinds):
+  the active step's department lights (orange outline, status `working`); its `workers` rows come alive; the
+  previous department shows `handing off` briefly; a **ticket packet** (orange square + mono ticket id) travels
+  along the channel from the previous step's department to the new one. Departments already visited keep a small
+  done mark. A step with no workers shows `automated` and a mono "by code" note — that is a point to make.
+- **Time drives the work** (this is the "workers working" part): while a worker row is active it shows live,
+  looping activity — a thin progress bar filling and restarting at slightly different speeds per worker, a
+  pulsing status dot, and a tiny changing mono readout (e.g. a step counter or a spinner glyph). Parallel
+  instances (the three `engineer`s) appear as three separate rows each with its own bar, so parallelism is visible.
+  Idle rows are dim and still. Pause all looping work when the chapter is off screen and under reduced motion
+  (show static "working" state instead).
+- **Dispatch log** (replaces the agent log, same terminal style): one line per reached step, `ticket` in orange,
+  `department · message` in fog, newest at the bottom with the blinking cursor; scroll-linked.
+- Below lg: header, principles and stats, then the board as a compact list (one row per department: name, status
+  pill, active worker count with its bars) and the log hidden. Fits 375px.
+- Pure, tested logic: a function/class mapping pin progress → discrete state (principles shown, stats shown,
+  active step index, per-department status, visited departments, packet route), and the channel/packet geometry
+  if you compute it. React state changes only when the discrete state changes; packet motion and activity bars
+  via transforms/CSS animations, not per-frame state.
