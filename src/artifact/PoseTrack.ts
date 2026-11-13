@@ -14,9 +14,8 @@ export type PoseValues = {
 type PoseTable = Readonly<Record<ChapterId, Readonly<PoseValues>>>;
 
 /**
- * The object is a scattered cloud in the hero, folds away (scale 0) while the
- * reader is in the text-heavy light chapters, and re-forms whole in the dark
- * Agents chapter, where it rests on the orange core of the video.
+ * The object is a scattered cloud in the hero, folds away (scale 0) through
+ * the middle chapters, and re-forms whole beside the contact line.
  */
 const WIDE_TABLE: PoseTable = {
   // A small loose cluster in the empty top-right corner, clear of the face.
@@ -24,7 +23,8 @@ const WIDE_TABLE: PoseTable = {
   timeline: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.8, y: 0.45, scale: 0.0, assembly: 0.85, spin: 2.0 },
-  orchestra: { x: 0.74, y: 0.42, scale: 1.0, assembly: 1.0, spin: 2.6 },
+  // The department board fills the Agents chapter, so the object waits for contact.
+  orchestra: { x: 0.78, y: 0.5, scale: 0.0, assembly: 1.0, spin: 2.6 },
   contact: { x: 0.78, y: 0.5, scale: 0.9, assembly: 1.0, spin: 3.4 },
 };
 
@@ -35,8 +35,7 @@ const NARROW_TABLE: PoseTable = {
   timeline: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   craft: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.5, y: 0.3, scale: 0.0, assembly: 0.85, spin: 2.0 },
-  // Phones: the only free space is the gap between the stats and the pipeline rail.
-  orchestra: { x: 0.76, y: 0.79, scale: 0.32, assembly: 1.0, spin: 2.6 },
+  orchestra: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 2.6 },
   contact: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 3.4 },
 };
 

@@ -29,6 +29,8 @@ export type Hero = Readonly<{
   role: string;
   /** Two short sentences; the second takes the accent. */
   tagline: readonly [string, string];
+  /** One factual sentence under the role. */
+  summary: string;
   portrait: Portrait;
   facts: readonly Fact[];
   primary: Link;
@@ -110,6 +112,29 @@ export type Systems = Readonly<{
   outcomes: Readonly<{ committed: string; rolledBack: string }>;
   principles: readonly string[];
   stack: readonly string[];
+  /** The public repository the diagram is modelled on. */
+  repo: Readonly<{ label: string; href: string; note: string }>;
+}>;
+
+export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
+
+export type Department = Readonly<{
+  id: DepartmentId;
+  name: string;
+  /** The agents on this department's roster, head first. */
+  agents: readonly string[];
+}>;
+
+/** One beat of the lifecycle: which department holds the work and who is working on it. */
+export type OrchestraStep = Readonly<{
+  department: DepartmentId;
+  /**
+   * Agents from that department's roster working in this beat. A name may
+   * repeat for parallel instances. Empty means the beat is done by code, not an agent.
+   */
+  workers: readonly string[];
+  ticket: string;
+  message: string;
 }>;
 
 export type Stat = Readonly<{
@@ -130,12 +155,17 @@ export type Orchestra = Readonly<{
   stats: readonly Stat[];
   stages: readonly string[];
   log: readonly LogLine[];
+  departments: readonly Department[];
+  /** The lifecycle of one feature, in order; scroll plays it. */
+  steps: readonly OrchestraStep[];
 }>;
 
 export type Contact = Readonly<{
   label: string;
   heading: string;
   body: string;
+  /** Shown as text with a copy button, and used for the mailto link. */
+  email: string;
   links: readonly Link[];
   signoff: string;
   footnote: string;
