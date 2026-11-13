@@ -137,19 +137,12 @@ export type Stat = Readonly<{
   label: string;
 }>;
 
-export type LogLine = Readonly<{
-  actor: string;
-  message: string;
-}>;
-
 export type Orchestra = Readonly<{
   label: string;
   heading: string;
   intro: string;
   principles: readonly string[];
   stats: readonly Stat[];
-  stages: readonly string[];
-  log: readonly LogLine[];
   departments: readonly Department[];
   /** The lifecycle of one feature, in order; scroll plays it. */
   steps: readonly OrchestraStep[];
