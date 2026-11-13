@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { splitAtMarker } from "./splitAtMarker";
+import { SITE, type Era, type TimelineMilestone, type TimelineStop } from "@/content";
+import { eraBoundary } from "./eraBoundary";
+import { splitByEra, timelineEntries } from "./TimelineEntries";
 import { TimelineGeometry } from "./TimelineGeometry";
 
 const SEVEN_STOPS = 7;
@@ -44,19 +46,31 @@ describe("TimelineGeometry", () => {
     expect(wide.activeIndex(halfway)).toBe(2);
   });
 
-  it("places the marker between the stops it separates", () => {
-    expect(wide.markerX()).toBeGreaterThan(wide.stopX(AFTER_THIRD));
-    expect(wide.markerX()).toBeLessThan(wide.stopX(AFTER_THIRD + 1));
-    expect(wide.markerX()).toBeCloseTo((wide.stopX(2) + wide.stopX(3)) / 2);
+  it("places the era turn between the stops it separates", () => {
+    expect(wide.eraX()).toBeGreaterThan(wide.stopX(AFTER_THIRD));
+    expect(wide.eraX()).toBeLessThan(wide.stopX(AFTER_THIRD + 1));
+    expect(wide.eraX()).toBeCloseTo((wide.stopX(2) + wide.stopX(3)) / 2);
   });
 
-  it("splits the progress bar at the marker", () => {
-    const marker = wide.markerProgress();
-    expect(marker).toBeGreaterThan(0);
-    expect(marker).toBeLessThan(1);
+  it("places a gap at the midpoint between two stops", () => {
+    expect(wide.gapX(0)).toBeCloseTo((wide.stopX(0) + wide.stopX(1)) / 2);
+    expect(wide.gapX(SEVEN_STOPS - 2)).toBeCloseTo((wide.stopX(5) + wide.stopX(6)) / 2);
+    expect(wide.gapX(AFTER_THIRD)).toBeCloseTo(wide.eraX());
+  });
+
+  it("rejects a gap outside the stops", () => {
+    expect(() => wide.gapX(-1)).toThrow(RangeError);
+    expect(() => wide.gapX(SEVEN_STOPS - 1)).toThrow(RangeError);
+    expect(() => wide.gapX(1.5)).toThrow(RangeError);
+  });
+
+  it("splits the progress bar at the era turn", () => {
+    const era = wide.eraProgress();
+    expect(era).toBeGreaterThan(0);
+    expect(era).toBeLessThan(1);
     expect(wide.barFill(0)).toEqual({ before: 0, after: 0 });
-    expect(wide.barFill(marker / 2).after).toBe(0);
-    expect(wide.barFill(marker / 2).before).toBeCloseTo(0.5);
+    expect(wide.barFill(era / 2).after).toBe(0);
+    expect(wide.barFill(era / 2).before).toBeCloseTo(0.5);
     expect(wide.barFill(1)).toEqual({ before: 1, after: 1 });
   });
 
@@ -74,12 +88,73 @@ describe("TimelineGeometry", () => {
   });
 });
 
-describe("splitAtMarker", () => {
-  it("keeps the stop before the marker on the before side", () => {
-    expect(splitAtMarker([1, 2, 3, 4], 1)).toEqual({ before: [1, 2], after: [3, 4] });
+function stopOf(year: string, era: Era): TimelineStop {
+  return { year, period: year, company: `Co ${year}`, role: "Engineer", did: "", trend: "", era };
+}
+
+function milestoneOf(label: string, afterStop: number): TimelineMilestone {
+  return { date: "Jan 2020", kind: "promotion", label, note: "", afterStop };
+}
+
+describe("eraBoundary", () => {
+  it("returns the index of the last pre-ai stop", () => {
+    expect(eraBoundary([{ era: "pre-ai" }, { era: "pre-ai" }, { era: "ai" }])).toBe(1);
+    expect(eraBoundary([{ era: "pre-ai" }])).toBe(0);
+    expect(eraBoundary([{ era: "pre-ai" }, { era: "ai" }, { era: "ai" }])).toBe(0);
   });
 
-  it("leaves nothing after when the marker follows the last stop", () => {
-    expect(splitAtMarker([1, 2], 1)).toEqual({ before: [1, 2], after: [] });
+  it("rejects a first stop that is not pre-ai", () => {
+    expect(() => eraBoundary([])).toThrow(RangeError);
+    expect(() => eraBoundary([{ era: "ai" }, { era: "ai" }])).toThrow(RangeError);
+  });
+
+  it("rejects a pre-ai stop after an ai one", () => {
+    expect(() => eraBoundary([{ era: "pre-ai" }, { era: "ai" }, { era: "pre-ai" }])).toThrow(RangeError);
+  });
+
+  it("finds the era turn in the real content", () => {
+    expect(eraBoundary(SITE.timeline.stops)).toBe(2);
+  });
+});
+
+describe("timelineEntries", () => {
+  const stops = [stopOf("2019", "pre-ai"), stopOf("2020", "pre-ai"), stopOf("2023", "ai")];
+
+  it("inserts each milestone right after its stop", () => {
+    const entries = timelineEntries(stops, [milestoneOf("A", 0), milestoneOf("B", 1)]);
+    expect(entries.map((entry) => (entry.kind === "stop" ? entry.stop.year : entry.milestone.label))).toEqual([
+      "2019",
+      "A",
+      "2020",
+      "B",
+      "2023",
+    ]);
+  });
+
+  it("gives a milestone the era of the stop after it", () => {
+    const entries = timelineEntries(stops, [milestoneOf("A", 0), milestoneOf("B", 1)]);
+    expect(entries.map((entry) => entry.era)).toEqual(["pre-ai", "pre-ai", "pre-ai", "ai", "ai"]);
+  });
+
+  it("rejects a milestone outside the gaps between stops", () => {
+    expect(() => timelineEntries(stops, [milestoneOf("A", -1)])).toThrow(RangeError);
+    expect(() => timelineEntries(stops, [milestoneOf("A", 2)])).toThrow(RangeError);
+  });
+});
+
+describe("splitByEra", () => {
+  it("splits on era, keeping order", () => {
+    const stops = [stopOf("2019", "pre-ai"), stopOf("2023", "ai")];
+    const { before, after } = splitByEra(timelineEntries(stops, [milestoneOf("A", 0)]));
+    expect(before.map((entry) => entry.kind)).toEqual(["stop"]);
+    expect(after.map((entry) => entry.kind)).toEqual(["milestone", "stop"]);
+  });
+
+  it("puts the Clarifai move first in the ai era of the real content", () => {
+    const { stops, milestones } = SITE.timeline;
+    const { after } = splitByEra(timelineEntries(stops, milestones));
+    const first = after[0];
+    expect(first?.kind).toBe("milestone");
+    expect(first?.kind === "milestone" && first.milestone.label).toBe("Salesforce → Clarifai");
   });
 });

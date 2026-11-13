@@ -53,11 +53,18 @@ export type TimelineStop = Readonly<{
   era: Era;
 }>;
 
-export type TimelineMarker = Readonly<{
+export type MilestoneKind = "promotion" | "move";
+
+/** A promotion or company change, drawn between the stop before it and the stop after it. */
+export type TimelineMilestone = Readonly<{
+  /** e.g. "Aug 2021". */
   date: string;
+  kind: MilestoneKind;
+  /** Short, e.g. "AMTS → MTS". */
   label: string;
+  /** One short sentence. */
   note: string;
-  /** The marker sits between stop `afterStop` and the stop after it. */
+  /** The milestone sits between stop `afterStop` and the stop after it. */
   afterStop: number;
 }>;
 
@@ -68,7 +75,8 @@ export type Timeline = Readonly<{
   lanes: Readonly<{ world: string; me: string }>;
   eras: Readonly<Record<Era, string>>;
   stops: readonly TimelineStop[];
-  marker: TimelineMarker;
+  milestones: readonly TimelineMilestone[];
+  milestoneKinds: Readonly<Record<MilestoneKind, string>>;
 }>;
 
 export type SpecNote = Readonly<{

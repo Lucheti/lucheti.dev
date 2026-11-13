@@ -106,12 +106,13 @@ export const SITE: SiteContent = {
         era: "ai",
       },
     ],
-    marker: {
-      date: "Nov 30, 2022",
-      label: "ChatGPT ships",
-      note: "Before this line I learned to build. After it, I build with AI.",
-      afterStop: 2,
-    },
+    milestoneKinds: { promotion: "Promotion", move: "New company" },
+    milestones: [
+      { date: "Oct 2020", kind: "promotion", label: "Intern → AMTS", note: "First engineering role, a year after joining as an intern.", afterStop: 0 },
+      { date: "Aug 2021", kind: "promotion", label: "AMTS → MTS", note: "Second promotion in under two years.", afterStop: 1 },
+      { date: "Feb 2023", kind: "move", label: "Salesforce → Clarifai", note: "Joined an AI platform as a senior engineer and front-end lead.", afterStop: 2 },
+      { date: "Dec 2025", kind: "move", label: "Clarifai → Front", note: "Senior engineer on Front's customer operations platform.", afterStop: 4 },
+    ],
   },
   craft: {
     label: "Front end",
