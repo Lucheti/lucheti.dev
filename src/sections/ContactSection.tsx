@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Contact } from "@/content";
 import { Chapter } from "@/story";
 import { ButtonLink, Container, Label, Reveal } from "@/ui";
+import { CopyEmail } from "./CopyEmail";
 import { LiveClock } from "./LiveClock";
 
 type ContactSectionProps = Readonly<{
@@ -51,6 +52,9 @@ export function ContactSection({ contact, timeZone, city }: ContactSectionProps)
                 {link.label}
               </ButtonLink>
             ))}
+          </Reveal>
+          <Reveal delay={0.32}>
+            <CopyEmail email={contact.email} />
           </Reveal>
         </div>
       </Container>
