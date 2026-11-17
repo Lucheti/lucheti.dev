@@ -1,9 +1,20 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx";
-import { ToolSwatch } from "./icons";
+import { ToolSwatch, type SwatchSize } from "./icons";
 import type { Tone } from "./Tone";
 
-const PILL = "inline-flex max-w-full items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm font-medium leading-5";
+const PILL = "inline-flex max-w-full items-center rounded-full border font-medium";
+
+/** `md` is the everyday pill; `lg` is the larger one on the Capabilities wall. */
+export type PillSize = "md" | "lg";
+
+type PillSizeSkin = Readonly<{ pill: string; label: string; swatch: SwatchSize }>;
+
+const PILL_SIZES: Readonly<Record<PillSize, PillSizeSkin>> = {
+  md: { pill: "gap-2 py-1 pl-1 pr-3 text-sm leading-5", label: "min-w-0", swatch: "sm" },
+  // The wall scrolls sideways, so its labels never wrap.
+  lg: { pill: "gap-2.5 py-1.5 pl-1.5 pr-4 text-base leading-6", label: "whitespace-nowrap", swatch: "md" },
+};
 
 const SKINS: Readonly<Record<Tone, string>> = {
   light: "border-line-strong bg-paper/70 text-ink",
@@ -13,14 +24,16 @@ const SKINS: Readonly<Record<Tone, string>> = {
 type ToolPillProps = Readonly<{
   tool: string;
   tone?: Tone;
+  size?: PillSize;
 }>;
 
 /** One tool as a rounded pill, led by a circle in its brand colour (or its initial when it has no mark). */
-export function ToolPill({ tool, tone = "light" }: ToolPillProps): ReactNode {
+export function ToolPill({ tool, tone = "light", size = "md" }: ToolPillProps): ReactNode {
+  const skin = PILL_SIZES[size];
   return (
-    <span className={cx(PILL, SKINS[tone])}>
-      <ToolSwatch tool={tool} tone={tone} />
-      <span className="min-w-0">{tool}</span>
+    <span className={cx(PILL, skin.pill, SKINS[tone])}>
+      <ToolSwatch tool={tool} tone={tone} size={skin.swatch} />
+      <span className={skin.label}>{tool}</span>
     </span>
   );
 }

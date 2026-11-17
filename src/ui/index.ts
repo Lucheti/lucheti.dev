@@ -16,4 +16,4 @@ export { SectionHeader } from "./SectionHeader";
 export { SkillTable } from "./SkillTable";
 export { SubsectionHeader } from "./SubsectionHeader";
 export type { Tone } from "./Tone";
-export { ToolPill, ToolPills } from "./ToolPill";
+export { ToolPill, ToolPills, type PillSize } from "./ToolPill";

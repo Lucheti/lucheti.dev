@@ -153,6 +153,16 @@ body {
   }
 }
 
+/* The Capabilities wall: a row holds its run twice, so sliding one run plus the 0.75rem gap loops seamlessly. */
+@keyframes wall-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.375rem));
+  }
+}
+
 /* Lenis smooth scrolling */
 html.lenis,
 html.lenis body {
