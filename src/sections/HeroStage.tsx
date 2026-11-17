@@ -6,7 +6,6 @@ import type { Hero } from "@/content";
 import { ButtonLink, Container, EASE_OUT_EXPO, Reveal } from "@/ui";
 import { DepthLayer, usePointerDepth } from "./depth";
 import { PortraitFrame } from "./PortraitFrame";
-import { SheetFrame } from "./SheetFrame";
 
 const LETTER_STAGGER_S = 0.04;
 const COPY_DELAY_S = 0.9;
@@ -101,8 +100,6 @@ export function HeroStage({ hero }: { readonly hero: Hero }): ReactNode {
 
   return (
     <div ref={rootRef} className="relative flex min-h-dvh flex-col justify-center overflow-hidden bg-grid">
-      <SheetFrame sheet={hero.sheet} />
-
       <Container className="relative z-10 pb-16 pt-28">
         <div className="flex flex-col gap-y-8 lg:grid lg:grid-cols-[58fr_42fr] lg:items-center lg:gap-x-10 lg:gap-y-8">
           <DepthLayer

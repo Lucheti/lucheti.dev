@@ -37,12 +37,6 @@ export const SITE: SiteContent = {
     ],
     primary: { label: "Read the build log", href: "#timeline" },
     secondary: { label: "Get in touch", href: "#contact" },
-    sheet: {
-      code: "LG—01",
-      title: "Portfolio & CV",
-      revision: "Rev. 2026.11",
-      scroll: "Scroll",
-    },
   },
   timeline: {
     label: "Build log",
@@ -115,10 +109,8 @@ export const SITE: SiteContent = {
     ],
   },
   capabilities: {
-    label: "Capabilities",
     heading: "Capabilities",
     intro: "What I work with, by domain, and the libraries I use in each.",
-    range: "03 — 05",
     repoLabels: {
       open: "View on GitHub",
       pending: "Coming soon",
@@ -128,12 +120,31 @@ export const SITE: SiteContent = {
       repos: { title: "Repositories", caption: "Code you can open and read." },
       demo: { title: "Live demo", caption: "" },
     },
-    countUnits: { areas: "areas", repos: "repos" },
   },
   craft: {
-    label: "Capabilities",
     heading: "Front end",
     intro: "React and TypeScript since 2019, from Salesforce's Anypoint Platform to Clarifai and Front.",
+    panel: {
+      label:
+        "A design system at work: a notification card, a switch that flips on its own until you use it, a segmented control, a progress ring and the colour tokens behind them.",
+      title: "Design system",
+      stack: ["React", "TypeScript", "Tailwind CSS", "Radix UI"],
+      notification: {
+        from: { name: "WhatsApp", tool: "WhatsApp", detail: "Support inbox" },
+        message: "3 new conversations assigned to you",
+        time: "now",
+      },
+      toggle: "Desktop alerts",
+      segments: ["Open", "Assigned", "Done"],
+      progress: { label: "Inbox sync", detail: "Importing conversations", percent: 72 },
+      tokens: [
+        { name: "accent", hex: "#ff5a1f" },
+        { name: "info", hex: "#3b82f6" },
+        { name: "success", hex: "#22c55e" },
+        { name: "warning", hex: "#facc15" },
+        { name: "surface", hex: "#fbfaf7" },
+      ],
+    },
     areas: [
       {
         name: "UI engineering",
@@ -198,9 +209,26 @@ export const SITE: SiteContent = {
     toggle: { show: "Show spec", hide: "Hide spec" },
   },
   systems: {
-    label: "Capabilities",
     heading: "Back end",
     intro: "Node.js services, messaging and data, plus Java and Scala on Salesforce's Anypoint Platform.",
+    panel: {
+      label:
+        "One request, end to end: the client calls the API gateway, which routes to the Orders, Payments and Inventory services. They talk over a NATS event bus and keep their data in PostgreSQL, with Redis as a cache.",
+      title: "Checkout, end to end",
+      client: "Client",
+      request: "POST /orders",
+      gateway: { name: "API gateway", tool: "NestJS", detail: "Auth · routing" },
+      services: [
+        { name: "Orders", tool: "NestJS" },
+        { name: "Payments", tool: "NestJS" },
+        { name: "Inventory", tool: "NestJS" },
+      ],
+      bus: { name: "NATS", tool: "NATS", detail: "order.created" },
+      stores: [
+        { name: "PostgreSQL", tool: "PostgreSQL", detail: "Orders, payments" },
+        { name: "Redis", tool: "Redis", detail: "Read cache" },
+      ],
+    },
     areas: [
       {
         name: "Services & APIs",
@@ -253,9 +281,29 @@ export const SITE: SiteContent = {
     ],
   },
   ai: {
-    label: "Capabilities",
     heading: "AI",
     intro: "Agent workflows for writing and reviewing code, and the AI products I've worked on.",
+    panel: {
+      label:
+        "An agent loop: asked to make shot 3 a close-up, the agent calls the update_shot tool and the storyboard frame changes.",
+      title: "shot-planner",
+      status: "Agent",
+      prompt: "Make shot 3 a close-up",
+      call: { name: "update_shot", args: "framing → close-up", tool: "Claude Code" },
+      shots: [
+        { name: "Shot 1", framing: "wide" },
+        { name: "Shot 2", framing: "medium" },
+        { name: "Shot 3", framing: "wide" },
+      ],
+      edit: { shot: 2, framing: "close" },
+      framings: { wide: "Wide", medium: "Medium", close: "Close-up" },
+      reply: "Done. Shot 3 is now a close-up.",
+      placeholder: "Message shot-planner",
+      tools: [
+        { name: "MCP", tool: "Model Context Protocol SDK" },
+        { name: "Anthropic SDK", tool: "Anthropic SDK" },
+      ],
+    },
     areas: [
       {
         name: "Agentic coding",
@@ -320,9 +368,9 @@ export const SITE: SiteContent = {
       "Merges, releases and rollbacks are done by code, never by an agent.",
     ],
     stats: [
-      { value: "07", label: "Departments" },
+      { value: "7", label: "Departments" },
       { value: "16", label: "Agents" },
-      { value: "03", label: "Parallel workflows" },
+      { value: "3", label: "Parallel workflows" },
     ],
     departments: [
       { id: "product", name: "Product", agents: ["head-of-product", "product-manager", "researcher"] },

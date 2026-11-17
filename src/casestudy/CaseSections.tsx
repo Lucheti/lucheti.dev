@@ -25,16 +25,16 @@ function bodyOf(section: CaseSection, departments: readonly Department[]): React
   }
 }
 
-/** Parts 02 to 08 on paper, then the tools Orchestra is built with. */
+/** The parts after the live demo, on paper, then the tools Orchestra is built with. */
 export function CaseSections({ sections, departments, builtWith }: CaseSectionsProps): ReactNode {
   return (
     <div className="bg-paper py-32 lg:py-48">
       <Container className="flex flex-col gap-24 lg:gap-36">
-        {sections.map((section) => {
-          const id = `case-${section.number}`;
+        {sections.map((section, position) => {
+          const id = `case-section-${position}`;
           return (
-            <section key={section.number} aria-labelledby={id}>
-              <SubsectionHeader id={id} number={section.number} title={section.title} caption={section.intro} />
+            <section key={section.title} aria-labelledby={id}>
+              <SubsectionHeader id={id} title={section.title} caption={section.intro} />
               {bodyOf(section, departments)}
             </section>
           );

@@ -5,23 +5,24 @@ import { Reveal } from "./Reveal";
 import type { Tone } from "./Tone";
 
 type SectionHeaderProps = Readonly<{
-  label: string;
+  /** A plain word above the heading, e.g. "Build log"; left out where the heading says it all. */
+  label?: string;
   heading: string;
   intro: string;
-  /** Chapter number shown before the label, e.g. "02". */
-  index?: string;
   tone?: Tone;
 }>;
 
-/** Numbered label, h2 and one-line intro, shared by every chapter after the hero. */
-export function SectionHeader({ label, heading, intro, index, tone = "light" }: SectionHeaderProps): ReactNode {
+/** Optional label, h2 and one-line intro, shared by every chapter after the hero. */
+export function SectionHeader({ label, heading, intro, tone = "light" }: SectionHeaderProps): ReactNode {
   return (
     <header className="flex flex-col gap-5">
-      <Reveal>
-        <Label marked tone={tone}>
-          {index ? `${index} — ${label}` : label}
-        </Label>
-      </Reveal>
+      {label ? (
+        <Reveal>
+          <Label marked tone={tone}>
+            {label}
+          </Label>
+        </Reveal>
+      ) : null}
       <Reveal delay={0.08}>
         <h2
           className={cx(

@@ -23,14 +23,12 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     repo: { label: "View the code on GitHub ↗", href: "https://github.com/Lucheti/orchestra" },
   },
   demo: {
-    number: "01",
     title: "Live demo",
     caption: "One feature, from idea to retro. Scroll to play it.",
   },
   sections: [
     {
       kind: "points",
-      number: "02",
       title: "The idea",
       intro: "An autonomous software company that you set up once and then leave running.",
       points: [
@@ -54,7 +52,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "departments",
-      number: "03",
       title: "Departments",
       intro: "Seven departments, each with a head and, for most, the workers it directs.",
       duties: {
@@ -69,7 +66,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "points",
-      number: "04",
       title: "Code decides, not models",
       intro: "The process lives in code and data, so no prompt has to remember the rules.",
       points: [
@@ -93,7 +89,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "points",
-      number: "05",
       title: "Tickets, not chat",
       intro: "Work moves between departments as tickets, which makes every hand-off visible.",
       points: [
@@ -125,7 +120,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "points",
-      number: "06",
       title: "Guardrails",
       intro: "Hooks keep every agent inside its role.",
       points: [
@@ -153,7 +147,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "points",
-      number: "07",
       title: "Releases with a safety net",
       intro: "Orch runs every release step itself. Agents cannot run deploy commands.",
       points: [
@@ -177,7 +170,6 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     },
     {
       kind: "points",
-      number: "08",
       title: "Learning",
       intro: "The company reviews its own friction and changes how it works.",
       points: [

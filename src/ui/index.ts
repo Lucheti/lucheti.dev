@@ -1,9 +1,8 @@
-export { DomainBackdrop, type BackdropKind } from "./backdrop";
-export { BulletList } from "./BulletList";
 export { ButtonLink } from "./ButtonLink";
 export { Chip } from "./Chip";
 export { Container, LeftColumn } from "./Container";
 export { cx } from "./cx";
+export { ToolSwatch } from "./icons";
 export { initialsOf } from "./initialsOf";
 export { RepoIllustration } from "./illustrations";
 export { Label } from "./Label";
@@ -16,4 +15,3 @@ export { SkillTable } from "./SkillTable";
 export { SubsectionHeader } from "./SubsectionHeader";
 export type { Tone } from "./Tone";
 export { ToolPill, ToolPills } from "./ToolPill";
-export { twoDigits } from "./twoDigits";

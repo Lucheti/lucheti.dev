@@ -160,7 +160,7 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
         </div>
 
         <div className="pointer-events-none absolute left-14 top-[88px] w-[min(26rem,34vw)] lg:left-16 [&_h2]:text-[clamp(1.75rem,3vw,3rem)]">
-          <SectionHeader index="02" label={timeline.label} heading={timeline.heading} intro={timeline.intro} />
+          <SectionHeader label={timeline.label} heading={timeline.heading} intro={timeline.intro} />
         </div>
 
         <YearReadout

@@ -9,13 +9,13 @@ type CaseDemoProps = Readonly<{
   sequence: FrameSequence;
 }>;
 
-/** Part 01: a short header on paper, then the pinned board. */
+/** The first part: a short header on paper, then the pinned board. */
 export function CaseDemo({ demo, orchestra, sequence }: CaseDemoProps): ReactNode {
   return (
     <>
       <div className="bg-paper">
         <Container>
-          <SubsectionHeader id="case-demo" number={demo.number} title={demo.title} caption={demo.caption} />
+          <SubsectionHeader id="case-demo" title={demo.title} caption={demo.caption} />
         </Container>
       </div>
       <OrchestraBoardSection orchestra={orchestra} sequence={sequence} />
