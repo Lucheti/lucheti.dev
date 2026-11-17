@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import type { Repo, RepoLabels, RepoStatus } from "@/content";
+import { Chip } from "./Chip";
 import { cx } from "./cx";
+import { BrandIcon, GITHUB_ICON } from "./icons";
 import { RepoIllustration } from "./illustrations";
 import type { Tone } from "./Tone";
-import { ToolList } from "./ToolList";
-import { twoDigits } from "./twoDigits";
+import { ToolPills } from "./ToolPill";
 
 /** The card ground: `paper` for chapters lighter than it, `raised` for chapters that are paper or darker. */
 export type RepoCardSurface = "paper" | "raised";
@@ -18,30 +19,25 @@ type RepoCardsProps = Readonly<{
   surface?: RepoCardSurface;
 }>;
 
-type Skin = Readonly<{ rule: string; heading: string; name: string; description: string; tools: string; separator: string; mute: string }>;
+type Skin = Readonly<{ rule: string; hover: string; name: string; description: string; mark: string }>;
 
 const SKINS: Readonly<Record<Tone, Skin>> = {
   light: {
     rule: "border-line",
-    heading: "text-mute",
+    hover: "hover:border-ink",
     name: "text-ink",
     description: "text-ink-soft",
-    tools: "text-ink",
-    separator: "text-mute",
-    mute: "text-mute",
+    mark: "text-mute group-hover:text-ink",
   },
   dark: {
     rule: "border-line-dark",
-    heading: "text-fog-dim",
+    hover: "hover:border-fog",
     name: "text-fog",
     description: "text-fog-dim",
-    tools: "text-fog",
-    separator: "text-fog-dim",
-    mute: "text-fog-dim",
+    mark: "text-fog-dim group-hover:text-fog",
   },
 };
 
-const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.14em]";
 const CARD = "flex h-full w-full flex-col rounded-lg border p-6 text-left";
 
 function surfaceClass(surface: RepoCardSurface): string {
@@ -59,73 +55,51 @@ function assertNever(value: never): never {
   throw new Error(`Unhandled variant: ${String(value)}`);
 }
 
-function StatusBadge({ status, labels }: { readonly status: RepoStatus; readonly labels: RepoLabels }): ReactNode {
-  switch (status.kind) {
-    case "public":
-      return (
-        <span className="flex items-center gap-2">
-          <span aria-hidden className="size-2 rounded-full bg-signal" />
-          {labels.public}
-        </span>
-      );
-    case "soon":
-      return (
-        <span className="flex items-center gap-2">
-          <span aria-hidden className="size-2 rounded-full border border-line-strong" />
-          {labels.soon}
-        </span>
-      );
-    default:
-      return assertNever(status);
-  }
-}
+type TitleMarkProps = Readonly<{ status: RepoStatus; labels: RepoLabels; skin: Skin; tone: Tone }>;
 
-function Footer({
-  status,
-  labels,
-  ink,
-  mute,
-}: {
-  readonly status: RepoStatus;
-  readonly labels: RepoLabels;
-  readonly ink: string;
-  readonly mute: string;
-}): ReactNode {
+/** Right of the name: the GitHub mark and an arrow for a public repository, a chip for one still being built. */
+function TitleMark({ status, labels, skin, tone }: TitleMarkProps): ReactNode {
   switch (status.kind) {
     case "public":
       return (
-        <span className={cx("inline-flex items-center gap-1.5 text-sm font-medium", ink)}>
-          {labels.open}
-          <span aria-hidden className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+        <span className={cx("flex shrink-0 items-center gap-1 pt-1 transition-colors duration-300 md:pt-1.5", skin.mark)}>
+          <BrandIcon icon={GITHUB_ICON} className="size-4" />
+          <span
+            aria-hidden
+            className="text-base leading-none transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+          >
             ↗
           </span>
+          <span className="sr-only">{labels.open}</span>
         </span>
       );
     case "soon":
-      return <span className={cx("text-sm", mute)}>{labels.pending}</span>;
+      return (
+        <span className="shrink-0 pt-0.5 md:pt-1">
+          <Chip tone={tone}>{labels.pending}</Chip>
+        </span>
+      );
     default:
       return assertNever(status);
   }
 }
 
-type CardProps = Readonly<{ repo: Repo; position: number; labels: RepoLabels; skin: Skin; surface: string }>;
+type CardProps = Readonly<{ repo: Repo; labels: RepoLabels; skin: Skin; tone: Tone; surface: string }>;
 
-function RepoCard({ repo, position, labels, skin, surface }: CardProps): ReactNode {
+function RepoCard({ repo, labels, skin, tone, surface }: CardProps): ReactNode {
   const body = (
     <>
-      <RepoIllustration kind={repo.illustration} />
-      <div className={cx("flex items-center justify-between gap-4", LABEL_CAPS, skin.heading)}>
-        <span>{`${labels.item} ${twoDigits(position)}`}</span>
-        <StatusBadge status={repo.status} labels={labels} />
+      <div className="flex items-start justify-between gap-4">
+        <h4 className={cx("min-w-0 break-words font-display text-xl font-semibold tracking-[-0.02em] md:text-2xl", skin.name)}>
+          {repo.name}
+        </h4>
+        <TitleMark status={repo.status} labels={labels} skin={skin} tone={tone} />
       </div>
-      <h4 className={cx("mt-6 break-words font-display text-lg font-semibold tracking-[-0.02em] md:text-xl", skin.name)}>{repo.name}</h4>
-      <p className={cx("mt-3 text-[15px] leading-[1.55]", skin.description)}>{repo.description}</p>
-      <p className={cx("mb-6 mt-4 text-sm font-medium leading-[1.7]", skin.tools)}>
-        <ToolList tools={repo.tools} separator={skin.separator} />
-      </p>
-      <div className={cx("mt-auto border-t pt-4", skin.rule)}>
-        <Footer status={repo.status} labels={labels} ink={skin.name} mute={skin.mute} />
+      <div className="mt-5">
+        <RepoIllustration kind={repo.illustration} spaced={false} />
       </div>
+      <p className={cx("mt-5 text-[15px] leading-[1.55]", skin.description)}>{repo.description}</p>
+      <ToolPills tools={repo.tools} tone={tone} className="mt-auto pt-6" />
     </>
   );
 
@@ -136,7 +110,7 @@ function RepoCard({ repo, position, labels, skin, surface }: CardProps): ReactNo
           href={repo.status.href}
           target="_blank"
           rel="noreferrer"
-          className={cx("group transition-colors duration-300 hover:border-ink", CARD, skin.rule, surface)}
+          className={cx("group transition-colors duration-300", CARD, skin.rule, skin.hover, surface)}
         >
           {body}
         </a>
@@ -154,9 +128,9 @@ export function RepoCards({ repos, labels, tone = "light", surface = "paper" }: 
   const ground = surfaceClass(surface);
   return (
     <ul className="grid gap-4 md:grid-cols-2">
-      {repos.map((repo, index) => (
+      {repos.map((repo) => (
         <li key={repo.name} className="min-w-0">
-          <RepoCard repo={repo} position={index + 1} labels={labels} skin={skin} surface={ground} />
+          <RepoCard repo={repo} labels={labels} skin={skin} tone={tone} surface={ground} />
         </li>
       ))}
     </ul>

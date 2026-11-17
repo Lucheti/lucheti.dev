@@ -2,39 +2,32 @@ import type { ReactNode } from "react";
 import type { SkillArea } from "@/content";
 import { cx } from "./cx";
 import type { Tone } from "./Tone";
-import { ToolList } from "./ToolList";
+import { ToolPills } from "./ToolPill";
 
 type SkillTableProps = Readonly<{
   areas: readonly SkillArea[];
   /** Visually hidden table caption, e.g. "Front end skills". */
   caption: string;
   /** Column labels; the defaults suit every domain. */
-  columns?: Readonly<{ area: string; tools: string; where: string }>;
+  columns?: Readonly<{ area: string; tools: string }>;
   tone?: Tone;
 }>;
 
-const DEFAULT_COLUMNS = { area: "Area", tools: "Libraries & tools", where: "Where" } as const;
-const NO_EMPLOYER = "—";
+const DEFAULT_COLUMNS = { area: "Area", tools: "Libraries & tools" } as const;
 
-type TableSkin = Readonly<{ rule: string; name: string; summary: string; tools: string; separator: string; where: string; head: string }>;
+type TableSkin = Readonly<{ rule: string; name: string; summary: string; head: string }>;
 
 const SKINS: Readonly<Record<Tone, TableSkin>> = {
   light: {
     rule: "border-line",
     name: "text-ink",
     summary: "text-ink-soft",
-    tools: "text-ink",
-    separator: "text-mute",
-    where: "text-mute",
     head: "text-mute",
   },
   dark: {
     rule: "border-line-dark",
     name: "text-fog",
     summary: "text-fog-dim",
-    tools: "text-fog",
-    separator: "text-fog-dim",
-    where: "text-fog-dim",
     head: "text-fog-dim",
   },
 };
@@ -42,7 +35,7 @@ const SKINS: Readonly<Record<Tone, TableSkin>> = {
 const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.14em]";
 
 /**
- * A resume skill table: area and summary, the libraries used, and the employers where it was the job.
+ * A resume skill table: each area with its summary, then the libraries used in it as pills.
  * Real table semantics (explicit roles) are kept while the rows stack on narrow screens.
  */
 export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "light" }: SkillTableProps): ReactNode {
@@ -55,11 +48,8 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
           <th role="columnheader" scope="col" className={cx("block lg:col-span-4", LABEL_CAPS, skin.head)}>
             {columns.area}
           </th>
-          <th role="columnheader" scope="col" className={cx("block lg:col-span-6", LABEL_CAPS, skin.head)}>
+          <th role="columnheader" scope="col" className={cx("block lg:col-span-8", LABEL_CAPS, skin.head)}>
             {columns.tools}
-          </th>
-          <th role="columnheader" scope="col" className={cx("block lg:col-span-2 lg:text-right", LABEL_CAPS, skin.head)}>
-            {columns.where}
           </th>
         </tr>
       </thead>
@@ -68,7 +58,7 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
           <tr
             key={area.name}
             role="row"
-            className={cx("block border-b py-6 lg:grid lg:grid-cols-12 lg:gap-x-8", skin.rule)}
+            className={cx("block border-b py-6 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-8", skin.rule)}
           >
             <th role="rowheader" scope="row" className="block text-left font-normal lg:col-span-4">
               <span className={cx("block font-display text-xl font-semibold tracking-[-0.02em]", skin.name)}>
@@ -76,24 +66,8 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
               </span>
               <span className={cx("mt-1 block text-sm leading-[1.5]", skin.summary)}>{area.summary}</span>
             </th>
-            <td
-              role="cell"
-              className={cx("mt-3 block text-base font-medium leading-[1.7] lg:col-span-6 lg:mt-0", skin.tools)}
-            >
-              <ToolList tools={area.tools} separator={skin.separator} />
-            </td>
-            <td
-              role="cell"
-              className={cx("mt-3 block lg:col-span-2 lg:mt-0 lg:text-right", LABEL_CAPS, skin.where)}
-            >
-              {area.where.length === 0 ? (
-                <>
-                  <span aria-hidden>{NO_EMPLOYER}</span>
-                  <span className="sr-only">None</span>
-                </>
-              ) : (
-                area.where.join(", ")
-              )}
+            <td role="cell" className="mt-4 block lg:col-span-8 lg:mt-0">
+              <ToolPills tools={area.tools} tone={tone} />
             </td>
           </tr>
         ))}
