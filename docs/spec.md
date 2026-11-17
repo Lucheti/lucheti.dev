@@ -766,3 +766,75 @@ Also:
 - **Board pacing on `/orchestra`:** the board runs all ten steps in about two viewports of scroll, so a normal scroll
   races through it. Make the board section 520dvh, so each step gets about 0.4 of a viewport, and keep the readout
   reaching 10/10 just before the pin releases.
+
+## v2.8 — Brand-colour pills, bold visuals instead of backdrops, no "generated" labels (WP-B)
+
+The owner's review (2026-11-17):
+
+- The pills need colour: each icon on a circle in the library's own brand colour.
+- He doesn't like the faint `DomainBackdrop` layers. He wants bold components and visual supports instead.
+- Every decorative code or number that makes the site read as AI-made goes: "02", "Rev. 2026.11", "LG—01 Portfolio
+  & CV", "Scroll", the 03/04/05 numbering and so on. Accent colour goes on the titles instead of on numbers.
+
+### 1. Brand-colour pills
+
+- **Brand icon:** each pill starts with a 20 px circle filled with the brand's colour (Simple Icons ships it as
+  `hex`). The 12 px icon inside is white or near-black (`#111`), whichever has the higher WCAG contrast against
+  that colour. A pure, tested `BrandSwatch` helper does the choice from the hex.
+- **Fallback:** tools without an icon get the same 20 px circle in a neutral tint (light: `ink/8`; dark:
+  `fog/12`), with the first letter of the label in 10 px semibold, so every pill has the same rhythm.
+- **Dark tone:** circles get a 1 px `fog/20` ring, so black brands (Next.js, Express, GitHub, shadcn/ui) still
+  read on graphite.
+- **Pill shape:** `rounded-full border pl-1 pr-3 py-1 gap-2`, with the circle inset in the pill. The text stays ink
+  (light) or fog (dark).
+
+### 2. Remove the backdrops, add one bold "feature panel" per domain
+
+- **Delete `DomainBackdrop`** and everything it needs: motifs, keyframes, the `MotifInk` constant and the tests.
+  Keep the darker `--color-mute`.
+- **Header layout:** each domain chapter's header becomes two columns on lg. The heading and intro go on the left
+  (5 cols) and a **feature panel** on the right (7 cols). On phones the panel sits under the intro.
+- **Panel:** a `rounded-2xl` graphite card (`bg-graphite text-fog`, `p-6 md:p-8`, about 340–400 px tall) that
+  shows a bold, colourful, real-looking component made in code. It is not a faint drawing. Brand colour comes from
+  the same brand swatches as the pills. Each panel has at most one gentle looping motion, paused off screen and
+  static under reduced motion.
+  - **Front end, "a design system at work":** a small stack of real UI components rendered with Tailwind, slightly
+    overlapping, with soft shadows:
+    - a profile or notification card;
+    - a working toggle switch (clickable);
+    - a segmented control;
+    - a progress ring;
+    - a row of colour-token swatches labelled with their names.
+
+    Motion: the progress ring fills on a loop, or the toggle flips by itself every few seconds until the visitor
+    clicks it.
+  - **Back end, "a request, end to end":** a bold architecture diagram on the graphite card. Client → API gateway →
+    three service boxes (Orders, Payments, Inventory) → a NATS bus bar → PostgreSQL and Redis stores. The service and
+    store nodes carry their brand swatch (NestJS, NATS, PostgreSQL, Redis icons), with fog-on-graphite labels and
+    orange request packets moving along the links. No fake metrics.
+  - **AI, "an agent loop":** a chat-style panel. A user message ("Make shot 3 a close-up"), then an assistant turn
+    with a tool-call chip (`update_shot · framing → close-up`) showing the Claude swatch, then a result card (a
+    storyboard frame that updates), plus MCP and Anthropic swatches as "tools". Motion: the steps appear in turn on a
+    loop, with a typing caret.
+- These panels must look like product UI, crisp and confident. No decoration for its own sake.
+
+### 3. Remove the "generated" labels and numbering
+
+- **Hero (`SheetFrame`, `PortraitFrame`):** remove the crop marks, the code + title ("LG—01 — Portfolio & CV"), the
+  revision ("Rev. 2026.11"), the "Scroll" indicator and "FIG. 01 — PORTRAIT". Remove `Hero.sheet` from the content
+  and its type. The portrait frame's ring and ticks can stay if they read as design rather than annotation.
+- **Chapter headers:** remove the `index` prop and its use everywhere, including `SectionHeader` itself and
+  Contact's `CHAPTER_NUMBER`. Where a domain chapter's eyebrow label just says "Capabilities" above "Front end",
+  remove it. Other chapters keep a plain word label (e.g. "Build log", "Contact") without a number.
+- **Capabilities band:** remove the label/range row ("Capabilities", "03 — 05") and the 03/04/05 numbers on the
+  cards. The accent moves to the titles: card names in `text-signal`, and the word "Capabilities" keeps fog.
+- **Sub-sections:** `SubsectionHeader` loses `number` and `count`. The title carries the accent: a small `bg-signal`
+  square, cap-height and set before the title, or the title's first word in signal. Pick the one that reads best and
+  use it everywhere. Remove `countUnits` and `twoDigits` where they become unused.
+- **`/orchestra`:**
+  - remove the section numbers 01–08, the `PointList` and `DepartmentGrid` index numbers, and the board's "05.3 — Live
+    demo" label (the label becomes "Live demo");
+  - stats render without zero padding: "7 Departments", "16 Agents", "3 Parallel workflows";
+  - `BulletList` principle numbers become a small signal dash or square.
+- **Kept, because they carry meaning:** the timeline years, the Orchestra step readout (05/10), the dates, and real
+  counts in prose.
