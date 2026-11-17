@@ -673,3 +673,96 @@ explained properly as a case study, and the live board runs there.
 scroll to 0 when its top meets the viewport top, and 1 when its bottom meets the viewport bottom. That is exactly the
 sticky frame's pinned span, so `PinProgress` is not needed on that page. Remove `PinProgress` if nothing else uses
 it. The `/orchestra` page runs Lenis smooth scrolling like the main page.
+
+## v2.7 — Compact landmark, living backgrounds, tool pills, cleaner cards (WP-Q)
+
+The owner's review (2026-11-17), point by point.
+
+### 1. The Capabilities landmark is too big for what it holds: make it compact
+
+- Drop `min-h-dvh`; use `py-20 lg:py-28`. Keep the graphite band and the 4 px orange strip on top.
+- **Header row** (lg: 12-col grid, items-end): "Capabilities" in display type at `text-[clamp(3.5rem,9vw,8.5rem)]`
+  (7 cols), with the label/range row and the intro on the right (5 cols).
+- **Index:** three link cards side by side (`lg:grid-cols-3`, stacked on phones) instead of tall rows. Each card has:
+  - **Shape:** `rounded-lg border-line-dark bg-graphite-raised` (or a fog/4% fill) with `p-6`.
+  - **Header row:** the Doto number in signal, with an arrow on the right.
+  - **Name:** the domain name in display `text-3xl`.
+  - **Tools:** up to six tool pills on the dark tone, with icons.
+  - **Hover and focus:** the border turns signal, the arrow nudges and the name turns signal.
+- **Target height:** about 70–80% of a 900 px viewport on desktop; nothing should feel empty.
+
+### 2. The domain chapters need colour and movement: `DomainBackdrop`
+
+Add a decorative layer behind Front end, Back end and AI: `aria-hidden`, `pointer-events-none`, `absolute inset-0`,
+`overflow-hidden`, behind the content. One component takes a discriminated `kind`, `"frontend" | "backend" | "ai"`,
+and a `switch` picks the motif.
+
+- **Colour:** each chapter gets one or two large, very soft signal-orange radial glows (opacity 0.10–0.16, blur
+  ~120 px), plus a faint warm tint. They drift slowly with CSS keyframes over 18–30 s, so the paper stops feeling
+  flat.
+- **Motif:** a large, low-contrast SVG (ink at 5–8% opacity, with one signal accent), sitting mostly at the side of
+  the content and never behind the table text at full strength.
+  - **frontend:** floating wireframe UI fragments (a card, a toggle, a button, a cursor and a selection box with
+    handles) that drift slowly.
+  - **backend:** a sparse service network (nodes and straight links), with small orange packets travelling along a few
+    links.
+  - **ai:** flowing bezier strands, like a neural field, with an orange pulse running along one or two.
+- **Scroll parallax:** the motif layer translates ±60 px across the chapter, via `useScroll` on the section (a
+  transform only, never layout).
+- **Performance and access:**
+  - transforms and opacity only;
+  - animations pause when the chapter is off screen (an IntersectionObserver toggles a paused class, like
+    `ACTIVITY.paused` in `src/orchestra`);
+  - everything is static under `prefers-reduced-motion`;
+  - all text keeps WCAG AA contrast on top of it.
+
+### 3. Skill tables: no "Where", tools as pills with icons
+
+- Remove the Where column and `SkillArea.where` (type and content).
+- **Row layout** (lg): area name and summary in 4 cols, pills in 8 cols. On phones the row stacks.
+- **New `ToolPill`** (`src/ui/ToolPill.tsx`, with light and dark tones):
+  - **Shape:** `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium`; light is
+    `border-line-strong bg-paper/70 text-ink`, dark is `border-line-dark-strong text-fog`.
+  - **Icon:** a 14 px icon on the left when one exists, `aria-hidden`, monochrome `currentColor`, so it reads as one
+    system.
+- **Pill group:** `ToolPills` renders a `<ul>` of pills with `flex flex-wrap gap-2`.
+- **Icons** come from the `simple-icons` npm package (CC0), as tree-shaken named imports (`siReact`, …).
+  - A single registry, `src/ui/icons/toolIcons.ts`, maps tool label → icon.
+  - Tools without an official icon render text only; never invent a logo.
+  - Known gaps: Zustand, Motion, AWS / ECS Fargate, BullMQ, Lenis, Runway, Winston and generic concepts.
+  - Use: React, TypeScript, Next.js, Vite, Tailwind CSS, Radix UI, shadcn/ui, TanStack (Query), Redux (Toolkit),
+    React Hook Form, Zod, GraphQL, Three.js, React Three Fiber (three.js icon), Vitest, Jest, Testing Library, Node.js,
+    NestJS, Express, Fastify, OpenAPI, JWT, Nx, NATS, RabbitMQ, Socket.IO, PostgreSQL, Redis, TypeORM, Prisma,
+    Drizzle, Supabase, Java (OpenJDK), Spring, Scala, WhatsApp, Zoom, Firebase, Mercado Pago, Claude (Claude Code),
+    Anthropic (Anthropic SDK), Model Context Protocol (MCP SDK), Docker, Bun, GitHub.
+- `ToolPills` replaces `ToolList` everywhere: skill tables, repo cards, the landmark and "Built with" on
+  `/orchestra`. Delete `ToolList`.
+
+### 4. Repository cards, restructured
+
+The order inside each card is:
+
+1. **Title row:** the repo name (display `text-xl md:text-2xl` semibold) on the left, and a small GitHub icon + ↗ on
+   the right. For an in-progress repo, it shows a "Coming soon" chip instead.
+2. **Illustration** frame.
+3. **Description.**
+4. **Tool pills.**
+
+Also:
+- Remove the "Repo 01/02" index, the status badge row and the footer. The whole card is still the link when the
+  repo is public.
+- Cards in a row share a height, and their pills align to the bottom (`mt-auto` on the pills).
+
+### 5. "Case study" is renamed, and the animations are fixed
+
+- **Rename:** the AI sub-section 05.3 becomes **"Featured project"**, with the caption "Orchestra in depth: how it
+  works, and the board running live." Its CTA becomes "See how it works →". The `/orchestra` hero label "Case study"
+  becomes "Featured project". Code folder names can stay.
+- **Frozen drawings:** the drawings that move an element along a path with CSS `offset-path` do not move in Chrome.
+  This was measured: the departments packet keeps the same position while its animation is "running". The fix:
+  - move them with SVG `<animateMotion>` along the same path, rendered only when motion is not reduced (a tiny
+    client leaf using `useReducedMotion`), or use transform keyframes for straight segments;
+  - check every drawing in `src/ui/illustrations` for the same problem.
+- **Board pacing on `/orchestra`:** the board runs all ten steps in about two viewports of scroll, so a normal scroll
+  races through it. Make the board section 520dvh, so each step gets about 0.4 of a viewport, and keep the readout
+  reaching 10/10 just before the pin releases.
