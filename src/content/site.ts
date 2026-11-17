@@ -124,16 +124,72 @@ export const SITE: SiteContent = {
   craft: {
     heading: "Front end",
     intro: "React and TypeScript since 2019, from Salesforce's Anypoint Platform to Clarifai and Front.",
-    panel: {
+    room: {
       label:
-        "An isometric, exploded view of one card of UI. Its five layers, tokens, layout, components, content and interaction, slowly separate and come back together.",
-      title: "Layers",
-      layers: {
-        tokens: "Tokens",
-        layout: "Layout",
-        components: "Components",
-        content: "Content",
-        interaction: "Interaction",
+        "A clay model of a designer's workbench: a desk with a monitor, a keyboard, a lamp, a mug and a plant, a pegboard of UI components on the wall, and UI cards that split into their layers as the view moves in to the monitor.",
+      screen: {
+        label: "A small support inbox on the monitor",
+        workspace: "Northwind support",
+        nav: [{ label: "Inbox", count: 4 }, { label: "Mentions", count: 1 }, { label: "Contacts" }, { label: "Reports" }, { label: "Settings" }],
+        inbox: "Inbox",
+        conversations: [
+          {
+            name: "Martina Ruiz",
+            channel: "WhatsApp",
+            time: "09:41",
+            preview: "Can I still change the delivery address?",
+            unread: true,
+            messages: [
+              { from: "them", text: "Hi! I ordered a lamp this morning." },
+              { from: "them", text: "Can I still change the delivery address?" },
+              { from: "me", text: "Of course. It hasn't shipped yet, so send me the new address and I'll update it." },
+            ],
+          },
+          {
+            name: "Tomás Álvarez",
+            channel: "Email",
+            time: "09:12",
+            preview: "The invoice for October is missing the tax ID.",
+            unread: true,
+            messages: [
+              { from: "them", text: "The invoice for October is missing the tax ID." },
+              { from: "me", text: "Thanks for flagging it. I'm sending a corrected one now." },
+            ],
+          },
+          {
+            name: "Sofía Benítez",
+            channel: "Web chat",
+            time: "Yesterday",
+            preview: "Love the new dark mode, by the way.",
+            unread: false,
+            messages: [
+              { from: "them", text: "Love the new dark mode, by the way." },
+              { from: "me", text: "That's great to hear. I'll pass it on to the team." },
+            ],
+          },
+          {
+            name: "Joaquín Paz",
+            channel: "WhatsApp",
+            time: "Mon",
+            preview: "Is the desk available in oak?",
+            unread: false,
+            messages: [
+              { from: "them", text: "Is the desk available in oak?" },
+              { from: "me", text: "It is, in oak and in ash. Both ship in about a week." },
+            ],
+          },
+        ],
+        toggle: "Auto-assign",
+        chart: {
+          title: "Replies this week",
+          value: "248",
+          caption: "Median first reply 4 min",
+          days: ["M", "T", "W", "T", "F", "S", "S"],
+          values: [34, 41, 38, 52, 47, 18, 18],
+        },
+        composer: "Write a reply…",
+        action: { idle: "Resolve", done: "Reopen" },
+        resolved: "Resolved",
       },
     },
     areas: [

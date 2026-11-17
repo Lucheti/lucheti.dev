@@ -144,16 +144,49 @@ export type PanelNode = Readonly<{
   detail?: string;
 }>;
 
-/** The layers of the front-end panel's exploded card, bottom to top. */
+/** The layers of the workbench room's exploded UI cards, bottom to top. */
 export type LayerKind = "tokens" | "layout" | "components" | "content" | "interaction";
 
-/** The front-end feature panel: "Layers", an isometric, exploded view of one card of UI, its layers apart. */
-export type LayersPanel = Readonly<{
-  /** What the panel shows, for screen readers. */
+/** One message in a conversation on the room's monitor. */
+export type RoomMessage = Readonly<{ from: "them" | "me"; text: string }>;
+
+/** One conversation in the inbox on the room's monitor. */
+export type RoomConversation = Readonly<{
+  name: string;
+  /** Where it came in, e.g. "WhatsApp". */
+  channel: string;
+  time: string;
+  preview: string;
+  unread: boolean;
+  messages: readonly RoomMessage[];
+}>;
+
+/** The live interface on the room's monitor: a small support inbox, real DOM the visitor can click. */
+export type RoomScreen = Readonly<{
+  /** The accessible name of the interface. */
   label: string;
-  title: string;
-  /** Each layer's name, as its label beside the model shows it. */
-  layers: Readonly<Record<LayerKind, string>>;
+  workspace: string;
+  nav: readonly Readonly<{ label: string; count?: number }>[];
+  /** The title over the conversation list. */
+  inbox: string;
+  conversations: readonly RoomConversation[];
+  /** The switch in the conversation header. */
+  toggle: string;
+  /** The small chart beside the thread. */
+  chart: Readonly<{ title: string; value: string; caption: string; days: readonly string[]; values: readonly number[] }>;
+  /** The reply box's placeholder. */
+  composer: string;
+  /** The orange primary button, before and after it is pressed. */
+  action: Readonly<{ idle: string; done: string }>;
+  /** The chip a resolved conversation shows. */
+  resolved: string;
+}>;
+
+/** The Front end chapter's opening: a pinned 3D workbench room the camera moves through to a live screen. */
+export type WorkbenchRoom = Readonly<{
+  /** What the scene shows, for screen readers. */
+  label: string;
+  screen: RoomScreen;
 }>;
 
 /** The back-end feature panel: a toy message queue, from a producer through a broker to consumer services. */
@@ -220,7 +253,7 @@ export type AgentPanel = Readonly<{
 
 export type Craft = Domain &
   Readonly<{
-    panel: LayersPanel;
+    room: WorkbenchRoom;
     /** The line under the "Live demo" sub-section title. */
     demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
