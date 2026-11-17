@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { CaseSection, Department, OrchestraPage } from "@/content";
-import { Container, SubsectionHeader, ToolList } from "@/ui";
+import { Container, SubsectionHeader, ToolPills } from "@/ui";
 import { DepartmentGrid } from "./DepartmentGrid";
 import { PointList } from "./PointList";
 
@@ -43,9 +43,7 @@ export function CaseSections({ sections, departments, builtWith }: CaseSectionsP
           <h3 id="case-built-with" className="font-label text-[11px] font-medium uppercase tracking-[0.14em] text-mute">
             {builtWith.title}
           </h3>
-          <p className="mt-4 max-w-[60rem] text-lg font-medium leading-[1.7] text-ink md:text-xl">
-            <ToolList tools={builtWith.tools} separator="text-mute" />
-          </p>
+          <ToolPills tools={builtWith.tools} className="mt-5 max-w-[60rem]" />
         </section>
       </Container>
     </div>

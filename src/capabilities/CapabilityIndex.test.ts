@@ -7,7 +7,7 @@ function domain(heading: string, ...toolLists: readonly (readonly string[])[]): 
     label: "Capabilities",
     heading,
     intro: "",
-    areas: toolLists.map((tools, index) => ({ name: `Area ${index}`, summary: "", tools, where: [] })),
+    areas: toolLists.map((tools, index) => ({ name: `Area ${index}`, summary: "", tools })),
     repos: [],
   };
 }

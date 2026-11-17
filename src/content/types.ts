@@ -93,8 +93,6 @@ export type SkillArea = Readonly<{
   summary: string;
   /** Libraries, frameworks and standards, most important first. */
   tools: readonly string[];
-  /** Employers where this was the job; empty when it was not. */
-  where: readonly string[];
 }>;
 
 /** Where a repository card points: a public repository, or one still being built. */
@@ -115,11 +113,10 @@ export type Repo = Readonly<{
 }>;
 
 export type RepoLabels = Readonly<{
-  public: string;
-  soon: string;
+  /** Screen-reader text for the GitHub mark on a public card. */
   open: string;
+  /** The chip on a card whose repository is still being built. */
   pending: string;
-  item: string;
 }>;
 
 /** A capability domain: Front end, Back end or AI. */
@@ -157,7 +154,7 @@ export type Craft = Domain &
 /** The back-end domain: skills and repositories only. */
 export type Systems = Domain;
 
-/** The wide link card that opens the Orchestra case study from the AI chapter. */
+/** The wide link card that opens the Orchestra page, the featured project, from the AI chapter. */
 export type CaseStudyCard = Readonly<{
   /** The sub-section title. */
   title: string;

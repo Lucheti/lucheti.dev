@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Systems } from "@/content";
 import { Chapter } from "@/story";
-import { Container, RepoCards, SectionHeader, SkillTable, SubsectionHeader, twoDigits } from "@/ui";
+import { Container, DomainBackdrop, RepoCards, SectionHeader, SkillTable, SubsectionHeader, twoDigits } from "@/ui";
 
 type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabilities }>;
 
@@ -9,8 +9,9 @@ type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabiliti
 export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): ReactNode {
   const { subsections, countUnits } = capabilities;
   return (
-    <Chapter id="systems" className="bg-paper-sunk py-32 lg:py-48">
-      <Container className="flex flex-col gap-24 lg:gap-36">
+    <Chapter id="systems" className="relative bg-paper-sunk py-32 lg:py-48">
+      <DomainBackdrop kind="backend" />
+      <Container className="relative flex flex-col gap-24 lg:gap-36">
         <SectionHeader index="04" label={systems.label} heading={systems.heading} intro={systems.intro} />
         <section aria-labelledby="systems-skills">
           <SubsectionHeader

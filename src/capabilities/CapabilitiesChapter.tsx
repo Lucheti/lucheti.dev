@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Ai, Capabilities, Craft, Systems } from "@/content";
 import { Chapter } from "@/story";
-import { Container, Reveal } from "@/ui";
+import { Container, Reveal, ToolPills } from "@/ui";
 import { buildCapabilityIndex, type CapabilityRow } from "./CapabilityIndex";
 
 type CapabilitiesChapterProps = Readonly<{
@@ -13,34 +13,35 @@ type CapabilitiesChapterProps = Readonly<{
 
 const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.16em]";
 
-function IndexRow({ row }: { readonly row: CapabilityRow }): ReactNode {
+/** One domain as a link card: its number, its name and the first tools it uses. */
+function IndexCard({ row }: { readonly row: CapabilityRow }): ReactNode {
   return (
-    <li className="border-b border-line-dark first:border-t">
+    <li className="min-w-0">
       <a
         href={`#${row.chapter}`}
-        className="group flex items-center gap-5 py-6 outline-offset-4 md:gap-8 md:py-8"
+        className="group flex h-full flex-col rounded-lg border border-line-dark bg-graphite-raised p-6 transition-colors duration-300 hover:border-signal focus-visible:border-signal lg:p-7"
       >
-        <span aria-hidden className="w-14 shrink-0 font-dot text-3xl text-signal md:w-20 md:text-5xl">
-          {row.number}
+        <span className="flex items-center justify-between gap-4">
+          <span aria-hidden className="font-dot text-3xl text-signal">
+            {row.number}
+          </span>
+          <span
+            aria-hidden
+            className="font-display text-2xl leading-none text-fog-dim transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-signal group-focus-visible:translate-x-1 group-focus-visible:text-signal"
+          >
+            →
+          </span>
         </span>
-        <span className="font-display text-3xl font-semibold tracking-[-0.04em] text-fog transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal md:text-5xl">
+        <span className="mt-8 font-display text-3xl font-semibold tracking-[-0.04em] text-fog transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal">
           {row.name}
         </span>
-        <span className="hidden min-w-0 flex-1 truncate text-right font-label text-xs text-fog-dim md:block">
-          {row.preview.join(" · ")}
-        </span>
-        <span
-          aria-hidden
-          className="ml-auto font-display text-3xl text-fog transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-signal group-focus-visible:text-signal md:ml-0 md:text-4xl"
-        >
-          →
-        </span>
+        <ToolPills tools={row.preview} tone="dark" className="mt-6" />
       </a>
     </li>
   );
 }
 
-/** The landmark after the build log: everything below it is what Lucas can do, indexed by domain. */
+/** The landmark after the build log: a compact band that indexes the three domains below it. */
 export function CapabilitiesChapter({ capabilities, craft, systems, ai }: CapabilitiesChapterProps): ReactNode {
   const rows = buildCapabilityIndex([
     { chapter: "craft", domain: craft },
@@ -49,30 +50,29 @@ export function CapabilitiesChapter({ capabilities, craft, systems, ai }: Capabi
   ]);
 
   return (
-    <Chapter id="capabilities" className="relative flex min-h-dvh flex-col bg-graphite py-16 text-fog lg:py-20">
+    <Chapter id="capabilities" className="relative bg-graphite py-20 text-fog lg:py-28">
       <div aria-hidden className="absolute inset-x-0 top-0 h-1 bg-signal" />
-      <Container className="flex flex-1 flex-col justify-between gap-12">
-        <div className={`flex items-center justify-between text-fog-dim ${LABEL_CAPS}`}>
-          <p>{capabilities.label}</p>
-          <p>{capabilities.range}</p>
-        </div>
-
-        <div className="flex flex-col gap-8">
-          <div className="@container">
-            <h2 className="font-display text-[length:15cqw] font-bold leading-[0.9] tracking-[-0.06em] text-fog lg:text-[length:min(15cqw,22dvh)]">
-              {capabilities.heading}
-            </h2>
+      <Container className="flex flex-col gap-12 lg:gap-16">
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-10">
+          <h2 className="font-display text-[clamp(3.5rem,9vw,8.5rem)] font-bold leading-[0.88] tracking-[-0.06em] text-fog lg:col-span-7">
+            {capabilities.heading}
+          </h2>
+          <div className="flex flex-col gap-5 lg:col-span-5 lg:pb-2">
+            <div className={`flex items-center justify-between border-b border-line-dark pb-3 text-fog-dim ${LABEL_CAPS}`}>
+              <p>{capabilities.label}</p>
+              <p>{capabilities.range}</p>
+            </div>
+            <Reveal>
+              <p className="max-w-[34rem] text-base leading-[1.6] text-fog-dim md:text-lg">{capabilities.intro}</p>
+            </Reveal>
           </div>
-          <Reveal>
-            <p className="max-w-[34rem] text-base leading-[1.6] text-fog-dim md:text-lg">{capabilities.intro}</p>
-          </Reveal>
         </div>
 
         <Reveal>
           <nav aria-label={capabilities.label}>
-            <ul>
+            <ul className="grid gap-4 lg:grid-cols-3">
               {rows.map((row) => (
-                <IndexRow key={row.chapter} row={row} />
+                <IndexCard key={row.chapter} row={row} />
               ))}
             </ul>
           </nav>
