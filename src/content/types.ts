@@ -86,15 +86,32 @@ export type SpecNote = Readonly<{
   value: string;
 }>;
 
-export type Craft = Readonly<{
-  label: string;
-  heading: string;
-  intro: string;
-  specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
-  notes: readonly SpecNote[];
-  toggle: Readonly<{ show: string; hide: string }>;
-  stack: readonly string[];
+/** One row of a resume skill table. */
+export type SkillArea = Readonly<{
+  name: string;
+  /** One short line. */
+  summary: string;
+  /** Libraries, frameworks and standards, most important first. */
+  tools: readonly string[];
+  /** Employers where this was the job; empty when it was not. */
+  where: readonly string[];
 }>;
+
+/** The small header that introduces a chapter's demo. */
+export type Exhibit = Readonly<{ label: string; title: string; caption: string }>;
+
+/** A capability domain: Front end, Back end or AI. */
+export type Domain = Readonly<{ label: string; heading: string; intro: string; areas: readonly SkillArea[] }>;
+
+export type Capabilities = Readonly<{ label: string; heading: string; intro: string; range: string }>;
+
+export type Craft = Domain &
+  Readonly<{
+    exhibit: Exhibit;
+    specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
+    notes: readonly SpecNote[];
+    toggle: Readonly<{ show: string; hide: string }>;
+  }>;
 
 export type SagaStep = Readonly<{
   service: string;
@@ -103,21 +120,21 @@ export type SagaStep = Readonly<{
   compensation: string;
 }>;
 
-export type Systems = Readonly<{
-  label: string;
-  heading: string;
-  intro: string;
-  edge: Readonly<{ client: string; gateway: string; bus: string; orchestrator: string }>;
-  steps: readonly SagaStep[];
-  /** Index into `steps` of the step that fails in the failure run. */
-  failingStep: number;
-  controls: Readonly<{ run: string; fail: string }>;
-  outcomes: Readonly<{ committed: string; rolledBack: string }>;
-  principles: readonly string[];
-  stack: readonly string[];
-  /** The public repository the diagram is modelled on. */
-  repo: Readonly<{ label: string; href: string; note: string }>;
-}>;
+export type Systems = Domain &
+  Readonly<{
+    exhibit: Exhibit;
+    edge: Readonly<{ client: string; gateway: string; bus: string; orchestrator: string }>;
+    steps: readonly SagaStep[];
+    /** Index into `steps` of the step that fails in the failure run. */
+    failingStep: number;
+    controls: Readonly<{ run: string; fail: string }>;
+    outcomes: Readonly<{ committed: string; rolledBack: string }>;
+    principles: readonly string[];
+    /** The public repository the diagram is modelled on. */
+    repo: Readonly<{ label: string; href: string; note: string }>;
+  }>;
+
+export type Ai = Domain & Readonly<{ exhibit: Exhibit }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 
@@ -177,8 +194,10 @@ export type SiteContent = Readonly<{
   nav: readonly NavItem[];
   hero: Hero;
   timeline: Timeline;
+  capabilities: Capabilities;
   craft: Craft;
   systems: Systems;
+  ai: Ai;
   orchestra: Orchestra;
   contact: Contact;
 }>;

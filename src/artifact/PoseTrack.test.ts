@@ -13,25 +13,25 @@ describe("PoseTrack", () => {
 
   it("returns the chapter pose exactly at each boundary", () => {
     expect(sample(wide, 0).assembly).toBe(0);
-    expect(sample(wide, 5)).toEqual({ x: 0.78, y: 0.5, scale: 0.9, assembly: 1, spin: 3.4 });
+    expect(sample(wide, 7)).toEqual({ x: 0.78, y: 0.5, scale: 0.9, assembly: 1, spin: 3.4 });
   });
 
   it("folds away in every chapter between the hero and contact", () => {
-    for (const chapter of [1, 2, 3, 4]) {
+    for (const chapter of [1, 2, 3, 4, 5, 6]) {
       expect(sample(wide, chapter).scale).toBe(0);
     }
   });
 
   it("is halfway between two chapters at their midpoint (smoothstep is symmetric)", () => {
-    const mid = sample(wide, 3.5);
+    const mid = sample(wide, 4.5);
     expect(mid.spin).toBeCloseTo((2.0 + 2.6) / 2, 10);
     expect(mid.x).toBeCloseTo((0.8 + 0.78) / 2, 10);
   });
 
   it("unfolds only in the last stretch before a chapter that shows it", () => {
-    expect(sample(wide, 4.6).scale).toBe(0);
-    expect(sample(wide, 4.85).scale).toBeGreaterThan(0.3);
-    expect(sample(wide, 4.85).scale).toBeLessThan(0.9);
+    expect(sample(wide, 6.6).scale).toBe(0);
+    expect(sample(wide, 6.85).scale).toBeGreaterThan(0.3);
+    expect(sample(wide, 6.85).scale).toBeLessThan(0.9);
   });
 
   it("folds away in the first stretch after a chapter that shows it", () => {
@@ -40,9 +40,9 @@ describe("PoseTrack", () => {
   });
 
   it("chooses the narrow table below 1024 px and the wide one from 1024", () => {
-    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 4).x).toBe(0.76);
+    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 6).x).toBe(0.76);
     expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX - 1), 0).scale).toBe(0);
-    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX), 5)).toEqual(sample(wide, 5));
+    expect(sample(PoseTrack.forCanvasWidth(NARROW_BELOW_PX), 7)).toEqual(sample(wide, 7));
   });
 });
 

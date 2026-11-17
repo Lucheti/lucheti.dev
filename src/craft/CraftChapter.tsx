@@ -1,27 +1,21 @@
 import type { ReactNode } from "react";
 import type { Craft } from "@/content";
 import { Chapter } from "@/story";
-import { Chip, Container, SectionHeader } from "@/ui";
+import { Container, ExhibitHeader, SectionHeader, SkillTable } from "@/ui";
 import { SpecWorkbench } from "./SpecWorkbench";
 
-/** Chapter 03: the front end, proved by a specimen whose spec the visitor can switch on. */
+/** Chapter 03: the front end as a skill table, then a specimen whose spec the visitor can switch on. */
 export function CraftChapter({ craft }: { readonly craft: Craft }): ReactNode {
   return (
     <Chapter id="craft" className="bg-paper-raised py-32 lg:py-48">
       <Container>
-        <SpecWorkbench
-          craft={craft}
-          header={<SectionHeader index="03" label={craft.label} heading={craft.heading} intro={craft.intro} />}
-          stack={
-            <ul className="flex flex-wrap gap-2" aria-label={craft.label}>
-              {craft.stack.map((item) => (
-                <li key={item}>
-                  <Chip>{item}</Chip>
-                </li>
-              ))}
-            </ul>
-          }
-        />
+        <div className="flex flex-col gap-14">
+          <SectionHeader index="03" label={craft.label} heading={craft.heading} intro={craft.intro} />
+          <SkillTable areas={craft.areas} caption={`${craft.heading} skills`} />
+        </div>
+        <div className="mt-24 lg:mt-32">
+          <SpecWorkbench craft={craft} header={<ExhibitHeader exhibit={craft.exhibit} />} />
+        </div>
       </Container>
     </Chapter>
   );

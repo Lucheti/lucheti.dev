@@ -49,10 +49,12 @@ function surfaceFor(chapter: ChapterId): NavSurface {
   switch (chapter) {
     case "hero":
       return TRANSPARENT;
+    case "capabilities":
     case "orchestra":
       return GRAPHITE;
     case "timeline":
     case "craft":
+    case "ai":
     case "systems":
     case "contact":
       return PAPER;

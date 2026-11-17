@@ -13,13 +13,12 @@ const AUTO_REVEAL_AMOUNT = 0.5;
 
 type SpecWorkbenchProps = Readonly<{
   craft: Craft;
-  /** The chapter header and the stack chips are rendered on the server and slotted in. */
+  /** The exhibit header is rendered on the server and slotted in. */
   header: ReactNode;
-  stack: ReactNode;
 }>;
 
 /** Owns the state the two columns share: whether the spec is shown and the specimen's switch. */
-export function SpecWorkbench({ craft, header, stack }: SpecWorkbenchProps): ReactNode {
+export function SpecWorkbench({ craft, header }: SpecWorkbenchProps): ReactNode {
   const stageRef = useRef<HTMLDivElement>(null);
   const seen = useInView(stageRef, { amount: AUTO_REVEAL_AMOUNT, once: true });
   // The spec turns itself on once when the stage is seen; after that the visitor decides.
@@ -38,7 +37,6 @@ export function SpecWorkbench({ craft, header, stack }: SpecWorkbenchProps): Rea
     <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
       <div className="flex flex-col items-start gap-10 lg:col-span-5">
         {header}
-        {stack}
         <button
           type="button"
           aria-pressed={on}
