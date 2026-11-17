@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import { BOX, DrawingSvg, SECONDARY, TEXT } from "./DrawingSvg";
+import { PathTraveller, type DrawingPoint } from "./PathTraveller";
 
 const EXPORT_EDGE = "M224 114 C236 114 235 90 247 90";
+/** The edge's bezier at t = 0.5. */
+const EXPORT_EDGE_MIDPOINT: DrawingPoint = { x: 235.5, y: 102 };
 
 type NodeProps = Readonly<{ x: number; y: number; h: number; label: string }>;
 
@@ -65,13 +68,9 @@ export function NodeGraphDrawing(): ReactNode {
       <Port x={224} y={114} />
       <Port x={247} y={90} hot />
 
-      <circle
-        cx={0}
-        cy={0}
-        r={3}
-        className="fill-signal motion-safe:animate-[repo-travel_2.4s_ease-in-out_infinite]"
-        style={{ offsetPath: `path('${EXPORT_EDGE}')`, offsetRotate: "0deg", offsetDistance: "50%" }}
-      />
+      <PathTraveller path={EXPORT_EDGE} seconds={2.4} rest={EXPORT_EDGE_MIDPOINT} easing="ease-in-out">
+        <circle cx={0} cy={0} r={3} className="fill-signal" />
+      </PathTraveller>
     </DrawingSvg>
   );
 }

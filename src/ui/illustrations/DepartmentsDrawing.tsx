@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BOX, DrawingSvg, SECONDARY, TEXT } from "./DrawingSvg";
+import { PathTraveller, type DrawingPoint } from "./PathTraveller";
 
 const CARD_WIDTH = 88;
 const CARD_HEIGHT = 60;
@@ -7,6 +8,8 @@ const GAP = 12;
 const LEFT = 16;
 const TOP = 24;
 const PACKET_PATH = "M40 55 H160";
+/** Halfway along the packet's path. */
+const PACKET_REST: DrawingPoint = { x: 100, y: 55 };
 
 type Department = Readonly<{ name: string; workers: number; busy: number }>;
 
@@ -69,15 +72,9 @@ export function DepartmentsDrawing(): ReactNode {
         )),
       )}
 
-      <rect
-        x={-7}
-        y={-4}
-        width={14}
-        height={8}
-        rx={2}
-        className="fill-signal stroke-ink motion-safe:animate-[repo-travel_2.6s_ease-in-out_infinite]"
-        style={{ offsetPath: `path('${PACKET_PATH}')`, offsetRotate: "0deg", offsetDistance: "50%" }}
-      />
+      <PathTraveller path={PACKET_PATH} seconds={2.6} rest={PACKET_REST} easing="ease-in-out">
+        <rect x={-7} y={-4} width={14} height={8} rx={2} className="fill-signal stroke-ink" />
+      </PathTraveller>
     </DrawingSvg>
   );
 }

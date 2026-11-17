@@ -83,16 +83,11 @@ body {
   background-position: -1px -1px;
 }
 
-/* Repository illustrations: one slow motion each, always behind motion-safe:. */
-@keyframes repo-travel {
-  from {
-    offset-distance: 0%;
-  }
-  to {
-    offset-distance: 100%;
-  }
-}
-
+/*
+ * Repository illustrations: one slow motion each, always behind motion-safe:.
+ * Movement along a path uses SVG <animateMotion> (PathTraveller), because CSS
+ * offset-path does not move SVG elements in Chrome.
+ */
 @keyframes repo-fill {
   from {
     transform: scaleX(0.2);
