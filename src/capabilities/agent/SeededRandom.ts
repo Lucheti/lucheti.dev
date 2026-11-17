@@ -19,26 +19,11 @@ export class SeededRandom {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   }
 
-  /** A float in [min, max). */
-  public range(min: number, max: number): number {
-    return min + this.next() * (max - min);
-  }
-
   /** An integer in [min, max], both included. */
   public int(min: number, max: number): number {
-    return Math.floor(this.range(min, max + 1));
-  }
-
-  /** True with the given probability. */
-  public chance(probability: number): boolean {
-    return this.next() < probability;
-  }
-
-  /** One of the items, uniformly; the list must not be empty. */
-  public pick<T>(items: readonly T[]): T {
-    if (items.length === 0) {
-      throw new Error("Cannot pick from an empty list");
+    if (!Number.isInteger(min) || !Number.isInteger(max) || max < min) {
+      throw new Error(`An integer range needs whole bounds in order, not ${min}..${max}`);
     }
-    return items[this.int(0, items.length - 1)];
+    return min + Math.floor(this.next() * (max - min + 1));
   }
 }
