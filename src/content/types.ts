@@ -252,6 +252,8 @@ export type OrchestraPage = Readonly<{
     heading: string;
     lede: string;
     facts: readonly string[];
+    /** The public repository. */
+    repo: Link;
   }>;
   demo: Readonly<{ number: string; title: string; caption: string }>;
   /** Sections 02 to 08, in order. */

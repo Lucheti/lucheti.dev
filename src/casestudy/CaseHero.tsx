@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { OrchestraPage } from "@/content";
-import { Container, Label, Reveal } from "@/ui";
+import { ButtonLink, Container, Label, Reveal } from "@/ui";
 
 type CaseHeroProps = Readonly<{ hero: OrchestraPage["hero"] }>;
 
@@ -19,6 +19,9 @@ export function CaseHero({ hero }: CaseHeroProps): ReactNode {
         </Reveal>
         <Reveal trigger="mount" delay={0.16}>
           <p className="max-w-[40rem] text-lg leading-[1.55] text-ink-soft md:text-xl">{hero.lede}</p>
+        </Reveal>
+        <Reveal trigger="mount" delay={0.2}>
+          <ButtonLink href={hero.repo.href}>{hero.repo.label}</ButtonLink>
         </Reveal>
         <Reveal trigger="mount" delay={0.24}>
           <ul className="flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6">

@@ -182,7 +182,7 @@ export const SITE: SiteContent = {
         name: "lucheti.dev",
         description: "This site. A scroll-driven story with a WebGL object, frame-scrubbed video and live demos.",
         tools: ["Next.js", "React Three Fiber", "Motion", "Lenis", "Tailwind CSS", "Vitest"],
-        status: { kind: "soon" },
+        status: { kind: "public", href: "https://github.com/Lucheti/lucheti.dev" },
         illustration: "website",
       },
     ],
@@ -308,7 +308,7 @@ export const SITE: SiteContent = {
         description:
           "A Claude Code plugin that runs a software lifecycle: independent departments of agents take one feature from idea to release.",
         tools: ["Claude Code", "plugins & hooks", "sub-agents", "TypeScript", "Bun"],
-        status: { kind: "soon" },
+        status: { kind: "public", href: "https://github.com/Lucheti/orchestra" },
         illustration: "departments",
       },
       {

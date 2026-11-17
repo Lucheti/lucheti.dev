@@ -20,6 +20,7 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     heading: "Orchestra",
     lede: "An autonomous software company as a Claude Code plugin. Departments of agents take a feature from idea to release, and code, not a model, decides whether each step is allowed.",
     facts: ["16 agents", "7 departments", "3 parallel workflows", "Built on Claude Code"],
+    repo: { label: "View the code on GitHub ↗", href: "https://github.com/Lucheti/orchestra" },
   },
   demo: {
     number: "01",
@@ -201,7 +202,18 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
   ],
   builtWith: {
     title: "Built with",
-    tools: ["TypeScript", "Bun", "Claude Code plugins (agents, hooks, skills, workflows, monitors)", "Beads", "launchd"],
+    tools: [
+      "TypeScript",
+      "Bun",
+      "Claude Code plugins",
+      "agents",
+      "hooks",
+      "skills",
+      "workflows",
+      "monitors",
+      "Beads",
+      "launchd",
+    ],
   },
   footer: {
     back: { label: "Back to the portfolio", href: "/" },
