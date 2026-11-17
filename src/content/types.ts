@@ -198,17 +198,22 @@ export type BuildingBlocksPanel = Readonly<{
   messages: BlockMessages;
 }>;
 
-/** The back-end feature panel: one request through gateway, services, bus and stores. */
-export type RequestPanel = Readonly<{
+/** The back-end feature panel: a toy message queue, from a producer through a broker to consumer services. */
+export type QueuePanel = Readonly<{
   label: string;
   title: string;
-  client: string;
-  /** What the client sends, e.g. "POST /orders". */
-  request: string;
-  gateway: PanelNode;
+  /** The service that publishes the messages, and what it is. */
+  producer: Readonly<{ name: string; role: string }>;
+  broker: PanelNode;
   services: readonly PanelNode[];
-  bus: PanelNode;
-  stores: readonly PanelNode[];
+  /** The button that sends a batch, and how many it sends. */
+  send: Readonly<{ label: string; count: number }>;
+  /** How each service status is written. */
+  statuses: Readonly<{ healthy: string; busy: string; down: string; restarting: string }>;
+  /** The footer's counters, and the words for a service's messages in flight and done. */
+  readout: Readonly<{ queued: string; processed: string; restarts: string; inFlight: string; done: string }>;
+  /** Live-region sentences; `{service}` and `{count}` are filled in. */
+  announcements: Readonly<{ down: string; restarting: string; recovered: string; settled: string }>;
 }>;
 
 /** How a storyboard frame is shot. */
@@ -251,8 +256,8 @@ export type Craft = Domain &
     toggle: Readonly<{ show: string; hide: string }>;
   }>;
 
-/** The back-end domain: skills and repositories, introduced by the request panel. */
-export type Systems = Domain & Readonly<{ panel: RequestPanel }>;
+/** The back-end domain: skills and repositories, introduced by the message-queue panel. */
+export type Systems = Domain & Readonly<{ panel: QueuePanel }>;
 
 /** The wide link card that opens the Orchestra page, the featured project, from the AI chapter. */
 export type CaseStudyCard = Readonly<{

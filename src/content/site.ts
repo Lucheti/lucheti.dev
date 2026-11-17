@@ -236,21 +236,24 @@ export const SITE: SiteContent = {
     intro: "Node.js services, messaging and data, plus Java and Scala on Salesforce's Anypoint Platform.",
     panel: {
       label:
-        "One request, end to end: the client calls the API gateway, which routes to the Orders, Payments and Inventory services. They talk over a NATS event bus and keep their data in PostgreSQL, with Redis as a cache.",
-      title: "Checkout, end to end",
-      client: "Client",
-      request: "POST /orders",
-      gateway: { name: "API gateway", tool: "NestJS", detail: "Auth · routing" },
+        "A toy message queue. Checkout publishes a steady flow of messages to a NATS queue, which deals each one to the least busy of three services: Orders, Payments and Inventory. Send more to flood it: an overloaded service goes down, hands its messages back to the queue, restarts and drains the backlog. No message is ever lost.",
+      title: "Message queue",
+      producer: { name: "Checkout", role: "Producer" },
+      broker: { name: "NATS", tool: "NATS", detail: "Queue" },
       services: [
         { name: "Orders", tool: "NestJS" },
         { name: "Payments", tool: "NestJS" },
         { name: "Inventory", tool: "NestJS" },
       ],
-      bus: { name: "NATS", tool: "NATS", detail: "order.created" },
-      stores: [
-        { name: "PostgreSQL", tool: "PostgreSQL", detail: "Orders, payments" },
-        { name: "Redis", tool: "Redis", detail: "Read cache" },
-      ],
+      send: { label: "Send 10 messages", count: 10 },
+      statuses: { healthy: "Healthy", busy: "Busy", down: "Down", restarting: "Restarting" },
+      readout: { queued: "Queued", processed: "Processed", restarts: "Restarts", inFlight: "in flight", done: "done" },
+      announcements: {
+        down: "{service} went down. Its {count} messages went back to the queue.",
+        restarting: "{service} is restarting.",
+        recovered: "{service} is back and draining the queue.",
+        settled: "The backlog is cleared.",
+      },
     },
     areas: [
       {
