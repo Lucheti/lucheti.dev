@@ -1,5 +1,6 @@
 export { CHAPTER_IDS, ChapterPosition, type ChapterId } from "./ChapterPosition";
 export { ElementScrollProgress, MountedElement, WindowSurface } from "./ElementScrollProgress";
+export { HashLanding } from "./HashLanding";
 export { Progress } from "./Progress";
 export type { Signal, Unsubscribe } from "./Signal";
 export type { Story } from "./Story";
