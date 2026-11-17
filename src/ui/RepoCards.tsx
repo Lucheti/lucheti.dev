@@ -118,7 +118,7 @@ function RepoCard({ repo, position, labels, skin, surface }: CardProps): ReactNo
       </div>
       <h4 className={cx("mt-6 break-words font-mono text-lg font-semibold md:text-xl", skin.name)}>{repo.name}</h4>
       <p className={cx("mt-3 text-[15px] leading-[1.55]", skin.description)}>{repo.description}</p>
-      <p className={cx("mt-4 text-sm font-medium leading-[1.7]", skin.tools)}>
+      <p className={cx("mb-6 mt-4 text-sm font-medium leading-[1.7]", skin.tools)}>
         <ToolList tools={repo.tools} separator={skin.separator} />
       </p>
       <div className={cx("mt-auto border-t pt-4", skin.rule)}>
@@ -156,7 +156,7 @@ export function RepoCards({ repos, labels, tone = "light", surface = "paper" }: 
         <h3 className="font-normal">{labels.heading}</h3>
         <span>{twoDigits(repos.length)}</span>
       </div>
-      <ul className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <ul className="mt-6 grid gap-4 md:grid-cols-2">
         {repos.map((repo, index) => (
           <li key={repo.name} className="min-w-0">
             <RepoCard repo={repo} position={index + 1} labels={labels} skin={skin} surface={ground} />
