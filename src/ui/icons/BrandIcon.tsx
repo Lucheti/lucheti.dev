@@ -7,7 +7,7 @@ type BrandIconProps = Readonly<{
   className?: string;
 }>;
 
-/** A brand mark drawn in the current text colour, so every icon reads as one system. Decorative. */
+/** A brand mark drawn in the current text colour; a swatch sets that colour by contrast. Decorative. */
 export function BrandIcon({ icon, className }: BrandIconProps): ReactNode {
   return (
     <svg viewBox="0 0 24 24" aria-hidden focusable="false" className={className}>
