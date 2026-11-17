@@ -141,6 +141,18 @@ body {
   }
 }
 
+/* Tiny diffusion: a picture settling in when an older one is picked from the strip. */
+@keyframes toy-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* A text caret. */
 @keyframes panel-caret {
   0%,
