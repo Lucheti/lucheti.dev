@@ -99,6 +99,24 @@ describe("QueueLoop", () => {
     expect(kinds).toContain("down");
     expect(kinds).toContain("recovered");
   });
+
+  it("plays the simulation at its playback speed", () => {
+    const run = (speed: number): number => {
+      const clock = new ManualClock();
+      const frames = new HandFrames();
+      const simulation = new QueueSimulation(clock, new SeededRandom(1), QUEUE_CONFIG);
+      new QueueLoop(simulation, clock, frames, new RecordingPainter(), speed).start("ambient");
+      frames.fire(40);
+      return clock.now();
+    };
+    expect(run(0.4) / run(1)).toBeCloseTo(0.4, 2);
+  });
+
+  it("refuses a playback speed that is not positive", () => {
+    const clock = new ManualClock();
+    const simulation = new QueueSimulation(clock, new SeededRandom(1), QUEUE_CONFIG);
+    expect(() => new QueueLoop(simulation, clock, new HandFrames(), new RecordingPainter(), 0)).toThrow(RangeError);
+  });
 });
 
 describe("composeQueueToy", () => {

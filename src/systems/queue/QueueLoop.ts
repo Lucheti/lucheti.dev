@@ -48,12 +48,20 @@ export class QueueLoop {
   private readonly listeners = new Set<Listener>();
   private readonly eventListeners = new Set<EventListener>();
 
+  /**
+   * `speed` is the playback rate: simulation time advances `speed` times as fast as real time, so the
+   * whole toy can be slowed for reading without retuning the simulation.
+   */
   public constructor(
     private readonly simulation: QueueSimulation,
     private readonly clock: ManualClock,
     private readonly frames: FrameScheduler,
     private readonly painter: FramePainter,
+    private readonly speed = 1,
   ) {
+    if (!(speed > 0 && Number.isFinite(speed))) {
+      throw new RangeError(`Playback speed must be a positive number, not ${speed}`);
+    }
     this.current = simulation.snapshot();
   }
 
@@ -111,7 +119,7 @@ export class QueueLoop {
   }
 
   private readonly tick = (now: number): void => {
-    this.clock.advance(Math.min(MAX_FRAME_MS, Math.max(0, now - this.last)));
+    this.clock.advance(Math.min(MAX_FRAME_MS, Math.max(0, now - this.last)) * this.speed);
     this.last = now;
     this.simulation.update();
     const snapshot = this.simulation.snapshot();

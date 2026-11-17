@@ -19,6 +19,13 @@ const WARM_UP_MS = 9800;
 /** Messages in the air drawn at once; the rest of a flood is drawn in the queue as "+N". */
 const FLYING_DOTS = 16;
 
+/**
+ * The toy plays at 40% of the simulation's real-time tuning, so a visitor can follow each message,
+ * see a service struggle, fall over and come back. Every timing stretches evenly, so the behaviour
+ * (what one, two or three sends do) is unchanged, only slower.
+ */
+const PLAYBACK_SPEED = 0.4;
+
 /** Everything the queue panel runs on. */
 export type QueueToy = Readonly<{
   loop: QueueLoop;
@@ -26,7 +33,7 @@ export type QueueToy = Readonly<{
   announcer: QueueAnnouncer;
   /** A service is busy above `limit` messages and is dealt at most `capacity`. */
   slots: Readonly<{ limit: number; capacity: number }>;
-  /** How long a busy service holds out, in ms, for the fuse drawn under it. */
+  /** How long a busy service holds out, in real ms at playback speed, for the fuse drawn under it. */
   overloadMs: number;
 }>;
 
@@ -43,10 +50,10 @@ export function composeQueueToy(serviceNames: readonly string[], templates: Anno
 
   const painter = new FlightPainter(FLYING_DOTS);
   return {
-    loop: new QueueLoop(simulation, clock, new BrowserFrames(), painter),
+    loop: new QueueLoop(simulation, clock, new BrowserFrames(), painter, PLAYBACK_SPEED),
     painter,
     announcer: new QueueAnnouncer(templates, serviceNames),
     slots: { limit: QUEUE_CONFIG.rules.limit, capacity: QUEUE_CONFIG.broker.capacity },
-    overloadMs: QUEUE_CONFIG.rules.overloadMs,
+    overloadMs: QUEUE_CONFIG.rules.overloadMs / PLAYBACK_SPEED,
   };
 }
