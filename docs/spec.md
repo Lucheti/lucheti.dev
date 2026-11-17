@@ -1043,3 +1043,112 @@ before detail polish.
 - `RoomLayout`: the props' positions and sizes in one place.
 - Explode timing for the cards, as a function of p.
 - One composition root; nothing at module load.
+
+## v2.12 — The Front end diorama (WP-R2, replaces the v2.11 room)
+
+The owner's verdict on v2.11 (2026-11-17): the scroll-driven camera is not wanted at all, and the room is too white.
+What they want: **a fixed 3D asset that moves by itself and can be played with, supporting the "Front end"
+heading**. It should look like **a small cartoon-ish diorama**. That means a full visual redesign, not a polish pass.
+
+### Structure
+- **Layout:** the Front end header goes back to the layout of the other domains: `DomainHeader`, with the heading
+  and intro on the left (5 of 12 columns) and the diorama on the right (7). No pin, no tall section, no heading fade,
+  no closing fade. Skills, Repositories and Live demo follow as before.
+- **No frame:** the diorama is not in a card. It is a floating island standing on the page's paper, with a soft
+  shadow under it. Its box is about 1:1 to 5:4 and as large as the column allows. It must clearly be the biggest,
+  boldest visual on the page.
+- **Removed:** delete what only the scroll story needed: `CameraPath`, `RoomShots`, `RoomScript`, the scroll
+  `ElementScrollProgress` wiring, and the fade. Keep and adapt what still fits, such as layout, idle motion, the card
+  blueprint, the fallback and the mode.
+
+### The look: cartoon diorama
+- **References in words:** the cosy isometric "tiny room" renders from Blender and three.js portfolios. Chunky,
+  rounded, slightly exaggerated proportions, as if made of toy plastic or plasticine, with a saturated but
+  harmonious palette. Think of a little stage set you could pick up. It should be friendly and playful, not a sober
+  product render, and **not white**.
+- **Shading:** toon shading via `MeshToonMaterial` with a gradient map made in code (a `DataTexture` of 3–4 steps;
+  nothing downloaded). Add dark ink outlines on silhouettes, via drei `<Outlines>` or an inverted hull, using one
+  warm dark ink, not pure black. Shadows are soft and coloured: a tinted shade, never grey mush.
+- **Palette** (a starting point; tune it by eye, and keep the signal orange `#ff5a1f` as the main accent):
+  - **Walls:** a deep, friendly blue (cobalt or periwinkle range). The two walls are slightly different shades so
+    the corner reads.
+  - **Floor:** honey wooden planks, with visible plank seams.
+  - **Rug:** signal orange.
+  - **Desk:** warm wood.
+  - **Plants:** fresh greens.
+  - **Monitor, keyboard and lamp:** cream and ink.
+  - **Small pops:** a little sunny yellow and soft pink, used sparingly.
+  - **Plinth edge:** the island's cut edge shows layers like a cake: wood floor, then a darker earth or ink band.
+- **Proportions:** everything chunky, with big bevels and rounded corners on every box (`RoundedBox` or bevelled
+  extrusions), and no razor-thin geometry. The props are oversized relative to the room so it reads at small size.
+- **Contents** (re-composed for a fixed three-quarter view; it does not need to be the same room):
+  - **Desk:** desk, monitor, keyboard, mug with steam, desk lamp, and a rubber duck (the debugging joke).
+  - **Pegboard:** a pegboard of chunky UI controls, covered under Interaction below.
+  - **Plants:** one or two plants with big leaves.
+  - **Wall and shelf:** a poster or framed "UI" print, and a little shelf with books.
+  - **Window:** a window on one wall with a sky-coloured pane, so the walls aren't blank.
+  - **Floating card:** one floating UI card stack above or beside the desk.
+- **Lighting:** bright and cheerful. Key, fill and rim from fixed lights, plus procedural `Lightformer`s if they
+  help. The desk lamp casts a warm pool that reads as light, not as an orange smudge.
+
+### Camera and motion
+- **Camera:** fixed, preferably orthographic, at a classic three-quarter diorama angle (about 35–45° yaw and 30°
+  pitch). The whole island is in frame with breathing room; nothing is cut off at any column width.
+- **Pointer parallax:** the island tilts a few degrees toward the pointer, damped.
+- **Drag:** dragging turns the island (yaw, clamped to about ±30°). On release it springs back softly to rest. A
+  `grab` / `grabbing` cursor shows over it.
+- **Always alive (idle):**
+  - steam rising from the mug;
+  - the plants swaying;
+  - the floating card stack breathing apart into its layers and back together, on a slow loop;
+  - a soft bob on the duck;
+  - the monitor UI doing small things by itself, such as a new item arriving or a chart bar growing;
+  - optionally a cloud drifting past the window.
+
+  Calm, never frantic.
+
+### Interaction: the pegboard drives the screen
+The pegboard's chunky controls are real controls. Clicking them animates the 3D piece (a press, flip, slide or
+light-up, with a little squash-and-stretch) and changes the UI on the monitor:
+- **Toggle:** switches the screen between light and dark theme.
+- **Big orange button:** pops a toast on the screen.
+- **Slider:** steps the screen's density or text size.
+- **Stars:** set a rating on the screen's selected item.
+- **Checkbox:** marks the selected item done.
+
+Other things react too:
+- **Lamp:** clicking it turns the lamp light on and off, and the scene's light visibly changes.
+- **Duck:** squeaks visually (squash and bounce).
+- **Plant:** wiggles.
+- **Floating card:** pops fully apart, then settles.
+
+Hovering anything clickable lifts it slightly and shows a pointer cursor. Every clickable piece is reachable by
+keyboard: an HTML list of visually hidden buttons that mirror the controls, with the same effects, is fine.
+
+### The screen
+- **Mounting:** drei `<Html transform>` on the monitor, as before, but the UI is **designed for its real size**.
+  At this panel size the monitor is only a couple of hundred pixels wide, so the old 1440×900 inbox scaled down
+  is unreadable.
+- **Content:** a chunky, cartoon-friendly mini app, such as a header bar, three big list rows with avatars, a
+  small bar chart and a toast area. It has big shapes and few words, and it is themed by the toggle. Its copy lives
+  in `src/content/site.ts` (replace `craft.room.screen` and its types as needed).
+- **Pointer:** the screen does not need its own clicks (`pointer-events: none` is fine, so the drag works over it).
+  The pegboard is how you drive it.
+
+### Performance and fallbacks
+- **Canvas and frames:** one `<Canvas>`, with `dpr` capped at 2 and merged static geometry. The scene renders every
+  frame only while it is on screen and animating; otherwise it renders on demand.
+- **Shadows:** baked once, or contact shadows rendered once.
+- **Phones (< 768 px):** the diorama sits under the intro at full width. Taps work and drag is off, so it never
+  fights page scroll.
+- **Reduced motion:** no idle loop and no parallax. Clicks still work, with the changes applied instantly.
+- **Fallback:** before WebGL is ready, or if it fails, a flat illustrated SVG of the same diorama in the same
+  palette. Never a blank box. `SceneBoundary` (in `src/ui`) catches failures.
+
+### Logic (pure, tested)
+- **Layout:** one place for every prop's position and size.
+- **Diorama state:** a model of `theme`, `toasts`, `density`, `rating`, `done`, `lampOn`, with domain methods, not
+  setters. The 3D controls and the screen both read it.
+- **Drag/spring:** clamping and spring-back as a pure stepper.
+- **Idle loops:** pure functions of time.
+- **Composition:** one composition root; nothing is instantiated at module load.
