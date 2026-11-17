@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Ai, Capabilities, Stat } from "@/content";
 import { Chapter } from "@/story";
-import { Container, RepoCards, SectionHeader, SkillTable, SubsectionHeader, twoDigits } from "@/ui";
+import { Container, DomainBackdrop, RepoCards, SectionHeader, SkillTable, SubsectionHeader, twoDigits } from "@/ui";
 import { CaseStudyCard } from "./CaseStudyCard";
 
 type AiChapterProps = Readonly<{
@@ -11,12 +11,13 @@ type AiChapterProps = Readonly<{
   stats: readonly Stat[];
 }>;
 
-/** Chapter 05: AI as three numbered parts: skills, repositories and the Orchestra case study, which has its own page. */
+/** Chapter 05: AI as three numbered parts: skills, repositories and Orchestra, the featured project with its own page. */
 export function AiChapter({ ai, capabilities, stats }: AiChapterProps): ReactNode {
   const { subsections, countUnits } = capabilities;
   return (
-    <Chapter id="ai" className="bg-paper py-32 lg:py-48">
-      <Container className="flex flex-col gap-24 lg:gap-36">
+    <Chapter id="ai" className="relative bg-paper py-32 lg:py-48">
+      <DomainBackdrop kind="ai" />
+      <Container className="relative flex flex-col gap-24 lg:gap-36">
         <SectionHeader index="05" label={ai.label} heading={ai.heading} intro={ai.intro} />
         <section aria-labelledby="ai-skills">
           <SubsectionHeader

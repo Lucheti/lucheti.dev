@@ -1,3 +1,4 @@
+export { DomainBackdrop, type BackdropKind } from "./backdrop";
 export { BulletList } from "./BulletList";
 export { ButtonLink } from "./ButtonLink";
 export { Chip } from "./Chip";
