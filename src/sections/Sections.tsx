@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AiChapter, CapabilitiesChapter } from "@/capabilities";
 import { CraftChapter } from "@/craft";
 import { ORCHESTRA_SEQUENCE, type SiteContent } from "@/content";
 import { OrchestraChapter } from "@/orchestra";
@@ -29,8 +30,15 @@ export function Sections({ content }: SectionsProps): ReactNode {
       <main id="main" className="relative z-20">
         <HeroSection hero={content.hero} timeZone={content.timeZone} city={content.city} />
         <TimelineChapter timeline={content.timeline} />
+        <CapabilitiesChapter
+          capabilities={content.capabilities}
+          craft={content.craft}
+          systems={content.systems}
+          ai={content.ai}
+        />
         <CraftChapter craft={content.craft} />
         <SystemsChapter systems={content.systems} />
+        <AiChapter ai={content.ai} />
         <OrchestraChapter orchestra={content.orchestra} sequence={ORCHESTRA_SEQUENCE} />
         <ContactSection contact={content.contact} timeZone={content.timeZone} city={content.city} />
       </main>

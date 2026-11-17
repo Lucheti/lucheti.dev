@@ -1,7 +1,7 @@
 import { Progress } from "./Progress";
 
 /** The chapters of the page, in scroll order. */
-export const CHAPTER_IDS = ["hero", "timeline", "craft", "systems", "orchestra", "contact"] as const;
+export const CHAPTER_IDS = ["hero", "timeline", "capabilities", "craft", "systems", "ai", "orchestra", "contact"] as const;
 
 export type ChapterId = (typeof CHAPTER_IDS)[number];
 

@@ -22,7 +22,6 @@ type OrchestraStageProps = Readonly<{
   chapterDvh: number;
 }>;
 
-const CHAPTER_INDEX = "05";
 const FOCAL_X = 0.62;
 /** Where the video rests when motion is reduced: the core in clear view. */
 const STILL_FRACTION = 0.7;
@@ -75,7 +74,6 @@ export function OrchestraStage({ orchestra, sequence, chapterDvh }: OrchestraSta
       <Container className="relative flex h-full flex-col gap-[clamp(1rem,3dvh,2rem)] pb-4 pt-[4.5rem] lg:flex-row lg:gap-10 lg:pb-[clamp(1rem,4dvh,2.5rem)] lg:pt-[clamp(4.5rem,11dvh,6rem)] xl:gap-14">
         <div className={cx("flex flex-col lg:w-[34%] lg:justify-center xl:w-[36%]", HEADER_FIT)}>
           <SectionHeader
-            index={CHAPTER_INDEX}
             label={orchestra.label}
             heading={orchestra.heading}
             intro={orchestra.intro}

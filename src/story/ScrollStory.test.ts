@@ -40,8 +40,10 @@ function storyWithChapters(viewport: Viewport): ScrollStory {
   const story = new ScrollStory(viewport);
   story.anchor("hero", anchorAt(0));
   story.anchor("timeline", anchorAt(1000));
-  story.anchor("craft", anchorAt(3000));
+  story.anchor("capabilities", anchorAt(3000));
+  story.anchor("craft", anchorAt(3200));
   story.anchor("systems", anchorAt(3500));
+  story.anchor("ai", anchorAt(3800));
   story.anchor("orchestra", anchorAt(4000));
   // Shorter than the screen: its top can never reach the top of the viewport.
   story.anchor("contact", anchorAt(5400));
@@ -67,7 +69,7 @@ describe("ChapterPosition", () => {
   it("splits a continuous number into chapter and blend", () => {
     const position = ChapterPosition.at(1.25);
     expect(position.chapter()).toBe("timeline");
-    expect(position.upcoming()).toBe("craft");
+    expect(position.upcoming()).toBe("capabilities");
     expect(position.blend().toNumber()).toBe(0.25);
   });
 
@@ -75,7 +77,7 @@ describe("ChapterPosition", () => {
     const position = ChapterPosition.at(1.25);
     expect(position.through("hero").toNumber()).toBe(1);
     expect(position.through("timeline").toNumber()).toBe(0.25);
-    expect(position.through("craft").toNumber()).toBe(0);
+    expect(position.through("capabilities").toNumber()).toBe(0);
     expect(ChapterPosition.at(99).through("contact").toNumber()).toBe(1);
   });
 
