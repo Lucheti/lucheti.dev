@@ -25,8 +25,6 @@ const WIDE_TABLE: PoseTable = {
   craft: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.8, y: 0.45, scale: 0.0, assembly: 0.85, spin: 2.0 },
   ai: { x: 0.78, y: 0.5, scale: 0.0, assembly: 1.0, spin: 2.6 },
-  // The department board fills the Agents chapter, so the object waits for contact.
-  orchestra: { x: 0.78, y: 0.5, scale: 0.0, assembly: 1.0, spin: 2.6 },
   contact: { x: 0.78, y: 0.5, scale: 0.9, assembly: 1.0, spin: 3.4 },
 };
 
@@ -39,7 +37,6 @@ const NARROW_TABLE: PoseTable = {
   craft: { x: 0.5, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   systems: { x: 0.5, y: 0.3, scale: 0.0, assembly: 0.85, spin: 2.0 },
   ai: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 2.6 },
-  orchestra: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 2.6 },
   contact: { x: 0.76, y: 0.79, scale: 0.0, assembly: 1.0, spin: 3.4 },
 };
 

@@ -1,1 +1,1 @@
-export { OrchestraChapter } from "./OrchestraChapter";
+export { OrchestraBoardSection } from "./OrchestraBoardSection";
