@@ -1219,3 +1219,82 @@ not deleted.
   ask where the cursor is and what it is doing at time t.
 - **Tilt:** pointer to tilt, damped, as a pure stepper. Reuse `HoverTilt` from `src/craft/layers` if it fits.
 - **Composition:** one composition root; nothing is instantiated at module load.
+
+## v2.14 — The Back end queue becomes a 3D diorama (WP-Q3)
+
+The owner's direction (2026-11-17): turn the Back end "Message queue" toy into a 3D diorama, in the same cartoon
+style as the v2.12 room, with **a big, satisfying 3D button you press to send the requests**.
+
+### What stays
+- **Engine:** the simulation is unchanged. That covers `QueueSimulation`, `QueueLoop` at 0.4 playback speed, the
+  announcer, the seed and warm-up, and the copy in `systems.panel`. The diorama is only a new renderer of the same
+  `QueueSnapshot`, and every behaviour in v2.9's "Message queue" still holds:
+  - a steady flow, with messages dealt to the least busy service;
+  - a send burst of 10;
+  - an overloaded service goes down, hands its messages back, restarts and drains;
+  - no message is ever lost.
+- **2D panel:** `QueuePanel` stays, as the fallback for no WebGL or a failed scene, and for reduced motion.
+
+### The diorama (react-three-fiber + drei, everything built in code)
+- **Style:** the v2.12 look. Toon shading from a code-made gradient map, warm-ink outlines, chunky rounded shapes, a
+  saturated palette with signal orange `#ff5a1f` as the accent, and a floating island with a layered cut edge and a
+  soft tinted shadow.
+  - **Reuse:** the v2.12 toolkit (`ToonKit`, `toon`, `Solid`/`SolidGeometry`, `DragGesture`/`TurnSpring`, `HoverLift`,
+    `PointerCursor`, `curves`).
+  - **Import path:** it is moving from `src/craft/diorama/` to `src/diorama/`, so import it through **one** local
+    re-export file, so only that file's paths change.
+  - **Palette:** a different one from the room, so the two dioramas don't look like twins. For example, a mint or
+    teal ground with cream and ink machines.
+- **The scene,** reading left to right in a fixed three-quarter view:
+  - **Checkout:** a little shop kiosk or building, the producer. In front of it on a pedestal sits **the big button**:
+    a chunky orange arcade-style button with a cream bezel. Pressing it plays a deep squash-and-release, sends
+    `systems.panel.send.count` messages, and gives a small pulse to the kiosk. It is the most obviously clickable
+    thing in the scene: hover lifts it a little and the cursor becomes a pointer. A small floating label reads
+    "Send 10" (HTML via drei `Html`, crisp).
+  - **The queue (NATS):** a conveyor belt or chute into a broker machine with a glass hopper or rack where waiting
+    messages **pile up as little cubes or parcels**, so the depth is physically visible. In a flood, the pile grows
+    tall; beyond a cap, show a "+N" tag.
+  - **Three services (Orders, Payments, Inventory):** three chunky server or machine units, each with:
+    - a status lamp;
+    - a small screen showing its processed count (HTML label or canvas texture, crisp);
+    - its name on a small sign.
+
+    Their states:
+    - **Healthy:** a calm green light and a gentle hum bob.
+    - **Busy:** the lamp goes amber, the unit vibrates and its fuse fills.
+    - **Down:** a puff of cartoon smoke, a red or ink lamp, a slump or tilt, and its in-flight parcels visibly fly
+      back to the hopper.
+    - **Restarting:** a spinner on the screen, the lights blinking back on, then a little "boing" as it returns
+      healthy.
+  - **Messages:** small orange parcels that travel along tracks, tubes or arcs, from the kiosk to the hopper and from
+    the hopper to a service. Returning messages are drawn distinctly (cream with an orange outline), as in 2D.
+    Cap the drawn parcels, as the 2D panel does.
+- **Readout:** queued, processed and restarts, as a small crisp HTML strip under the island (the panel's footer),
+  matching the 2D panel's numbers.
+- **Interaction and life:**
+  - **Steady flow:** keeps the island alive by itself.
+  - **Pointer lean:** a few degrees toward the pointer.
+  - **Drag:** turns the island, clamped to about ±30°, and it springs back.
+  - **Button:** pressing it sends the burst, and there is also an accessible HTML button with the same action
+    (visually hidden, shown on focus).
+  - **Announcements:** keep the live-region announcements.
+- **Layout:** it replaces `QueuePanel` in the `DomainHeader` panel slot of the Back end chapter, with no card frame;
+  the island floats on the page like the room did. The copy that sits on the 2D panel's card (title) may become a
+  small label above or under the island if needed.
+
+### Fallbacks and performance
+- **Fallback:** show the 2D `QueuePanel` until WebGL is ready, and keep it if WebGL fails (`SceneBoundary` from
+  `src/ui`). Use a cross-fade, not a jump.
+- **Reduced motion:** the 2D panel.
+- **Phones (< 768 px):** the 3D island works with taps (the button), with drag and lean off. If it can't be made
+  readable at 375 px, the 2D panel is fine there.
+- **Rendering:** one `<Canvas>`, `dpr` capped at 2, and instanced or pooled meshes for parcels. Render every frame
+  only while on screen; pause the loop off screen, as `usePanelLoop` does.
+
+### Logic (pure, tested)
+- **Placement:** where parcels sit along each track for a given flight progress, and where the hopper stack is for a
+  queue depth.
+- **Service look:** the visual state per service status, such as lamp colour, shake amount and slump, as a pure
+  mapping using `assertNever`.
+- **Button press curve:** squash and release as a function of time.
+- **Composition:** one composition root; nothing is instantiated at module load.
