@@ -152,15 +152,27 @@ body {
   }
 }
 
-/* Tiny diffusion: a picture settling in when an older one is picked from the strip. */
-@keyframes toy-fade {
+/* Agent at work (src/capabilities/agent): a speech bubble popping in from its tail. */
+@keyframes toy-bubble {
   from {
     opacity: 0;
-    transform: scale(1.03);
+    transform: scale(0.6) translateY(4px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Agent at work: the shipped counter bumps when a ticket goes in. */
+@keyframes toy-tick {
+  0% {
+    color: var(--color-signal-ink);
+    transform: translateY(-3px) scale(1.25);
+  }
+  100% {
+    color: var(--color-ink);
+    transform: translateY(0) scale(1);
   }
 }
 
