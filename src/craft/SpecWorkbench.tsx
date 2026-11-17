@@ -13,7 +13,7 @@ const AUTO_REVEAL_AMOUNT = 0.5;
 
 type SpecWorkbenchProps = Readonly<{
   craft: Craft;
-  /** The exhibit header is rendered on the server and slotted in. */
+  /** The demo caption is rendered on the server and slotted in above the toggle. */
   header: ReactNode;
 }>;
 
@@ -42,7 +42,7 @@ export function SpecWorkbench({ craft, header }: SpecWorkbenchProps): ReactNode 
           aria-pressed={on}
           onClick={() => setChosen(!on)}
           className={cx(
-            "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] border px-5 font-mono text-xs uppercase tracking-[0.14em] transition-colors duration-300 ease-out-expo",
+            "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] border px-5 font-label font-medium text-xs uppercase tracking-[0.14em] transition-colors duration-300 ease-out-expo",
             on ? "border-ink bg-ink text-paper hover:bg-signal hover:text-ink" : "border-line-strong text-ink hover:border-ink",
           )}
         >
@@ -70,7 +70,7 @@ export function SpecWorkbench({ craft, header }: SpecWorkbenchProps): ReactNode 
 
         <ol className={cx(legend && on ? "mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2" : "sr-only")}>
           {craft.notes.map((note, index) => (
-            <li key={note.id} className="flex gap-3 font-mono text-[11px] uppercase leading-5 tracking-[0.12em]">
+            <li key={note.id} className="flex gap-3 font-label font-medium text-[11px] uppercase leading-5 tracking-[0.12em]">
               <span aria-hidden className="flex size-5 shrink-0 items-center justify-center bg-signal text-[10px] text-ink">
                 {index + 1}
               </span>

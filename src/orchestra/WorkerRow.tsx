@@ -27,7 +27,7 @@ export function WorkerRow({ row, busy, rhythm }: WorkerRowProps): ReactNode {
       />
       <span
         className={cx(
-          "min-w-0 flex-1 truncate font-mono text-[10px] leading-none transition-colors duration-300 xl:text-[11px]",
+          "min-w-0 flex-1 truncate font-label text-[10px] leading-none transition-colors duration-300 xl:text-[11px]",
           busy ? "text-fog" : "text-fog-dim/55",
         )}
       >
@@ -35,7 +35,7 @@ export function WorkerRow({ row, busy, rhythm }: WorkerRowProps): ReactNode {
         {row.instances > 1 && <span className="text-fog-dim/70"> ·{row.instance}</span>}
         {busy && <span className="sr-only"> {BUSY_WORD}</span>}
       </span>
-      <span aria-hidden className="h-3 w-2 shrink-0 overflow-hidden font-mono text-[10px] leading-3 text-fog-dim">
+      <span aria-hidden className="h-3 w-2 shrink-0 overflow-hidden font-label text-[10px] leading-3 text-fog-dim">
         {busy && (
           <span className={cx("flex flex-col", ACTIVITY.spin)}>
             {SPINNER_FRAMES.map((frame) => (
@@ -67,7 +67,7 @@ export function CodeRow({ label, running, rhythm }: CodeRowProps): ReactNode {
       />
       <span
         className={cx(
-          "min-w-0 flex-1 truncate font-mono text-[10px] uppercase leading-none tracking-[0.14em] transition-colors duration-300",
+          "min-w-0 flex-1 truncate font-label font-medium text-[10px] uppercase leading-none tracking-[0.14em] transition-colors duration-300",
           running ? "text-signal" : "text-fog-dim/55",
         )}
       >

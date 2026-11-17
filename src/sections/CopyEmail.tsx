@@ -30,11 +30,11 @@ export function CopyEmail({ email }: { readonly email: string }): ReactNode {
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span className="font-mono text-sm text-ink md:text-[15px]">{email}</span>
+      <span className="font-label text-sm text-ink md:text-[15px]">{email}</span>
       <button
         type="button"
         onClick={() => void copy()}
-        className="h-8 rounded-[3px] border border-line-strong px-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors duration-300 ease-out-expo hover:border-ink"
+        className="h-8 rounded-[3px] border border-line-strong px-3 font-label font-medium text-[11px] uppercase tracking-[0.14em] text-ink transition-colors duration-300 ease-out-expo hover:border-ink"
       >
         {copied ? COPIED_LABEL : COPY_LABEL}
       </button>

@@ -57,8 +57,8 @@ function Facts({ facts }: { readonly facts: Hero["facts"] }): ReactNode {
     <dl className="grid grid-cols-3 gap-x-4 border-t border-line pt-4">
       {facts.map((fact) => (
         <div key={fact.label} className="flex flex-col gap-1.5">
-          <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-mute">{fact.label}</dt>
-          <dd className="font-mono text-xs leading-[1.45] text-ink md:text-[13px]">{fact.value}</dd>
+          <dt className="font-label font-medium text-[11px] uppercase tracking-[0.12em] text-mute">{fact.label}</dt>
+          <dd className="font-label text-xs leading-[1.45] text-ink md:text-[13px]">{fact.value}</dd>
         </div>
       ))}
     </dl>

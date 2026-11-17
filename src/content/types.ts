@@ -97,24 +97,24 @@ export type SkillArea = Readonly<{
   where: readonly string[];
 }>;
 
-/** The small header that introduces a chapter's demo. */
-export type Exhibit = Readonly<{ label: string; title: string; caption: string }>;
-
 /** Where a repository card points: a public repository, or one still being built. */
 export type RepoStatus = Readonly<{ kind: "public"; href: string }> | Readonly<{ kind: "soon" }>;
 
+/** Which drawing a repository card shows. */
+export type RepoIllustrationKind = "node-graph" | "website" | "saga" | "job-queue" | "departments" | "storyboard";
+
 /** A repository a recruiter can open. */
 export type Repo = Readonly<{
-  /** The GitHub repository name, shown in mono. */
+  /** The GitHub repository name. */
   name: string;
   /** Two or three short sentences. */
   description: string;
   tools: readonly string[];
   status: RepoStatus;
+  illustration: RepoIllustrationKind;
 }>;
 
 export type RepoLabels = Readonly<{
-  heading: string;
   public: string;
   soon: string;
   open: string;
@@ -131,17 +131,24 @@ export type Domain = Readonly<{
   repos: readonly Repo[];
 }>;
 
+/** The title and caption of a numbered sub-section of a domain chapter. */
+export type Subsection = Readonly<{ title: string; caption: string }>;
+
 export type Capabilities = Readonly<{
   label: string;
   heading: string;
   intro: string;
   range: string;
   repoLabels: RepoLabels;
+  subsections: Readonly<{ skills: Subsection; repos: Subsection; demo: Subsection }>;
+  /** Units for the sub-section counts, e.g. "areas" in "05 areas". */
+  countUnits: Readonly<{ areas: string; repos: string }>;
 }>;
 
 export type Craft = Domain &
   Readonly<{
-    exhibit: Exhibit;
+    /** The line under the "Live demo" sub-section title. */
+    demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
     notes: readonly SpecNote[];
     toggle: Readonly<{ show: string; hide: string }>;
@@ -150,7 +157,7 @@ export type Craft = Domain &
 /** The back-end domain: skills and repositories only. */
 export type Systems = Domain;
 
-/** The AI domain; its exhibit is the pinned Orchestra chapter that follows it. */
+/** The AI domain; its live demo is the pinned Orchestra chapter that follows it. */
 export type Ai = Domain;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";

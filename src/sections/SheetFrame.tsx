@@ -57,7 +57,7 @@ function CropMark({ corner }: { readonly corner: Corner }): ReactNode {
 }
 
 const ANNOTATION =
-  "absolute font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-mute";
+  "absolute font-label font-medium text-[11px] uppercase leading-none tracking-[0.14em] text-mute";
 
 /** A short vertical tick with a bead that slides down it, hinting at the scroll. */
 function ScrollTick(): ReactNode {
@@ -90,7 +90,7 @@ export function SheetFrame({ sheet }: { readonly sheet: Hero["sheet"] }): ReactN
       </p>
       <p className={cx(ANNOTATION, "right-[3.25rem] top-20 hidden sm:block")}>{sheet.revision}</p>
       <div className="absolute bottom-6 right-[3.25rem] flex items-end gap-3">
-        <span className="font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-mute">{sheet.scroll}</span>
+        <span className="font-label font-medium text-[11px] uppercase leading-none tracking-[0.14em] text-mute">{sheet.scroll}</span>
         <ScrollTick />
       </div>
     </motion.div>

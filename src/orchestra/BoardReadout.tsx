@@ -34,12 +34,12 @@ export function BoardReadout({ phase, ticket, stepCount, className }: BoardReado
         className,
       )}
     >
-      <p className="font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-fog-dim">{STEP_LABEL}</p>
+      <p className="font-label font-medium text-[10px] uppercase leading-none tracking-[0.16em] text-fog-dim">{STEP_LABEL}</p>
       <p className="font-dot font-black leading-none text-fog">
         <span className="text-[clamp(1.75rem,3.6dvh,2.5rem)]">{pad(reachedOf(phase))}</span>
         <span className="text-[clamp(1rem,2dvh,1.375rem)] text-fog-dim">/{pad(stepCount)}</span>
       </p>
-      <p className="truncate font-mono text-[10px] uppercase leading-none tracking-[0.14em] text-fog-dim">
+      <p className="truncate font-label font-medium text-[10px] uppercase leading-none tracking-[0.14em] text-fog-dim">
         <span className={phase.kind === "waiting" ? undefined : "text-signal"}>{ticket}</span> · {PHASE_WORDS[phase.kind]}
       </p>
     </div>

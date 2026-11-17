@@ -57,7 +57,7 @@ export function CountStat({ stat, shown, delay }: CountStatProps): ReactNode {
           {count ? count.at(0) : stat.value}
         </span>
       </p>
-      <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-fog-dim">{stat.label}</p>
+      <p className="mt-1.5 font-label font-medium text-[11px] uppercase tracking-[0.14em] text-fog-dim">{stat.label}</p>
     </div>
   );
 }

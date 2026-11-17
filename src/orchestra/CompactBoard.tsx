@@ -35,7 +35,7 @@ export function CompactBoard({ roster, state, className }: CompactBoardProps): R
             />
             <span
               className={cx(
-                "flex min-w-0 flex-1 items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
+                "flex min-w-0 flex-1 items-center gap-1.5 font-label font-medium text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
                 active ? "text-fog" : "text-fog-dim",
               )}
             >
@@ -50,9 +50,9 @@ export function CompactBoard({ roster, state, className }: CompactBoardProps): R
                 </span>
               ))}
               {status.kind === "automated" && (
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-signal">{BY_CODE}</span>
+                <span className="font-label font-medium text-[10px] uppercase tracking-[0.14em] text-signal">{BY_CODE}</span>
               )}
-              <span className="w-4 text-right font-mono text-[11px] text-fog">{busy.length > 0 ? busy.length : ""}</span>
+              <span className="w-4 text-right font-label text-[11px] text-fog">{busy.length > 0 ? busy.length : ""}</span>
             </span>
           </li>
         );

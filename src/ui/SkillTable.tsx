@@ -39,7 +39,7 @@ const SKINS: Readonly<Record<Tone, TableSkin>> = {
   },
 };
 
-const MONO_CAPS = "font-mono text-[11px] uppercase tracking-[0.14em]";
+const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.14em]";
 
 /**
  * A resume skill table: area and summary, the libraries used, and the employers where it was the job.
@@ -52,13 +52,13 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
       <caption className="sr-only">{caption}</caption>
       <thead role="rowgroup" className="sr-only lg:not-sr-only lg:block">
         <tr role="row" className={cx("block border-b pb-3 lg:grid lg:grid-cols-12 lg:gap-x-8", skin.rule)}>
-          <th role="columnheader" scope="col" className={cx("block font-normal lg:col-span-4", MONO_CAPS, skin.head)}>
+          <th role="columnheader" scope="col" className={cx("block lg:col-span-4", LABEL_CAPS, skin.head)}>
             {columns.area}
           </th>
-          <th role="columnheader" scope="col" className={cx("block font-normal lg:col-span-6", MONO_CAPS, skin.head)}>
+          <th role="columnheader" scope="col" className={cx("block lg:col-span-6", LABEL_CAPS, skin.head)}>
             {columns.tools}
           </th>
-          <th role="columnheader" scope="col" className={cx("block font-normal lg:col-span-2 lg:text-right", MONO_CAPS, skin.head)}>
+          <th role="columnheader" scope="col" className={cx("block lg:col-span-2 lg:text-right", LABEL_CAPS, skin.head)}>
             {columns.where}
           </th>
         </tr>
@@ -84,7 +84,7 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
             </td>
             <td
               role="cell"
-              className={cx("mt-3 block lg:col-span-2 lg:mt-0 lg:text-right", MONO_CAPS, skin.where)}
+              className={cx("mt-3 block lg:col-span-2 lg:mt-0 lg:text-right", LABEL_CAPS, skin.where)}
             >
               {area.where.length === 0 ? (
                 <>

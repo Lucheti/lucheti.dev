@@ -20,7 +20,7 @@ export function MilestoneStrip({ milestone, kindLabel, x }: MilestoneStripProps)
         style={{ left: x }}
       />
       <div className="absolute top-[36%] pl-4" style={{ left: x, width: "calc(var(--stop-gap) * 0.5)" }}>
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-signal-ink">
+        <p className="font-label font-medium text-[11px] uppercase tracking-[0.16em] text-signal-ink">
           {kindLabel} · {milestone.date}
         </p>
         <p className="mt-1.5 font-display text-2xl font-semibold leading-[1.05] tracking-[-0.03em] text-signal md:text-[26px]">
