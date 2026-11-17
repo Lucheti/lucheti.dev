@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CaseDemo, CaseFooter, CaseHero, CaseSections, CaseStudyBar } from "@/casestudy";
 import { ORCHESTRA_PAGE, ORCHESTRA_SEQUENCE, SITE } from "@/content";
-import { SmoothScroll } from "@/story";
 import { MotionRoot } from "@/ui";
 
 export const metadata: Metadata = {
@@ -16,7 +15,6 @@ export const metadata: Metadata = {
 export default function OrchestraPage() {
   return (
     <MotionRoot>
-      <SmoothScroll />
       <a
         href="#main"
         className="fixed left-4 top-4 z-50 -translate-y-24 rounded-[4px] bg-signal px-4 py-2 font-label text-xs font-medium uppercase tracking-[0.14em] text-ink focus:translate-y-0"

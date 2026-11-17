@@ -193,16 +193,9 @@ body {
   }
 }
 
-/* Lenis smooth scrolling */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
+/* Native scrolling. Only in-page links (the nav) glide, and not for readers who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }

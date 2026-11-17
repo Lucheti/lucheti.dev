@@ -1,7 +1,7 @@
 import { ArtifactStage } from "@/artifact";
 import { SITE } from "@/content";
 import { Sections } from "@/sections";
-import { SmoothScroll, StoryProvider } from "@/story";
+import { StoryProvider } from "@/story";
 
 /**
  * Composition root. Two layers share one scroll story: the chapters, and the
@@ -10,7 +10,6 @@ import { SmoothScroll, StoryProvider } from "@/story";
 export default function Home() {
   return (
     <StoryProvider>
-      <SmoothScroll />
       <Sections content={SITE} />
       <ArtifactStage />
     </StoryProvider>

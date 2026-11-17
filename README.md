@@ -10,7 +10,7 @@ then the front-end, back-end and AI capabilities, each with a skill table, repos
 - **Next.js 16** (App Router, React 19, TypeScript strict)
 - **Tailwind CSS 4** for styling, with the design tokens in `src/app/globals.css`
 - **React Three Fiber / three.js** for the 3D object
-- **Motion** and **Lenis** for scroll-linked animation and smooth scrolling
+- **Motion** for scroll-linked animation, on top of the browser's native scrolling
 - **Vitest** for the unit tests
 
 ## How it is built
@@ -25,7 +25,7 @@ then the front-end, back-end and AI capabilities, each with a skill table, repos
 
 | Folder | What it holds |
 |---|---|
-| `src/story` | Scroll story: chapters, progress signals, smooth scroll |
+| `src/story` | Scroll story: chapters and progress signals |
 | `src/artifact` | The WebGL object and its per-chapter poses |
 | `src/timeline` | The pinned build log with milestones |
 | `src/capabilities` | The capabilities landmark and the AI chapter |

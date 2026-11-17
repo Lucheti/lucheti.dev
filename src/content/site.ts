@@ -207,7 +207,7 @@ export const SITE: SiteContent = {
       {
         name: "lucheti.dev",
         description: "This site. A scroll-driven story with a WebGL object, frame-scrubbed video and live demos.",
-        tools: ["Next.js", "React Three Fiber", "Motion", "Lenis", "Tailwind CSS", "Vitest"],
+        tools: ["Next.js", "React Three Fiber", "Motion", "Tailwind CSS", "Vitest"],
         status: { kind: "public", href: "https://github.com/Lucheti/lucheti.dev" },
         illustration: "website",
       },
