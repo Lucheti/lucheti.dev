@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Systems } from "@/content";
 import { Chapter } from "@/story";
-import { Container, RepoCards, SectionHeader, SkillTable, SubsectionHeader } from "@/ui";
+import { Container, DomainHeader, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
+import { RequestPanel } from "./RequestPanel";
 
 type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabilities }>;
 
@@ -11,7 +12,7 @@ export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): 
   return (
     <Chapter id="systems" className="relative bg-paper-sunk py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
-        <SectionHeader heading={systems.heading} intro={systems.intro} />
+        <DomainHeader heading={systems.heading} intro={systems.intro} panel={<RequestPanel panel={systems.panel} />} />
         <section aria-labelledby="systems-skills">
           <SubsectionHeader id="systems-skills" title={subsections.skills.title} caption={subsections.skills.caption} />
           <SkillTable areas={systems.areas} caption={`${systems.heading} skills`} />

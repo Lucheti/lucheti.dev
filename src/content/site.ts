@@ -135,8 +135,8 @@ export const SITE: SiteContent = {
         time: "now",
       },
       toggle: "Desktop alerts",
-      segments: ["Open", "Assigned", "Done"],
-      progress: { label: "Inbox sync", detail: "Importing conversations", percent: 72 },
+      segments: { label: "Show conversations", options: ["Open", "Mine", "Done"] },
+      progress: { label: "Inbox sync", detail: "In progress", percent: 72 },
       tokens: [
         { name: "accent", hex: "#ff5a1f" },
         { name: "info", hex: "#3b82f6" },
@@ -287,7 +287,6 @@ export const SITE: SiteContent = {
       label:
         "An agent loop: asked to make shot 3 a close-up, the agent calls the update_shot tool and the storyboard frame changes.",
       title: "shot-planner",
-      status: "Agent",
       prompt: "Make shot 3 a close-up",
       call: { name: "update_shot", args: "framing → close-up", tool: "Claude Code" },
       shots: [

@@ -161,7 +161,8 @@ export type DesignSystemPanel = Readonly<{
   notification: Readonly<{ from: PanelNode; message: string; time: string }>;
   /** The label of the switch that flips by itself until the visitor takes over. */
   toggle: string;
-  segments: readonly string[];
+  /** A segmented control: its accessible name and its options. */
+  segments: Readonly<{ label: string; options: readonly string[] }>;
   progress: Readonly<{ label: string; detail: string; percent: number }>;
   tokens: readonly ColourToken[];
 }>;
@@ -191,8 +192,6 @@ export type StoryboardShot = Readonly<{
 export type AgentPanel = Readonly<{
   label: string;
   title: string;
-  /** The agent's state beside the title. */
-  status: string;
   /** What the visitor's side asks for. */
   prompt: string;
   call: Readonly<{
@@ -207,7 +206,7 @@ export type AgentPanel = Readonly<{
   framings: Readonly<Record<ShotFraming, string>>;
   reply: string;
   placeholder: string;
-  /** The tools the agent can reach, shown under the composer. */
+  /** The tools the agent can reach, shown beside the title. */
   tools: readonly PanelNode[];
 }>;
 

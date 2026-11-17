@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { Ai, Capabilities, Stat } from "@/content";
 import { Chapter } from "@/story";
-import { Container, RepoCards, SectionHeader, SkillTable, SubsectionHeader } from "@/ui";
+import { Container, DomainHeader, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
+import { AgentPanel } from "./AgentPanel";
 import { CaseStudyCard } from "./CaseStudyCard";
 
 type AiChapterProps = Readonly<{
@@ -17,7 +18,7 @@ export function AiChapter({ ai, capabilities, stats }: AiChapterProps): ReactNod
   return (
     <Chapter id="ai" className="relative bg-paper py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
-        <SectionHeader heading={ai.heading} intro={ai.intro} />
+        <DomainHeader heading={ai.heading} intro={ai.intro} panel={<AgentPanel panel={ai.panel} />} />
         <section aria-labelledby="ai-skills">
           <SubsectionHeader id="ai-skills" title={subsections.skills.title} caption={subsections.skills.caption} />
           <SkillTable areas={ai.areas} caption={`${ai.heading} skills`} />

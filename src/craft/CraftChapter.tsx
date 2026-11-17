@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Craft } from "@/content";
 import { Chapter } from "@/story";
-import { Container, RepoCards, SectionHeader, SkillTable, SubsectionHeader } from "@/ui";
+import { Container, DomainHeader, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
+import { DesignSystemPanel } from "./DesignSystemPanel";
 import { SpecWorkbench } from "./SpecWorkbench";
 
 type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
@@ -12,7 +13,7 @@ export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactN
   return (
     <Chapter id="craft" className="relative bg-paper-raised py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
-        <SectionHeader heading={craft.heading} intro={craft.intro} />
+        <DomainHeader heading={craft.heading} intro={craft.intro} panel={<DesignSystemPanel panel={craft.panel} />} />
         <section aria-labelledby="craft-skills">
           <SubsectionHeader id="craft-skills" title={subsections.skills.title} caption={subsections.skills.caption} />
           <SkillTable areas={craft.areas} caption={`${craft.heading} skills`} />
