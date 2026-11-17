@@ -475,3 +475,39 @@ The `stack` chip lists of craft and systems are removed; the skill tables replac
 ### Nav
 
 Build log · Front end · Back end · AI · Contact. "AI" points at the `ai` chapter.
+
+Correction after review: the `ai` chapter has no `ExhibitHeader`, because the pinned Orchestra stage carries its own.
+
+## v2.4 — Repository cards (WP-R)
+
+The owner's direction (2026-11-17): each domain chapter shows a few repositories a recruiter can open. The saga
+diagram goes; its repository becomes a card. Some repositories do not exist yet: they will be built as showcase
+repos (one pairs MediaBunny with React Flow, for the Runway Product Engineer role) and published later. Until then
+their card says "In progress" and links nowhere. The page is not deployed while any card is still in progress.
+
+### Order inside each domain chapter
+
+- **Front end:** header → skill table → **Repositories** → Exhibit A (the spec workbench).
+- **Back end:** header → skill table → **Repositories**. The saga diagram, its exhibit header and its principles are
+  removed, together with all saga code and content.
+- **AI:** header → skill table → **Repositories**. The pinned Orchestra chapter follows, relabelled "Exhibit B —
+  Agentic SDLC" now that the back end has no exhibit.
+
+### `RepoCards` (`src/ui/RepoCards.tsx`)
+
+- A small mono header row: "Repositories" on the left, the count ("02") on the right. Then a grid with
+  `md:grid-cols-2` and `xl:grid-cols-3` and `gap-4`.
+- Each card has `border-line`, `rounded-lg`, a background one step lighter or darker than its chapter, and `p-6`,
+  with a flex column at full height:
+  - **Top row:** a mono 11 px index ("Repo 01") on the left and a status on the right. Public shows a `bg-signal`
+    dot and "Public"; in progress shows a hollow `border-line-strong` dot and "In progress".
+  - **Name:** in Geist Mono, `text-lg md:text-xl font-semibold text-ink`, with `break-words` because the names are
+    long (`transactional-microservices`).
+  - **Description:** two or three lines, `text-[15px] leading-[1.55] text-ink-soft`.
+  - **Tools:** the same " · " text list as `SkillTable` (extract a shared `ToolList`), `text-sm font-medium`.
+  - **Footer:** pushed to the bottom with `mt-auto`, separated by a hairline. A public card shows "View on GitHub ↗".
+    An in-progress card shows "Coming soon" in `text-mute`.
+- A public card is a single `<a target="_blank" rel="noreferrer">` covering the whole card. On hover its border
+  turns `border-ink` and its arrow nudges. An in-progress card is an `<article>` with no link.
+- Each card's status is a discriminated union, `{ kind: "public"; href } | { kind: "soon" }`, rendered with a
+  `switch` and `assertNever`.
