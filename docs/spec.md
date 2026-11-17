@@ -418,3 +418,60 @@ an orange strip in the gap between the two stops it separates (`afterStop`): a s
 the axis, a diamond node on the axis, and a kind · date line, label and note. On phones each is a short orange rule
 with a diamond on the axis. The Pre-AI / AI-native split is now derived from the stops' `era` (`eraBoundary`), and a
 milestone takes the era of the stop after it, so "Salesforce → Clarifai" opens the AI-native era.
+
+## v2.3 — Capabilities, read like a resume (WP-K)
+
+The owner's direction (2026-11-17): after the build log, a big landmark tells the reader that everything below it is
+what he can do. The domain chapters then read like a resume a recruiter can scan: plain headings ("Front end",
+"Back end", "AI"), no slogans, a table of skill areas with the **libraries** used in each, and the existing demos kept
+as "exhibits" under the tables. Private projects are never named; the "Where" column names only employers, and only
+where LinkedIn backs it.
+
+### Story order
+
+`CHAPTER_IDS = ["hero", "timeline", "capabilities", "craft", "systems", "ai", "orchestra", "contact"]`.
+`capabilities` and `ai` are new. The orchestra chapter (the pinned SDLC board) stays untouched as AI's exhibit, so its
+pin maths do not change. The 3D artifact stays folded (scale 0) in both new chapters.
+
+### Capabilities landmark (`src/capabilities/**`, `bg-graphite text-fog`, min-h-dvh)
+
+- A 4 px `bg-signal` strip across the top edge, echoing the timeline milestones.
+- Top row in mono 11 px, uppercase: the label "Capabilities" on the left and "03 — 05" on the right.
+- One giant display word, "Capabilities", sized to the container width the way the hero name is (container query,
+  about `min(15cqw, 22dvh)`), `text-fog`, tight tracking. It is the landmark: it must read from across the room.
+- One plain intro line under it (`text-fog-dim`).
+- An index of the three domains, one row per domain, each row an `<a href="#craft|#systems|#ai">`: the dot-matrix
+  number (`font-dot`), the domain name in display type (`text-3xl md:text-5xl`), a preview of its first six tools
+  joined by " · " (mono, `text-fog-dim`, hidden below md), and an arrow. Hairline rows (`border-line-dark`). On hover
+  and focus, the name and arrow turn `text-signal`.
+- The rows are derived from the domain content (name, chapter, tools), never typed twice.
+
+### Domain chapters: header, skill table, exhibit
+
+Every domain chapter (craft 03, systems 04, ai 05) is `SectionHeader` (label "Capabilities", heading = the domain
+name, one factual intro), then a `SkillTable`, then an exhibit.
+
+`SkillTable` (`src/ui/SkillTable.tsx`, with a `tone` like `Chip`): a resume table with a column-header row in mono 11 px
+uppercase ("Area", "Libraries & tools", "Where"), then one row per area with a hairline top border and `py-6`:
+
+- **Area** (lg: 4 cols): the name in display `text-xl font-semibold`, with the one-line summary under it in
+  `text-sm text-ink-soft`.
+- **Libraries & tools** (lg: 6 cols): plain text, `text-base font-medium text-ink`, items joined by a muted " · ".
+  This is not chips: recruiters scan text faster than tags.
+- **Where** (lg: 2 cols, right-aligned): employers in mono 11 px uppercase `text-mute`, or "—" when empty.
+- Below lg, each row stacks: area, summary, tools, where. Use a real `<table>` on lg and up for semantics, or a
+  `<dl>`/list with visually hidden column headers. Either way it must be readable by a screen reader.
+
+The exhibit is a small `ExhibitHeader` (mono "Exhibit A — {label}" in `text-signal-ink`, a `text-2xl` title, and a
+one-line caption), followed by the existing demo:
+
+- **Craft:** `SpecWorkbench`, with its `header` slot holding the `ExhibitHeader` and its `stack` slot removed.
+- **Systems:** the principles list beside the `ExhibitHeader`, then `SagaDiagram` with its PoC link.
+- **AI:** the `ai` chapter (`bg-paper`) ends with an `ExhibitHeader` that introduces the board. The pinned orchestra
+  chapter that follows is the exhibit itself. Its label becomes "Exhibit C — Agentic SDLC" and its heading "Orchestra".
+
+The `stack` chip lists of craft and systems are removed; the skill tables replace them.
+
+### Nav
+
+Build log · Front end · Back end · AI · Contact. "AI" points at the `ai` chapter.
