@@ -119,6 +119,14 @@ export const SITE: SiteContent = {
     heading: "Capabilities",
     intro: "What I work with, by domain, and the libraries I use in each.",
     range: "03 — 05",
+    repoLabels: {
+      heading: "Repositories",
+      public: "Public",
+      soon: "In progress",
+      open: "View on GitHub",
+      pending: "Coming soon",
+      item: "Repo",
+    },
   },
   craft: {
     label: "Capabilities",
@@ -154,6 +162,21 @@ export const SITE: SiteContent = {
         summary: "Unit and component tests, and the test strategy behind them.",
         tools: ["Vitest", "Jest", "Testing Library"],
         where: ["MuleSoft"],
+      },
+    ],
+    repos: [
+      {
+        name: "reel-graph",
+        description:
+          "A node-based video editor that runs in the browser. Wire clips, trims, effects and exports as a graph; decoding and encoding happen on the client.",
+        tools: ["React", "TypeScript", "React Flow", "MediaBunny", "WebCodecs", "Web Workers"],
+        status: { kind: "soon" },
+      },
+      {
+        name: "lucheti.dev",
+        description: "This site. A scroll-driven story with a WebGL object, frame-scrubbed video and live demos.",
+        tools: ["Next.js", "React Three Fiber", "Motion", "Lenis", "Tailwind CSS", "Vitest"],
+        status: { kind: "soon" },
       },
     ],
     exhibit: {
@@ -221,31 +244,22 @@ export const SITE: SiteContent = {
         where: ["Front"],
       },
     ],
-    exhibit: {
-      label: "Exhibit B — Saga",
-      title: "A transaction that undoes itself",
-      caption: "Place an order, then break inventory and watch the orchestrator compensate in reverse.",
-    },
-    edge: { client: "Client", gateway: "API gateway", bus: "NATS", orchestrator: "Saga orchestrator" },
-    steps: [
-      { service: "Orders", action: "Create order", compensation: "Cancel order" },
-      { service: "Payments", action: "Charge card", compensation: "Refund" },
-      { service: "Inventory", action: "Reserve stock", compensation: "Release stock" },
-      { service: "Shipping", action: "Book courier", compensation: "" },
+    repos: [
+      {
+        name: "transactional-microservices",
+        description:
+          "An order flow across NestJS microservices over NATS. A saga orchestrator compensates in reverse when a step fails, and reads are cache-aside.",
+        tools: ["NestJS", "NATS", "PostgreSQL", "Redis", "TypeORM", "Nx"],
+        status: { kind: "public", href: "https://github.com/Lucheti/transactional-microservices" },
+      },
+      {
+        name: "render-queue",
+        description:
+          "An API for media uploads and render jobs: presigned S3 uploads, a job queue with workers, and progress over server-sent events. Ships as containers for ECS Fargate.",
+        tools: ["Node.js", "Fastify", "BullMQ", "PostgreSQL", "Drizzle", "Docker", "AWS ECS Fargate"],
+        status: { kind: "soon" },
+      },
     ],
-    failingStep: 2,
-    controls: { run: "Place an order", fail: "Break inventory" },
-    outcomes: { committed: "Committed", rolledBack: "Rolled back · consistent" },
-    principles: [
-      "The gateway is the only HTTP surface.",
-      "Services talk over NATS, never directly.",
-      "Reads are cache-aside: Redis first, then Postgres.",
-    ],
-    repo: {
-      label: "See the PoC on GitHub",
-      href: "https://github.com/Lucheti/transactional-microservices",
-      note: "NestJS · NATS · saga orchestrator · cache-aside",
-    },
   },
   ai: {
     label: "Capabilities",
@@ -283,9 +297,25 @@ export const SITE: SiteContent = {
         where: [],
       },
     ],
+    repos: [
+      {
+        name: "orchestra",
+        description:
+          "A Claude Code plugin that runs a software lifecycle: independent departments of agents take one feature from idea to release.",
+        tools: ["Claude Code", "plugins & hooks", "sub-agents", "TypeScript", "Bun"],
+        status: { kind: "soon" },
+      },
+      {
+        name: "shot-planner",
+        description:
+          "A chat agent that turns a creative brief into a storyboard, then generates each shot through image and video APIs with tool calls.",
+        tools: ["Anthropic SDK", "tool use", "streaming", "React", "Node.js"],
+        status: { kind: "soon" },
+      },
+    ],
   },
   orchestra: {
-    label: "Exhibit C — Agentic SDLC",
+    label: "Exhibit B — Agentic SDLC",
     heading: "Orchestra",
     intro: "Orchestra is a Claude Code plugin. Independent departments pass tickets to each other, from idea to release.",
     principles: [
