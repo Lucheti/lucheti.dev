@@ -175,7 +175,7 @@ export const SITE: SiteContent = {
         description:
           "A node-based video editor that runs in the browser. Wire clips, trims, effects and exports as a graph; decoding and encoding happen on the client.",
         tools: ["React", "TypeScript", "React Flow", "MediaBunny", "WebCodecs", "Web Workers"],
-        status: { kind: "soon" },
+        status: { kind: "public", href: "https://github.com/Lucheti/reel-graph" },
         illustration: "node-graph",
       },
       {
