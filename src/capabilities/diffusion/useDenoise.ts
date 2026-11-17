@@ -15,6 +15,8 @@ type DenoiseOptions = Readonly<{
   schedule: DiffusionSchedule;
   /** Whether the panel is on screen and motion is welcome; the run waits while this is false. */
   active: boolean;
+  /** Called once when a run resolves on its own (not when it is stopped early). */
+  onDone?: () => void;
 }>;
 
 type Denoise = Readonly<{
@@ -37,7 +39,11 @@ type Denoise = Readonly<{
  * the DOM, so React re-renders once per step rather than 60 times a second. It stops when the panel is off
  * screen and picks up where it left off when it returns.
  */
-export function useDenoise({ schedule, active }: DenoiseOptions): Denoise {
+export function useDenoise({ schedule, active, onDone }: DenoiseOptions): Denoise {
+  const done = useRef(onDone);
+  useEffect(() => {
+    done.current = onDone;
+  }, [onDone]);
   const grain = useRef<HTMLCanvasElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const [running, setRunning] = useState(false);
@@ -101,6 +107,7 @@ export function useDenoise({ schedule, active }: DenoiseOptions): Denoise {
         apply(0);
         setStep(schedule.stepCount());
         setRunning(false);
+        done.current?.();
         return;
       }
       if (sinceGrain >= GRAIN_INTERVAL_MS) {

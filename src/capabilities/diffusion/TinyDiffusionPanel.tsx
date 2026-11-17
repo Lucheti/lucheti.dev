@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
 import type { DiffusionPanel, DiffusionFraming, DiffusionMood, DiffusionSubject } from "@/content";
 import { cx, FeaturePanel, usePanelLoop } from "@/ui";
@@ -68,7 +68,16 @@ export function TinyDiffusionPanel({ panel }: Readonly<{ panel: DiffusionPanel }
   const [history, setHistory] = useState(() => GenerationHistory.empty(GALLERY_SIZE).with(first));
   const [asked, setAsked] = useState(false);
 
-  const { grainRef, frameRef, running, step, start, stop } = useDenoise({ schedule, active });
+  // A new picture joins the gallery only once it has resolved, so the strip never gives the result away.
+  const pending = useRef<Generation | null>(null);
+  const settle = useCallback((): void => {
+    const resolved = pending.current;
+    pending.current = null;
+    if (resolved !== null) {
+      setHistory((past) => past.with(resolved));
+    }
+  }, []);
+  const { grainRef, frameRef, running, step, start, stop } = useDenoise({ schedule, active, onDone: settle });
   const scene = useMemo(() => SceneRecipe.compose(shown.chips, shown.seed), [shown]);
   const describe = (generation: Generation): string => PromptSentence.plain(generation.chips, panel.groups);
 
@@ -86,10 +95,12 @@ export function TinyDiffusionPanel({ panel }: Readonly<{ panel: DiffusionPanel }
     introduced.current = true;
     setAsked(true);
     setShown(generation);
-    setHistory((past) => past.with(generation));
     if (reduced) {
+      pending.current = null;
+      setHistory((past) => past.with(generation));
       stop();
     } else {
+      pending.current = generation;
       start();
     }
   };
@@ -105,6 +116,8 @@ export function TinyDiffusionPanel({ panel }: Readonly<{ panel: DiffusionPanel }
 
   const pick = (generation: Generation): void => {
     if (running) {
+      // Picking from the strip cancels the run; the unfinished picture is not kept.
+      pending.current = null;
       stop();
     }
     setChips(generation.chips);
