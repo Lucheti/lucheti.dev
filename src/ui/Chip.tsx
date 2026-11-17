@@ -7,7 +7,7 @@ export function Chip({ children, tone = "light" }: { readonly children: ReactNod
   return (
     <span
       className={cx(
-        "inline-flex items-center rounded-[3px] border px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em]",
+        "inline-flex items-center rounded-[3px] border px-2.5 py-1 font-label font-medium text-[11px] uppercase tracking-[0.12em]",
         tone === "light" ? "border-line-strong text-ink-soft" : "border-line-dark-strong text-fog-dim",
       )}
     >

@@ -37,7 +37,7 @@ export function SpecimenCard({ specimen, enabled, onToggle, showFocus }: Specime
         <div data-spec="glyph" className="flex size-9 items-center justify-center rounded-[10px] bg-ink">
           <BubbleMark />
         </div>
-        <span className="inline-flex items-center gap-2 rounded-full border border-line px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-soft">
+        <span className="inline-flex items-center gap-2 rounded-full border border-line px-2.5 py-1 font-label font-medium text-[11px] uppercase tracking-[0.12em] text-ink-soft">
           <span aria-hidden className="size-1.5 rounded-full bg-signal motion-safe:animate-pulse" />
           {specimen.status}
         </span>

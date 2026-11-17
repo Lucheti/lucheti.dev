@@ -13,7 +13,7 @@ type ContactSectionProps = Readonly<{
 
 const CHAPTER_NUMBER = "06";
 
-const RAIL_TEXT = "font-mono text-[11px] uppercase tracking-[0.14em] text-mute";
+const RAIL_TEXT = "font-label font-medium text-[11px] uppercase tracking-[0.14em] text-mute";
 
 /** Splits a heading so its last word can take the accent. */
 function splitLastWord(heading: string): Readonly<{ lead: string; last: string }> {

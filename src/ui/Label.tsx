@@ -20,7 +20,7 @@ export function Label({ children, marked = false, tone = "light", className }: L
   return (
     <p
       className={cx(
-        "flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em]",
+        "flex items-center gap-3 font-label font-medium text-[11px] uppercase tracking-[0.16em]",
         TONE_CLASSES[tone],
         className,
       )}

@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Doto, Geist, Geist_Mono } from "next/font/google";
+import { Doto, Geist } from "next/font/google";
 import type { ReactNode } from "react";
 import { SITE } from "@/content";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -32,7 +27,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${doto.variable} antialiased`}>
+    <html lang="en" className={`${geistSans.variable}${doto.variable} antialiased`}>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

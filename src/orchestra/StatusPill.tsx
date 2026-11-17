@@ -34,7 +34,7 @@ export function StatusPill({ status }: { readonly status: DepartmentStatus }): R
   return (
     <span
       className={cx(
-        "inline-flex h-4 shrink-0 items-center whitespace-nowrap rounded-[3px] border px-1 font-mono text-[9px] uppercase leading-none tracking-[0.1em] transition-colors duration-300",
+        "inline-flex h-4 shrink-0 items-center whitespace-nowrap rounded-[3px] border px-1 font-label font-medium text-[9px] uppercase leading-none tracking-[0.1em] transition-colors duration-300",
         look.className,
       )}
     >

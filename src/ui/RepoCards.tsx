@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Repo, RepoLabels, RepoStatus } from "@/content";
 import { cx } from "./cx";
+import { RepoIllustration } from "./illustrations";
 import type { Tone } from "./Tone";
 import { ToolList } from "./ToolList";
 import { twoDigits } from "./twoDigits";
@@ -40,7 +41,7 @@ const SKINS: Readonly<Record<Tone, Skin>> = {
   },
 };
 
-const MONO_CAPS = "font-mono text-[11px] uppercase tracking-[0.14em]";
+const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.14em]";
 const CARD = "flex h-full w-full flex-col rounded-lg border p-6 text-left";
 
 function surfaceClass(surface: RepoCardSurface): string {
@@ -112,11 +113,12 @@ type CardProps = Readonly<{ repo: Repo; position: number; labels: RepoLabels; sk
 function RepoCard({ repo, position, labels, skin, surface }: CardProps): ReactNode {
   const body = (
     <>
-      <div className={cx("flex items-center justify-between gap-4", MONO_CAPS, skin.heading)}>
+      <RepoIllustration kind={repo.illustration} />
+      <div className={cx("flex items-center justify-between gap-4", LABEL_CAPS, skin.heading)}>
         <span>{`${labels.item} ${twoDigits(position)}`}</span>
         <StatusBadge status={repo.status} labels={labels} />
       </div>
-      <h4 className={cx("mt-6 break-words font-mono text-lg font-semibold md:text-xl", skin.name)}>{repo.name}</h4>
+      <h4 className={cx("mt-6 break-words font-display text-lg font-semibold tracking-[-0.02em] md:text-xl", skin.name)}>{repo.name}</h4>
       <p className={cx("mt-3 text-[15px] leading-[1.55]", skin.description)}>{repo.description}</p>
       <p className={cx("mb-6 mt-4 text-sm font-medium leading-[1.7]", skin.tools)}>
         <ToolList tools={repo.tools} separator={skin.separator} />
@@ -151,18 +153,12 @@ export function RepoCards({ repos, labels, tone = "light", surface = "paper" }: 
   const skin = SKINS[tone];
   const ground = surfaceClass(surface);
   return (
-    <section aria-label={labels.heading}>
-      <div className={cx("flex items-center justify-between border-b pb-3", MONO_CAPS, skin.rule, skin.heading)}>
-        <h3 className="font-normal">{labels.heading}</h3>
-        <span>{twoDigits(repos.length)}</span>
-      </div>
-      <ul className="mt-6 grid gap-4 md:grid-cols-2">
-        {repos.map((repo, index) => (
-          <li key={repo.name} className="min-w-0">
-            <RepoCard repo={repo} position={index + 1} labels={labels} skin={skin} surface={ground} />
-          </li>
-        ))}
-      </ul>
-    </section>
+    <ul className="grid gap-4 md:grid-cols-2">
+      {repos.map((repo, index) => (
+        <li key={repo.name} className="min-w-0">
+          <RepoCard repo={repo} position={index + 1} labels={labels} skin={skin} surface={ground} />
+        </li>
+      ))}
+    </ul>
   );
 }

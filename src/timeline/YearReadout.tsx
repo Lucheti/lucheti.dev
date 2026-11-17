@@ -21,7 +21,7 @@ export function YearReadout({ year, period, eraFraction, inkScale, orangeScale }
       >
         {year}
       </p>
-      <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-mute">{period}</p>
+      <p className="mt-2 font-label font-medium text-[11px] uppercase tracking-[0.16em] text-mute">{period}</p>
       <div aria-hidden className="relative mt-3 h-0.5 w-48 bg-line md:w-64">
         <motion.span
           className="absolute inset-y-0 left-0 origin-left bg-ink"

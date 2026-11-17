@@ -28,10 +28,10 @@ function VerticalStop({ stop }: { readonly stop: TimelineStop }): ReactNode {
           <span aria-hidden className="size-2 shrink-0 bg-signal" />
           {stop.role}
         </p>
-        <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-mute">{stop.period}</p>
+        <p className="mt-2 font-label font-medium text-[11px] uppercase tracking-[0.14em] text-mute">{stop.period}</p>
         <p className="mt-3 max-w-[32ch] text-base leading-[1.5] text-ink">{stop.did}</p>
         <p className="mt-3 max-w-[34ch] text-sm leading-[1.5] text-ink-soft">
-          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-mute">{INDUSTRY_PREFIX}</span>{" "}
+          <span className="font-label font-medium text-[11px] uppercase tracking-[0.14em] text-mute">{INDUSTRY_PREFIX}</span>{" "}
           {stop.trend}
         </p>
       </Reveal>
@@ -51,7 +51,7 @@ function VerticalMilestone({ milestone, kindLabel }: VerticalMilestoneProps): Re
       <span aria-hidden className="absolute -left-[5.5px] top-1 size-2.5 rotate-45 bg-signal" />
       <Reveal>
         <div aria-hidden className="h-0.5 w-12 bg-signal" />
-        <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-signal-ink">
+        <p className="mt-3 font-label font-medium text-[11px] uppercase tracking-[0.16em] text-signal-ink">
           {kindLabel} · {milestone.date}
         </p>
         <p className="mt-1.5 font-display text-2xl font-semibold leading-[1.05] tracking-[-0.03em] text-signal">

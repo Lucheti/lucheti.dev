@@ -120,13 +120,18 @@ export const SITE: SiteContent = {
     intro: "What I work with, by domain, and the libraries I use in each.",
     range: "03 — 05",
     repoLabels: {
-      heading: "Repositories",
       public: "Public",
       soon: "In progress",
       open: "View on GitHub",
       pending: "Coming soon",
       item: "Repo",
     },
+    subsections: {
+      skills: { title: "Skills", caption: "The areas I work in, the libraries I use, and where I used them." },
+      repos: { title: "Repositories", caption: "Code you can open and read." },
+      demo: { title: "Live demo", caption: "" },
+    },
+    countUnits: { areas: "areas", repos: "repos" },
   },
   craft: {
     label: "Capabilities",
@@ -171,19 +176,17 @@ export const SITE: SiteContent = {
           "A node-based video editor that runs in the browser. Wire clips, trims, effects and exports as a graph; decoding and encoding happen on the client.",
         tools: ["React", "TypeScript", "React Flow", "MediaBunny", "WebCodecs", "Web Workers"],
         status: { kind: "soon" },
+        illustration: "node-graph",
       },
       {
         name: "lucheti.dev",
         description: "This site. A scroll-driven story with a WebGL object, frame-scrubbed video and live demos.",
         tools: ["Next.js", "React Three Fiber", "Motion", "Lenis", "Tailwind CSS", "Vitest"],
         status: { kind: "soon" },
+        illustration: "website",
       },
     ],
-    exhibit: {
-      label: "Exhibit A — Spec",
-      title: "A component and its spec",
-      caption: "Turn the spec on to see the measurements, states and semantics behind one card.",
-    },
+    demoCaption: "A component and its spec. Turn the spec on to see the measurements, states and semantics behind it.",
     specimen: {
       title: "WhatsApp",
       subtitle: "Channel connected · 3 inboxes",
@@ -251,6 +254,7 @@ export const SITE: SiteContent = {
           "An order flow across NestJS microservices over NATS. A saga orchestrator compensates in reverse when a step fails, and reads are cache-aside.",
         tools: ["NestJS", "NATS", "PostgreSQL", "Redis", "TypeORM", "Nx"],
         status: { kind: "public", href: "https://github.com/Lucheti/transactional-microservices" },
+        illustration: "saga",
       },
       {
         name: "render-queue",
@@ -258,6 +262,7 @@ export const SITE: SiteContent = {
           "An API for media uploads and render jobs: presigned S3 uploads, a job queue with workers, and progress over server-sent events. Ships as containers for ECS Fargate.",
         tools: ["Node.js", "Fastify", "BullMQ", "PostgreSQL", "Drizzle", "Docker", "AWS ECS Fargate"],
         status: { kind: "soon" },
+        illustration: "job-queue",
       },
     ],
   },
@@ -304,6 +309,7 @@ export const SITE: SiteContent = {
           "A Claude Code plugin that runs a software lifecycle: independent departments of agents take one feature from idea to release.",
         tools: ["Claude Code", "plugins & hooks", "sub-agents", "TypeScript", "Bun"],
         status: { kind: "soon" },
+        illustration: "departments",
       },
       {
         name: "shot-planner",
@@ -311,11 +317,12 @@ export const SITE: SiteContent = {
           "A chat agent that turns a creative brief into a storyboard, then generates each shot through image and video APIs with tool calls.",
         tools: ["Anthropic SDK", "tool use", "streaming", "React", "Node.js"],
         status: { kind: "soon" },
+        illustration: "storyboard",
       },
     ],
   },
   orchestra: {
-    label: "Exhibit B — Agentic SDLC",
+    label: "05.3 — Live demo",
     heading: "Orchestra",
     intro: "Orchestra is a Claude Code plugin. Independent departments pass tickets to each other, from idea to release.",
     principles: [

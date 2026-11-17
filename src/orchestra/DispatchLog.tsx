@@ -28,7 +28,7 @@ export function DispatchLog({ script, roster, dispatched }: DispatchLogProps): R
     <div
       role="log"
       aria-label={LOG_LABEL}
-      className="h-[calc(6*1.25rem+1.5rem)] overflow-hidden rounded-md border border-line-dark bg-graphite-raised/90 px-3 py-3 font-mono text-xs leading-5"
+      className="h-[calc(6*1.25rem+1.5rem)] overflow-hidden rounded-md border border-line-dark bg-graphite-raised/90 px-3 py-3 font-label text-xs leading-5"
     >
       {indices.map((index) => {
         const step = script.step(index);

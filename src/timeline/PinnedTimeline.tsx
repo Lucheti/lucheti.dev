@@ -24,7 +24,7 @@ const SPRING = { stiffness: 200, damping: 40 } as const;
 const AXIS_DRAW_SECONDS = 1;
 /** Stops that scroll in under the header fade out before they reach it. */
 const LEFT_FADE = "linear-gradient(90deg, transparent 0%, transparent 20%, #000 36%)";
-const LANE_LABEL = "absolute left-3 font-mono text-[11px] uppercase tracking-[0.16em] text-mute [writing-mode:vertical-rl] rotate-180";
+const LANE_LABEL = "absolute left-3 font-label font-medium text-[11px] uppercase tracking-[0.16em] text-mute [writing-mode:vertical-rl] rotate-180";
 
 type TrackVars = CSSProperties & { "--stop-gap": string; "--travel": string };
 
@@ -122,13 +122,13 @@ export function PinnedTimeline({ timeline }: { readonly timeline: Timeline }): R
             />
           </motion.div>
           <p
-            className="absolute top-[52%] -translate-y-1/2 bg-paper px-2 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-soft"
+            className="absolute top-[52%] -translate-y-1/2 bg-paper px-2 font-label font-medium text-[11px] uppercase tracking-[0.16em] text-ink-soft"
             style={{ left: geometry.stopX(0) - geometry.spacing() / 2 }}
           >
             {eras["pre-ai"]}
           </p>
           <p
-            className="absolute top-[52%] -translate-y-1/2 bg-paper px-2 font-mono text-[11px] uppercase tracking-[0.16em] text-signal-ink"
+            className="absolute top-[52%] -translate-y-1/2 bg-paper px-2 font-label font-medium text-[11px] uppercase tracking-[0.16em] text-signal-ink"
             style={{ left: eraLeft + 16 }}
           >
             {eras.ai} →

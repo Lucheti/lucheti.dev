@@ -45,7 +45,7 @@ export function TicketPacket({ track, progress, ticket, shown }: TicketPacketPro
         )}
       >
         <span className="size-1.5 bg-graphite" />
-        <span className="whitespace-nowrap font-mono text-[10px] font-medium leading-none text-graphite">{ticket}</span>
+        <span className="whitespace-nowrap font-label text-[10px] font-medium leading-none text-graphite">{ticket}</span>
       </div>
     </div>
   );

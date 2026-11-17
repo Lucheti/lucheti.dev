@@ -61,7 +61,7 @@ export function PortraitFrame({ portrait, pointer, y, className }: PortraitFrame
       />
       <p
         aria-hidden
-        className="absolute -bottom-[54px] right-0 whitespace-nowrap font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-mute"
+        className="absolute -bottom-[54px] right-0 whitespace-nowrap font-label font-medium text-[11px] uppercase leading-none tracking-[0.14em] text-mute"
       >
         {FIGURE_CAPTION}
       </p>

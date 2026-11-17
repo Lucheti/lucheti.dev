@@ -11,7 +11,7 @@ type CapabilitiesChapterProps = Readonly<{
   ai: Ai;
 }>;
 
-const MONO_CAPS = "font-mono text-[11px] uppercase tracking-[0.16em]";
+const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.16em]";
 
 function IndexRow({ row }: { readonly row: CapabilityRow }): ReactNode {
   return (
@@ -26,7 +26,7 @@ function IndexRow({ row }: { readonly row: CapabilityRow }): ReactNode {
         <span className="font-display text-3xl font-semibold tracking-[-0.04em] text-fog transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal md:text-5xl">
           {row.name}
         </span>
-        <span className="hidden min-w-0 flex-1 truncate text-right font-mono text-xs text-fog-dim md:block">
+        <span className="hidden min-w-0 flex-1 truncate text-right font-label text-xs text-fog-dim md:block">
           {row.preview.join(" · ")}
         </span>
         <span
@@ -52,7 +52,7 @@ export function CapabilitiesChapter({ capabilities, craft, systems, ai }: Capabi
     <Chapter id="capabilities" className="relative flex min-h-dvh flex-col bg-graphite py-16 text-fog lg:py-20">
       <div aria-hidden className="absolute inset-x-0 top-0 h-1 bg-signal" />
       <Container className="flex flex-1 flex-col justify-between gap-12">
-        <div className={`flex items-center justify-between text-fog-dim ${MONO_CAPS}`}>
+        <div className={`flex items-center justify-between text-fog-dim ${LABEL_CAPS}`}>
           <p>{capabilities.label}</p>
           <p>{capabilities.range}</p>
         </div>

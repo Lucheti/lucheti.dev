@@ -88,7 +88,7 @@ function Tag({ annotation, note, index, on, pulse }: TagProps): ReactNode {
     <motion.div
       initial={{ opacity: 0 }}
       animate={arriving(index, on, LABEL_LAG_SECONDS)}
-      className="absolute flex flex-col gap-1 border border-signal bg-paper-raised px-2 py-1.5 font-mono"
+      className="absolute flex flex-col gap-1 border border-signal bg-paper-raised px-2 py-1.5 font-label"
       style={{
         left: tag.x,
         top: tag.y,
@@ -158,7 +158,7 @@ export function SpecOverlay({ layout, notes, on, pulse }: SpecOverlayProps): Rea
                     y={annotation.anchor.y}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    className="fill-ink font-mono text-[10px] font-medium"
+                    className="fill-ink font-label text-[10px] font-medium"
                   >
                     {annotation.number}
                   </text>

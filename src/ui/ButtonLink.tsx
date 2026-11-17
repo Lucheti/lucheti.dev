@@ -29,7 +29,7 @@ function isExternal(href: string): boolean {
 /** Squared-off link button. External destinations open in a new tab. */
 export function ButtonLink({ href, children, variant = "primary", tone = "light" }: ButtonLinkProps): ReactNode {
   const classes = cx(
-    "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] px-5 font-mono text-xs uppercase tracking-[0.14em]",
+    "inline-flex h-11 items-center justify-center gap-3 rounded-[4px] px-5 font-label font-medium text-xs uppercase tracking-[0.14em]",
     "transition-colors duration-300 ease-out-expo",
     VARIANT_CLASSES[tone][variant],
   );

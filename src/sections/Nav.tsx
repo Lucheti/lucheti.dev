@@ -93,7 +93,7 @@ export function Nav({ name, items, timeZone, city }: NavProps): ReactNode {
           <span
             aria-hidden
             className={cx(
-              "flex size-7 items-center justify-center rounded-[3px] font-mono text-[11px] font-medium tracking-[0.04em] transition-colors duration-300",
+              "flex size-7 items-center justify-center rounded-[3px] font-label text-[11px] font-medium tracking-[0.04em] transition-colors duration-300",
               surface.monogram,
             )}
           >
@@ -101,7 +101,7 @@ export function Nav({ name, items, timeZone, city }: NavProps): ReactNode {
           </span>
           <span
             className={cx(
-              "hidden font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-300 md:inline",
+              "hidden font-label font-medium text-[11px] uppercase tracking-[0.14em] transition-colors duration-300 md:inline",
               surface.name,
             )}
           >
@@ -118,7 +118,7 @@ export function Nav({ name, items, timeZone, city }: NavProps): ReactNode {
                 href={`#${item.chapter}`}
                 aria-current={isActive ? "location" : undefined}
                 className={cx(
-                  "flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
+                  "flex items-center gap-2 font-label font-medium text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
                   isActive ? surface.active : surface.idle,
                 )}
               >
@@ -140,7 +140,7 @@ export function Nav({ name, items, timeZone, city }: NavProps): ReactNode {
             timeZone={timeZone}
             city={city}
             className={cx(
-              "font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
+              "font-label font-medium text-[11px] uppercase tracking-[0.14em] transition-colors duration-300",
               surface.clock,
             )}
           />

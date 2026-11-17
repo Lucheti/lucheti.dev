@@ -60,7 +60,7 @@ export function DepartmentCard({ id, roster, state, className, cardRef }: Depart
       <div className="flex items-center justify-between gap-1.5">
         <p
           className={cx(
-            "flex min-w-0 items-center gap-1.5 font-mono text-[11px] uppercase leading-4 tracking-[0.12em] transition-colors duration-300",
+            "flex min-w-0 items-center gap-1.5 font-label font-medium text-[11px] uppercase leading-4 tracking-[0.12em] transition-colors duration-300",
             active ? "text-fog" : "text-fog-dim",
           )}
         >

@@ -22,7 +22,7 @@ export function Sections({ content }: SectionsProps): ReactNode {
     <MotionRoot>
       <a
         href="#main"
-        className="fixed left-4 top-4 z-50 -translate-y-24 rounded-[4px] bg-signal px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-ink focus:translate-y-0"
+        className="fixed left-4 top-4 z-50 -translate-y-24 rounded-[4px] bg-signal px-4 py-2 font-label font-medium text-xs uppercase tracking-[0.14em] text-ink focus:translate-y-0"
       >
         {SKIP_LINK_LABEL}
       </a>
@@ -36,9 +36,9 @@ export function Sections({ content }: SectionsProps): ReactNode {
           systems={content.systems}
           ai={content.ai}
         />
-        <CraftChapter craft={content.craft} repoLabels={content.capabilities.repoLabels} />
-        <SystemsChapter systems={content.systems} repoLabels={content.capabilities.repoLabels} />
-        <AiChapter ai={content.ai} repoLabels={content.capabilities.repoLabels} />
+        <CraftChapter craft={content.craft} capabilities={content.capabilities} />
+        <SystemsChapter systems={content.systems} capabilities={content.capabilities} />
+        <AiChapter ai={content.ai} capabilities={content.capabilities} />
         <OrchestraChapter orchestra={content.orchestra} sequence={ORCHESTRA_SEQUENCE} />
         <ContactSection contact={content.contact} timeZone={content.timeZone} city={content.city} />
       </main>
