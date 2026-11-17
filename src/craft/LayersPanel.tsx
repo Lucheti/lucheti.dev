@@ -127,9 +127,8 @@ export function LayersPanel({ panel }: Readonly<{ panel: LayersContent }>): Reac
             <span ref={(element) => toy.labels.attachLeader(layer, element)} className="absolute right-full top-0 h-px bg-ink/25">
               <span className="absolute -left-0.5 -top-0.5 size-[5px] rounded-full bg-ink" />
             </span>
-            <span className="absolute left-2 top-[-8px] flex items-baseline gap-1.5 whitespace-nowrap text-[12px] leading-4 tracking-[-0.005em]">
-              <span className="text-[10.5px] tabular-nums text-mute">{String(layer + 1).padStart(2, "0")}</span>
-              <span className="font-medium text-ink">{panel.layers[kind]}</span>
+            <span className="absolute left-2 top-[-8px] whitespace-nowrap text-[12px] font-medium leading-4 tracking-[-0.005em] text-ink">
+              {panel.layers[kind]}
             </span>
           </div>
         ))}
