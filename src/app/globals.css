@@ -176,7 +176,7 @@ body {
   }
 }
 
-/* The Front end diorama's screen (src/craft/diorama): a toast pops up, holds, and goes. */
+/* The parked diorama's screen (src/diorama): a toast pops up, holds, and goes. */
 @keyframes screen-toast {
   0% {
     opacity: 0;
@@ -229,6 +229,27 @@ body {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* The Front end laptop (src/craft/laptop): a task that just arrived, or a palette jump's row, glows and fades. */
+@keyframes row-arrive {
+  0%,
+  35% {
+    background-color: rgb(255 90 31 / 0.1);
+  }
+  100% {
+    background-color: rgb(255 90 31 / 0);
+  }
+}
+
+/* The laptop's menu bar clock: the separator flashes once a second. */
+@keyframes clock-flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
   }
 }
 

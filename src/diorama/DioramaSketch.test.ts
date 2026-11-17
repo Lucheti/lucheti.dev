@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IsometricView } from "../layers/IsometricView";
+import { IsometricView } from "@/craft/layers/IsometricView";
 import { DioramaLayout } from "./DioramaLayout";
 import { DioramaSketch } from "./DioramaSketch";
 import { shade } from "./toon";

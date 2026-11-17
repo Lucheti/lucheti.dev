@@ -1,4 +1,4 @@
-import { assertNever } from "../layers/assertNever";
+import { assertNever } from "@/craft/layers/assertNever";
 import { minus, point, type Extent, type Point3 } from "./space";
 
 /** The paints the diorama is modelled in. `signal` is the main accent; `sunny` and `pink` are small pops. */

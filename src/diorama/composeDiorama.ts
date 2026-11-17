@@ -1,6 +1,6 @@
-import { CardBlueprint } from "../layers/CardBlueprint";
-import { HoverTilt } from "../layers/HoverTilt";
-import { IsometricView } from "../layers/IsometricView";
+import { CardBlueprint } from "@/craft/layers/CardBlueprint";
+import { HoverTilt } from "@/craft/layers/HoverTilt";
+import { IsometricView } from "@/craft/layers/IsometricView";
 import { CardSpread } from "./CardSpread";
 import { DioramaFraming } from "./DioramaFraming";
 import { DioramaLayout } from "./DioramaLayout";

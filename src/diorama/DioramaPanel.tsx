@@ -5,15 +5,15 @@ import { useInView, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
 import type { Diorama, DioramaControls } from "@/content";
 import { cx, SceneBoundary } from "@/ui";
-import { composeDiorama } from "./diorama/composeDiorama";
-import { DioramaFallback } from "./diorama/DioramaFallback";
-import { behaviourOf, pickMode } from "./diorama/DioramaMode";
-import type { DioramaView } from "./diorama/DioramaState";
-import { assertNever } from "./layers/assertNever";
-import { allTargets, targetKey, type Target } from "./diorama/Target";
+import { assertNever } from "@/craft/layers/assertNever";
+import { composeDiorama } from "./composeDiorama";
+import { DioramaFallback } from "./DioramaFallback";
+import { behaviourOf, pickMode } from "./DioramaMode";
+import type { DioramaView } from "./DioramaState";
+import { allTargets, targetKey, type Target } from "./Target";
 
 // WebGL has no server render; three.js and the scene are fetched only in the browser.
-const DioramaScene = dynamic(() => import("./diorama/DioramaScene"), { ssr: false });
+const DioramaScene = dynamic(() => import("./DioramaScene"), { ssr: false });
 
 /** Tablet width and up: where the island leans and drags. Matches Tailwind's `md`. */
 const WIDE_QUERY = "(min-width: 768px)";

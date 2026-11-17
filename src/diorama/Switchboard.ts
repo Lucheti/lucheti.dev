@@ -1,4 +1,4 @@
-import { assertNever } from "../layers/assertNever";
+import { assertNever } from "@/craft/layers/assertNever";
 import type { DioramaState } from "./DioramaState";
 import type { Reactions } from "./Reactions";
 import type { Target } from "./Target";
