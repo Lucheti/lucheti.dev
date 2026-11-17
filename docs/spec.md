@@ -987,3 +987,59 @@ pure ambient animation that is fun to watch.
   ticket rotation, the occasional retry with a seeded RNG). React renders positions with transforms only.
 - **Copy:** the panel title is "Agent at work". The caption is one plain line, e.g. "An agent takes tickets through
   its tools: read, search, code, test, ship."
+
+## v2.11 — The Front end workbench room (WP-R1, prototype)
+
+The owner's direction (2026-11-17): the Front end header felt flat, with text on one side and a 3D panel on the
+other. It becomes one pinned, full-width 3D scene, a soft clay-render isometric workbench room that depicts great UI.
+The heading lives inside the moment, and Skills, Repositories and the live demo continue below it unchanged. This
+package is a **prototype**: it proves the room, the camera move and the live screen, so the owner can judge the feel
+before detail polish.
+
+### Structure
+- `CraftChapter` becomes: a `WorkbenchRoom` section, then the existing Skills, Repositories and live demo blocks.
+- `DomainHeader`/`LayersPanel` are no longer used for Front end. Delete `LayersPanel` and `src/craft/layers/` unless
+  their geometry is reused for the floating cards; reuse is encouraged.
+- **Pinning:** the room is a tall section (about 300dvh) with a sticky, full-viewport stage. Its progress comes from
+  `ElementScrollProgress` (in `src/story`), exactly like the `/orchestra` board.
+- **Heading:** "Front end" and the intro are HTML laid over the scene (left side, large), so they stay selectable,
+  accessible and crisp. They fade and drift up as the camera moves in.
+
+### The scene (react-three-fiber + drei, all geometry built in code; no downloaded models, HDRs or textures)
+- **Look:** a soft clay render. Matte off-white and paper materials, ink for dark parts, signal orange `#ff5a1f` as
+  the one accent, gentle ambient occlusion, and soft contact shadows. The lighting comes from procedural drei
+  `Lightformer`s inside `<Environment>` (no network HDR) plus one warm key light from the desk lamp. It must feel
+  premium and calm, like a polished product render, not a game.
+- **The room:** an isometric cut-away diorama, a floor plinth plus two walls, sitting on the page's paper colour.
+  Inside it:
+  - **Desk:** a rounded wooden-clay top on legs.
+  - **Monitor:** a thin bezel on a stand. Its screen is a **live React interface** rendered with drei
+    `<Html transform>` (or `occlude`), crisp and interactive: a mini product dashboard in the site's style, with a
+    sidebar, a list of conversations, a working toggle, a small chart and an orange primary button. Real DOM, so the
+    visitor can click it.
+  - **Desk props:** a keyboard (key grid, one orange key), a mug, a small plant, and a desk lamp casting warm light.
+  - **Pegboard wall:** UI components as chunky 3D tiles: a button, a toggle, an avatar, a slider, a checkbox and a
+    rating, some with orange accents.
+  - **Floating UI cards:** two or three cards near the monitor that **explode into their layers** as the camera
+    approaches (the v2.10 Layers idea: tokens, layout, components, content, interaction).
+- **Camera path,** driven by pinned scroll progress p from 0 to 1 and eased:
+  - **0 – 0.25:** a wide isometric establishing shot, with the heading big on the left.
+  - **0.25 – 0.7:** the camera dollies and rotates gently toward the desk while the floating cards explode.
+  - **0.7 – 1:** it pushes into the monitor until the screen fills the stage, then the stage fades to the paper
+    colour as the Skills section arrives.
+- **Small life:** idle motion, such as a gentle float on the cards, a lamp flicker that is barely there, and a slight
+  pointer parallax of a few degrees.
+
+### Performance and fallbacks
+- One `<Canvas>`. Render only while the room is on screen (`frameloop` on demand off screen), with `dpr` capped at
+  2. Merge static geometry where possible. Contact shadows are rendered once, or rarely, not every frame.
+- **Phones (< 768 px):** no pin and no dolly. A shorter section with the wide establishing shot as a live canvas at
+  lower `dpr` (or a still), the monitor showing the same UI as HTML, and the heading above it.
+- **Reduced motion:** no camera path; the wide shot as a still scene. The live screen still works.
+- **Before WebGL or on failure:** a clean, static fallback (the heading plus a simple drawing). Never a blank box.
+
+### Logic (pure, tested)
+- `CameraPath`: keyframes mapping p to camera position, target and zoom/fov, with easing between them.
+- `RoomLayout`: the props' positions and sizes in one place.
+- Explode timing for the cards, as a function of p.
+- One composition root; nothing at module load.
