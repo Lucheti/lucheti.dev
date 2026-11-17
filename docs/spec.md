@@ -913,3 +913,77 @@ A pretend image generator: a nod to generative video and image models.
 - **Engine:** the noise schedule and scene composition are pure and tested (`DiffusionSchedule`, `SceneRecipe`).
   Rendering is canvas or SVG, and it is cheap.
 - **Copy:** the panel title is "Tiny diffusion". It must not claim to be a real model. The caption says it is a toy.
+
+## v2.10 — An isometric UI stack and a little agent (WP-I, WP-G)
+
+The owner's review (2026-11-17):
+
+- **Front end:** replace "Building blocks" with an isometric 3D model in three.js that mimics a "layered UI".
+- **Back end:** the queue toy plays much slower. Done: `QueueLoop` takes a playback speed, and the toy runs at 0.4.
+- **AI:** "Tiny diffusion" is replaced by "Agent at work".
+- **Interactivity:** not every toy has to be interactive. Watching is enough. Both new pieces are ambient first,
+  with at most a light touch of interaction.
+
+Both sit on the white `FeaturePanel` (white ground, ink text, signal orange `#ff5a1f` accent) and follow the v2.9
+rules: alive on their own, static under reduced motion, paused off screen, logic in small tested classes, fitting
+from 375 to 1920 px, about 360–440 px tall on desktop.
+
+### Front end — "Layers" (WP-I, `src/craft/`, replaces `BuildingBlocksPanel` and its `blocks/` folder)
+
+An isometric, exploded view of one screen of UI, its layers separated in depth, like a designer's "exploded" view
+of a product card.
+- **Scene:** react-three-fiber (already in the project; three.js, `@react-three/fiber`, `@react-three/drei`) with an
+  orthographic camera at a true isometric angle, about 35.264° pitch and 45° yaw. The scene is soft, bright and
+  airy: white and off-white slabs, ink hairline details, and orange for the interactive layer only.
+- **Layers:** five thin rounded slabs with a small thickness and soft shadows (contact shadows or a baked shadow
+  plane), stacked bottom to top. Each layer's content is drawn with simple meshes, or crisp canvas textures at
+  device-pixel resolution, never blurry:
+  1. **Tokens:** a ground slab with a faint grid and a row of colour and radius swatches.
+  2. **Layout:** wireframe boxes of the card's regions (header, media, body, actions).
+  3. **Components:** an avatar circle, a title bar, a toggle and a button as filled shapes.
+  4. **Content:** text lines and a small image block.
+  5. **Interaction:** an orange focus ring around the button, a cursor, and a small ripple.
+- **Motion loop** (about 8 s): the layers breathe from a tight stack (almost one card) to a wide exploded stack and
+  back, eased, with a slight stagger. The whole model rotates very slowly, ±8° around the vertical axis, never a full
+  spin.
+- **Labels:** small ink labels with a hairline leader line ("Tokens", "Layout", "Components", "Content",
+  "Interaction") fade in beside each layer when exploded. These are HTML (drei `Html`) or crisp sprites.
+- **Light touch:** hovering the panel tilts the model a few degrees toward the pointer, with damping. No click
+  interaction is required.
+- **Performance:**
+  - one `Canvas`, `dpr` capped at 2;
+  - `frameloop="demand"`, or rendering paused while off screen (via `usePanelLoop`);
+  - the scene's geometry built once;
+  - under reduced motion, a still exploded frame;
+  - a static fallback (an SVG or image of the exploded stack) while the WebGL context loads or if it fails.
+- **Logic:** the stack choreography (layer offsets for a time t, the stagger and the ease) and the isometric
+  projection helpers are pure and tested.
+
+### AI — "Agent at work" (WP-G, `src/capabilities/`, replaces `diffusion/` and `TinyDiffusionPanel`)
+
+A tiny, cute agent character carrying a ticket around a row of little tool stations, like a mini Orchestra. It is
+pure ambient animation that is fun to watch.
+- **The agent:** a small friendly character drawn in SVG: a rounded body in ink with a white face, two dot eyes that
+  blink, a small orange antenna light, and a ticket card it carries. It bobs slightly while walking, and its eyes
+  look toward the next station.
+- **Stations:** four small desks or kiosks in a row (two by two on phones), each with an icon and a label:
+  1. **"Read"** (a document)
+  2. **"Search"** (a magnifier)
+  3. **"Code"** (brackets)
+  4. **"Test"** (a check)
+  Then a final **"Ship"** mailbox or rocket.
+- **Loop** (about 14 s):
+  1. The agent picks up a ticket ("F-12 · dark mode", from a small rotating list of plausible tickets).
+  2. It walks station to station. At each one a speech bubble shows the tool call in a monospace-free label style,
+     e.g. `read_file("theme.ts")`, `search("prefers-color-scheme")`, `edit("theme.ts")`, `run_tests() · 24 passed`.
+     The station lights up orange while it works.
+  3. At Ship it drops the ticket in, a small confetti or check pop plays, a "Shipped" counter ticks up, and it walks
+     back for the next ticket.
+- **Rare moment:** about one loop in four, a test fails ("1 failed"). The agent does a small head-shake, walks back
+  to Code, fixes it, and the tests pass. It is charming and shows the agent correcting itself.
+- **Light touch:** clicking the agent makes it wave and say "hi!" in a bubble. That is the only interaction, and it
+  is not needed.
+- **Logic:** the choreography is a pure, tested `AgentRoute` or timeline (positions and states for a time t, the
+  ticket rotation, the occasional retry with a seeded RNG). React renders positions with transforms only.
+- **Copy:** the panel title is "Agent at work". The caption is one plain line, e.g. "An agent takes tickets through
+  its tools: read, search, code, test, ship."
