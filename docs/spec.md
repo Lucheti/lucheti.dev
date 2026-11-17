@@ -838,3 +838,78 @@ The owner's review (2026-11-17):
   - `BulletList` principle numbers become a small signal dash or square.
 - **Kept, because they carry meaning:** the timeline years, the Orchestra step readout (05/10), the dates, and real
   counts in prose.
+
+## v2.9 — The feature panels become toys (WP-T1, WP-T2, WP-T3)
+
+The owner's direction (2026-11-17): the feature panels beside Front end, Back end and AI become small interactive
+**toys**. They are not tasks or puzzles: nothing to win, no score, no bugs to find. They are cute, pleasant and
+on-topic, something a visitor pokes at for a few seconds and enjoys. They sit on the white `FeaturePanel` (white
+ground, ink text, signal orange `#ff5a1f` as the accent, brand swatches where a real tool appears). Each one:
+
+- **Is alive on its own:** it looks finished and pleasant before anyone touches it.
+- **Takes any input:** mouse, touch and keyboard, with visible focus and `aria-live` for meaningful state changes.
+- **Respects reduced motion:** it still works, but nothing animates by itself and transitions are instant.
+- **Pauses off screen:** ambient loops stop when the panel isn't visible (`usePanelLoop`).
+- **Keeps logic in code, not components:** the logic (layout, simulation, step timeline) lives in small pure,
+  tested classes. React only renders their state.
+- **Fits:** it stays inside the panel from 375 to 1920 px, roughly 360–440 px tall on desktop.
+
+### Front end — "Building blocks" (WP-T1, `src/craft/`, replaces `DesignSystemPanel`)
+
+A tiny UI builder.
+- **Palette:** a row of block chips along the top or left: Avatar, Title, Text, Image, Button, Toggle, Badge,
+  Rating stars.
+- **Canvas:** one "phone card" area where blocks stack vertically.
+- **Adding:** drag a chip into the card, or click or press Enter on it to append. The block drops in with a soft
+  spring.
+- **Rearranging:** blocks inside the card can be dragged to reorder, and dragged out (or a small × on focus or hover)
+  to remove.
+- **Real blocks:** they render as polished components: the avatar uses the owner's portrait
+  (`/portrait/lucas.webp`), the toggle actually toggles, the stars can be clicked, the button presses.
+- **Always good-looking:** any combination looks good thanks to consistent spacing tokens, and the card grows to a
+  cap (then the oldest block is replaced, or adding is refused with a gentle shake).
+- **Reset:** a small "Reset" restores the default card (Avatar, Title, Text, Button).
+- **Drag and drop:** use `@dnd-kit/core` and `@dnd-kit/sortable` for accessible drag and drop, including keyboard
+  dragging, or motion's `Reorder` if it covers everything. Explain the choice in the report.
+
+### Back end — "Message queue" (WP-T2, `src/systems/`, replaces `RequestPanel`)
+
+A live picture of a producer, a queue and three consumer services.
+- **Layout:**
+  - **Producer:** "Checkout" with a brand-neutral icon, on the left (or top on phones).
+  - **Queue:** a broker in the middle, labelled "NATS" with its swatch, drawn as a horizontal stack of message dots,
+    with its depth visible.
+  - **Services:** three consumer services on the right ("Orders", "Payments", "Inventory", each with the NestJS
+    swatch). Each has an "in flight" indicator, a processed counter and a status: healthy, busy, down or restarting.
+- **Steady flow:** messages arrive at a steady rate with some randomness (around 1.5 per second). Each one travels
+  producer → queue → a service, dealt to the least-busy healthy service. Services process at slightly different
+  speeds.
+- **Send burst:** a primary orange button labelled "Send 10 messages". Clicking fast floods the queue.
+- **Overload and recovery:**
+  - When a service's in-flight work stays over its limit for about 1.5 s, it **goes down**: it turns ink-outlined
+    with an orange "down" badge and a small shake.
+  - Its in-flight messages go back to the queue (they are never lost).
+  - After about 2.5 s it **restarts**, showing a spinner, then comes back healthy and drains the backlog.
+  - With all three down, the queue just piles up visibly and recovers as they restart.
+- **Readout:** a small footer with queued, processed and restarts counts.
+- **Engine:** a deterministic `QueueSimulation` class, tick-based with an injected clock and random source, so it can
+  be tested with a seeded RNG. Rendering reads its snapshot on `requestAnimationFrame`. Cap the number of drawn dots
+  (show "+N" beyond it) so it stays smooth.
+
+### AI — "Tiny diffusion" (WP-T3, `src/capabilities/`, replaces `AgentPanel`)
+
+A pretend image generator: a nod to generative video and image models.
+- **Prompt chips:** three rows of single-choice chips build a prompt that is shown as a sentence ("a **lighthouse**
+  at **dusk**, **wide** shot"):
+  - Subject: lighthouse, ceramic vase, mountain, city;
+  - Mood: dusk, night, morning, storm;
+  - Framing: wide, close-up.
+- **Generate:** an orange "Generate" button. The frame starts as noise and denoises over about 20 visible steps
+  ("Step 7/20"), resolving into a procedural scene built from the chips: simple shapes and gradients drawn in SVG or
+  canvas, with palettes per mood. It looks charming, not photographic.
+- **Gallery:** each result lands in a small strip of the last four generations. Clicking one shows it again.
+- **Idle state:** at rest, the panel shows a finished image from the default chips.
+- **Seeds:** a small "seed" control (or a shuffle icon) re-rolls the composition with the same chips.
+- **Engine:** the noise schedule and scene composition are pure and tested (`DiffusionSchedule`, `SceneRecipe`).
+  Rendering is canvas or SVG, and it is cheap.
+- **Copy:** the panel title is "Tiny diffusion". It must not claim to be a real model. The caption says it is a toy.
