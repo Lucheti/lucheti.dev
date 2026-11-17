@@ -144,58 +144,16 @@ export type PanelNode = Readonly<{
   detail?: string;
 }>;
 
-/** The kinds of block the front-end toy can put on its card. */
-export type BlockKind = "avatar" | "title" | "text" | "image" | "button" | "toggle" | "badge" | "rating";
+/** The layers of the front-end panel's exploded card, bottom to top. */
+export type LayerKind = "tokens" | "layout" | "components" | "content" | "interaction";
 
-/**
- * Sentences the building-blocks toy reads out. `{block}` becomes a block's name, `{position}` its
- * 1-based place on the card and `{count}` how many blocks the card holds.
- */
-export type BlockMessages = Readonly<{
-  added: string;
-  moved: string;
-  removed: string;
-  /** Adding was refused because the block doesn't fit. */
-  refused: string;
-  reset: string;
-  /** Drag and drop, for screen readers. */
-  pickedUp: string;
-  over: string;
-  /** A block dragged off the card, about to be removed. */
-  away: string;
-  cancelled: string;
-  instructions: string;
-}>;
-
-/** The front-end feature panel: a tiny UI builder, blocks on a shelf and a phone card to stack them on. */
-export type BuildingBlocksPanel = Readonly<{
+/** The front-end feature panel: "Layers", an isometric, exploded view of one card of UI, its layers apart. */
+export type LayersPanel = Readonly<{
   /** What the panel shows, for screen readers. */
   label: string;
   title: string;
-  /** The line over the shelf. */
-  hint: string;
-  reset: string;
-  /** The blocks the card starts with, and goes back to on reset. */
-  starter: readonly BlockKind[];
-  /** Each block's name, as its shelf chip shows it. */
-  names: Readonly<Record<BlockKind, string>>;
-  /** The accessible names of a block's handle and remove button; `{block}` becomes its name. */
-  handle: string;
-  remove: string;
-  /** The card's accessible name. */
-  card: string;
-  /** What the blocks say once they are on the card. */
-  copy: Readonly<{
-    avatar: Readonly<{ name: string; role: string; alt: string }>;
-    title: string;
-    text: string;
-    image: Readonly<{ caption: string; alt: string }>;
-    button: Readonly<{ idle: string; pressed: string }>;
-    toggle: string;
-    badge: string;
-    rating: Readonly<{ label: string; thanks: string; star: string }>;
-  }>;
-  messages: BlockMessages;
+  /** Each layer's name, as its label beside the model shows it. */
+  layers: Readonly<Record<LayerKind, string>>;
 }>;
 
 /** The back-end feature panel: a toy message queue, from a producer through a broker to consumer services. */
@@ -257,7 +215,7 @@ export type DiffusionPanel = Readonly<{
 
 export type Craft = Domain &
   Readonly<{
-    panel: BuildingBlocksPanel;
+    panel: LayersPanel;
     /** The line under the "Live demo" sub-section title. */
     demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
