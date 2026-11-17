@@ -273,7 +273,12 @@ export type QueuePanel = Readonly<{
   broker: PanelNode;
   services: readonly PanelNode[];
   /** The button that sends a batch, and how many it sends. */
-  send: Readonly<{ label: string; count: number }>;
+  send: Readonly<{
+    label: string;
+    /** The short call floating over the diorama's big button. */
+    short: string;
+    count: number;
+  }>;
   /** How each service status is written. */
   statuses: Readonly<{ healthy: string; busy: string; down: string; restarting: string }>;
   /** The footer's counters, and the words for a service's messages in flight and done. */

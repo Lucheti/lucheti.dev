@@ -290,7 +290,7 @@ export const SITE: SiteContent = {
         { name: "Payments", tool: "NestJS" },
         { name: "Inventory", tool: "NestJS" },
       ],
-      send: { label: "Send 10 messages", count: 10 },
+      send: { label: "Send 10 messages", short: "Send 10", count: 10 },
       statuses: { healthy: "Healthy", busy: "Busy", down: "Down", restarting: "Restarting" },
       readout: { queued: "Queued", processed: "Processed", restarts: "Restarts", inFlight: "in flight", done: "done" },
       announcements: {

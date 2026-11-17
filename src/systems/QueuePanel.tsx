@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import type { QueuePanel as QueuePanelContent } from "@/content";
-import { cx, FeaturePanel, usePanelLoop } from "@/ui";
-import { composeQueueToy } from "./queue";
+import { cx, FeaturePanel } from "@/ui";
+import type { QueueToy } from "./queue";
 import type { ElementRef } from "./queue/FlightPainter";
 import { Producer, Queue } from "./QueueNodes";
 import { ServiceRow } from "./ServiceRow";
@@ -40,50 +40,30 @@ function Stat({ label, value }: Readonly<{ label: string; value: number }>): Rea
   );
 }
 
+type QueuePanelProps = Readonly<{
+  panel: QueuePanelContent;
+  /** The running toy, shared with the 3D diorama; whoever holds it starts and stops its loop. */
+  toy: QueueToy;
+  /** Whether this board draws the messages in the air (off while the diorama is drawing them). */
+  flights: boolean;
+  /** The send button was pressed. */
+  onSend: () => void;
+  className?: string;
+}>;
+
 /**
- * The back end's feature panel, a toy message queue: Checkout publishes a steady flow to a NATS queue,
+ * The back end's 2D feature panel, a toy message queue: Checkout publishes a steady flow to a NATS queue,
  * which deals each message to the least busy of three services. "Send" floods it; an overloaded service
- * goes down, hands its messages back, restarts and drains the backlog. The flow runs while the panel is
- * on screen; under reduced motion it rests, and a send plays out without flights.
+ * goes down, hands its messages back, restarts and drains the backlog. It draws the toy it is given; the
+ * stage around it runs the loop and speaks the announcements.
  */
-export function QueuePanel({ panel }: Readonly<{ panel: QueuePanelContent }>): ReactNode {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const running = usePanelLoop(rootRef);
-  const [toy] = useState(() =>
-    composeQueueToy(
-      panel.services.map((service) => service.name),
-      panel.announcements,
-    ),
-  );
+export function QueuePanel({ panel, toy, flights, onSend, className }: QueuePanelProps): ReactNode {
   const snapshot = useSyncExternalStore(toy.loop.subscribe, toy.loop.view, toy.loop.view);
-  const [announcement, setAnnouncement] = useState("");
-
-  useEffect(
-    () =>
-      toy.loop.listen((events) => {
-        const sentence = toy.announcer.describe(events);
-        if (sentence !== null) {
-          setAnnouncement(sentence);
-        }
-      }),
-    [toy],
-  );
-
-  useEffect(() => {
-    if (!running) {
-      return undefined;
-    }
-    toy.loop.start("ambient");
-    return () => toy.loop.stop();
-  }, [running, toy]);
-
-  useEffect(() => () => toy.loop.stop(), [toy]);
-
   const { painter, slots } = toy;
 
   return (
-    <FeaturePanel label={panel.label} title={panel.title}>
-      <div ref={rootRef} className="flex flex-1 flex-col gap-5">
+    <FeaturePanel label={panel.label} title={panel.title} className={className}>
+      <div className="flex flex-1 flex-col gap-5">
         <div className="relative flex flex-1 flex-col justify-center gap-4 sm:flex-row sm:items-center sm:gap-0">
           <div className="flex min-w-0 items-center sm:flex-1">
             <Producer producer={panel.producer} anchor={painter.bindAnchor("producer")} />
@@ -120,13 +100,13 @@ export function QueuePanel({ panel }: Readonly<{ panel: QueuePanelContent }>): R
               );
             })}
           </ul>
-          <FlightLayer stage={painter.bindStage} dots={painter.dotBindings()} />
+          {flights ? <FlightLayer stage={painter.bindStage} dots={painter.dotBindings()} /> : null}
         </div>
 
         <div className="flex flex-col gap-4 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
           <button
             type="button"
-            onClick={() => toy.loop.send(panel.send.count)}
+            onClick={onSend}
             className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-signal px-4 text-sm font-semibold text-ink shadow-[0_10px_24px_-12px_rgb(255_90_31/0.9)] transition-[transform,filter] duration-150 ease-out hover:brightness-105 active:scale-[0.97] motion-reduce:transition-none"
           >
             <svg aria-hidden viewBox="0 0 16 16" className="size-4">
@@ -140,9 +120,6 @@ export function QueuePanel({ panel }: Readonly<{ panel: QueuePanelContent }>): R
             <Stat label={panel.readout.restarts} value={snapshot.totals.restarts} />
           </dl>
         </div>
-        <p aria-live="polite" className="sr-only">
-          {announcement}
-        </p>
       </div>
     </FeaturePanel>
   );
