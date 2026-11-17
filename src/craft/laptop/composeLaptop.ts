@@ -1,9 +1,7 @@
 import type { Laptop } from "@/content";
-import { HoverTilt } from "../layers/HoverTilt";
 import { BrowserFrames, BrowserTimers } from "./browser";
 import { Cadence } from "./Cadence";
 import { CommandPalette, type Destination } from "./CommandPalette";
-import { DevicePose } from "./DevicePose";
 import { DomGhostSurface } from "./DomGhostSurface";
 import { GhostDirector } from "./GhostDirector";
 import { GhostHands } from "./GhostHands";
@@ -13,7 +11,6 @@ import { MenuClock } from "./MenuClock";
 import { Roster } from "./Roster";
 import { TaskActions } from "./TaskActions";
 import { TaskBoard } from "./TaskBoard";
-import { TiltDriver } from "./TiltDriver";
 
 /** The most open tasks the list holds; arrivals wait while it is full. */
 const CAPACITY = 7;
@@ -26,11 +23,6 @@ const ARRIVAL_EVERY_MS = 17_000;
 const FIRST_ARRIVAL_MS = 9_000;
 /** The ghost comes back this long after the visitor's pointer leaves. */
 const RESUME_MS = 4_000;
-/** The product-shot pose, seen from a little left and above, and how far the pointer may lean it. */
-const REST_POSE = { x: 3, y: 9 } as const;
-const LEAN_DEGREES = 2.5;
-/** How quickly the lean follows the pointer, per second. */
-const LEAN_RATE = 3.5;
 
 /** The ghost's loop: hover a task, finish it, search for something, look at "My tasks", and come back. */
 function ghostLoop(query: string): readonly GhostStep[] {
@@ -69,13 +61,11 @@ export type LaptopParts = Readonly<{
   actions: TaskActions;
   director: GhostDirector;
   surface: DomGhostSurface;
-  tilt: TiltDriver;
-  pose: DevicePose;
   clock: MenuClock;
   roster: Roster;
 }>;
 
-/** The laptop panel's composition root: builds the task board, the palette, the ghost and the tilt. */
+/** The laptop panel's composition root: builds the task board, the palette and the ghost. */
 export function composeLaptop(content: Laptop): LaptopParts {
   const board = new TaskBoard({ tasks: content.tasks, incoming: content.incoming, me: content.me, capacity: CAPACITY });
   const destinations: readonly Destination[] = [
@@ -87,7 +77,6 @@ export function composeLaptop(content: Laptop): LaptopParts {
   const palette = new CommandPalette(board, destinations, PALETTE_LIMITS);
   const actions = new TaskActions(board, new BrowserTimers(), LINGER_MS);
   const surface = new DomGhostSurface();
-  const frames = new BrowserFrames();
   const director = new GhostDirector(
     new GhostScript(ghostLoop(content.search.sample)),
     new GhostPresence(RESUME_MS),
@@ -96,17 +85,14 @@ export function composeLaptop(content: Laptop): LaptopParts {
     board,
     palette,
     surface,
-    frames,
+    new BrowserFrames(),
   );
-  const pose = new DevicePose(new HoverTilt(LEAN_RATE), REST_POSE, LEAN_DEGREES);
   return {
     board,
     palette,
     actions,
     director,
     surface,
-    tilt: new TiltDriver(pose, frames),
-    pose,
     clock: new MenuClock(),
     roster: new Roster(content),
   };
