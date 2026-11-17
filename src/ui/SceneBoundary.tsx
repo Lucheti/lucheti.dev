@@ -2,9 +2,16 @@
 
 import { Component, type ReactNode } from "react";
 
-type BoundaryProps = Readonly<{ onError: () => void; children: ReactNode }>;
+type BoundaryProps = Readonly<{
+  /** Called once when the scene fails, e.g. so a stage can keep its fallback drawing. */
+  onError?: () => void;
+  children: ReactNode;
+}>;
 
-/** Catches a WebGL context that cannot be made, so the stage keeps its fallback drawing instead of breaking. */
+/**
+ * Catches a WebGL scene that cannot start (no context, a lost context, a shader error), so the page keeps
+ * working without it instead of breaking.
+ */
 export class SceneBoundary extends Component<BoundaryProps, Readonly<{ failed: boolean }>> {
   public state = { failed: false };
 
@@ -13,7 +20,7 @@ export class SceneBoundary extends Component<BoundaryProps, Readonly<{ failed: b
   }
 
   public componentDidCatch(): void {
-    this.props.onError();
+    this.props.onError?.();
   }
 
   public render(): ReactNode {

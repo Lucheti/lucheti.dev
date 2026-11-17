@@ -5,11 +5,10 @@ import { useInView, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
 import type { WorkbenchRoom as WorkbenchRoomContent } from "@/content";
 import { ElementScrollProgress, MountedElement, WindowSurface } from "@/story";
-import { Container, cx, Reveal } from "@/ui";
+import { Container, cx, Reveal, SceneBoundary } from "@/ui";
 import { composeRoom } from "./room/composeRoom";
 import { RoomFallback } from "./room/RoomFallback";
 import { behaviourOf, pickMode } from "./room/RoomMode";
-import { SceneBoundary } from "./SceneBoundary";
 
 // WebGL has no server render; three.js and the scene are fetched only in the browser.
 const RoomScene = dynamic(() => import("./room/RoomScene"), { ssr: false });

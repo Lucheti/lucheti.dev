@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { useStory } from "@/story";
+import { SceneBoundary } from "@/ui";
 
 // WebGL has no server render; the scene is fetched only in the browser.
 const ArtifactScene = dynamic(() => import("./ArtifactScene"), { ssr: false });
@@ -19,7 +20,10 @@ export function ArtifactStage(): ReactNode {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-30">
-      <ArtifactScene story={story} reducedMotion={reducedMotion} />
+      {/* Decorative: without WebGL the object simply isn't drawn, and the page carries on. */}
+      <SceneBoundary>
+        <ArtifactScene story={story} reducedMotion={reducedMotion} />
+      </SceneBoundary>
     </div>
   );
 }
