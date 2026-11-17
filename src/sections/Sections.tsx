@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { AiChapter, CapabilitiesChapter } from "@/capabilities";
 import { CraftChapter } from "@/craft";
-import { ORCHESTRA_SEQUENCE, type SiteContent } from "@/content";
-import { OrchestraChapter } from "@/orchestra";
+import type { SiteContent } from "@/content";
 import { SystemsChapter } from "@/systems";
 import { TimelineChapter } from "@/timeline";
 import { MotionRoot } from "@/ui";
@@ -38,8 +37,7 @@ export function Sections({ content }: SectionsProps): ReactNode {
         />
         <CraftChapter craft={content.craft} capabilities={content.capabilities} />
         <SystemsChapter systems={content.systems} capabilities={content.capabilities} />
-        <AiChapter ai={content.ai} capabilities={content.capabilities} />
-        <OrchestraChapter orchestra={content.orchestra} sequence={ORCHESTRA_SEQUENCE} />
+        <AiChapter ai={content.ai} capabilities={content.capabilities} stats={content.orchestra.stats} />
         <ContactSection contact={content.contact} timeZone={content.timeZone} city={content.city} />
       </main>
     </MotionRoot>

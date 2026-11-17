@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { RepoIllustrationKind } from "@/content";
+import { cx } from "../cx";
 import { DepartmentsDrawing } from "./DepartmentsDrawing";
 import { JobQueueDrawing } from "./JobQueueDrawing";
 import { NodeGraphDrawing } from "./NodeGraphDrawing";
@@ -31,9 +32,15 @@ function drawingFor(kind: RepoIllustrationKind): ReactNode {
 }
 
 /** A repository's drawing in its spec-sheet frame. Decorative: the repository name is the accessible text. */
-export function RepoIllustration({ kind }: Readonly<{ kind: RepoIllustrationKind }>): ReactNode {
+export function RepoIllustration({
+  kind,
+  spaced = true,
+}: Readonly<{ kind: RepoIllustrationKind; /** Leave room under the frame; turn off when the parent lays out the gap. */ spaced?: boolean }>): ReactNode {
   return (
-    <div aria-hidden className="mb-6 aspect-[16/9] w-full overflow-hidden rounded-md border border-line bg-paper-sunk bg-grid">
+    <div
+      aria-hidden
+      className={cx("aspect-[16/9] w-full overflow-hidden rounded-md border border-line bg-paper-sunk bg-grid", spaced && "mb-6")}
+    >
       {drawingFor(kind)}
     </div>
   );

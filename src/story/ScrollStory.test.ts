@@ -44,7 +44,6 @@ function storyWithChapters(viewport: Viewport): ScrollStory {
   story.anchor("craft", anchorAt(3200));
   story.anchor("systems", anchorAt(3500));
   story.anchor("ai", anchorAt(3800));
-  story.anchor("orchestra", anchorAt(4000));
   // Shorter than the screen: its top can never reach the top of the viewport.
   story.anchor("contact", anchorAt(5400));
   story.follow();

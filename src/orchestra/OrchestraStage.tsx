@@ -1,10 +1,10 @@
 "use client";
 
 import { useInView, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { FrameSequencePlayer, StillProgress } from "@/backdrop";
 import type { FrameSequence, Orchestra } from "@/content";
-import { useStory } from "@/story";
+import type { Progress, Signal } from "@/story";
 import { Container, cx, SectionHeader } from "@/ui";
 import { ACTIVITY } from "./ActivityClasses";
 import { CompactBoard } from "./CompactBoard";
@@ -12,14 +12,13 @@ import { CountStat } from "./CountStat";
 import { DepartmentBoard } from "./DepartmentBoard";
 import { DispatchLog } from "./DispatchLog";
 import { LifecycleScript, type BoardState } from "./LifecycleScript";
-import { PinProgress } from "./PinProgress";
 import { Roster } from "./Roster";
 
 type OrchestraStageProps = Readonly<{
   orchestra: Orchestra;
   sequence: FrameSequence;
-  /** Height of the chapter in dvh; the sticky frame is one viewport of it. */
-  chapterDvh: number;
+  /** 0 when the pinned frame sticks, 1 when it lets go. */
+  progress: Signal<Progress>;
 }>;
 
 const FOCAL_X = 0.62;
@@ -43,10 +42,8 @@ const HEADER_FIT = cx(
 const GROUP_GAP = "mt-[clamp(0.75rem,2.6dvh,2rem)]";
 
 /** The pinned frame: video, copy, the department board and the dispatch log, all scroll-linked. */
-export function OrchestraStage({ orchestra, sequence, chapterDvh }: OrchestraStageProps): ReactNode {
-  const story = useStory();
+export function OrchestraStage({ orchestra, sequence, progress: pin }: OrchestraStageProps): ReactNode {
   const reducedMotion = useReducedMotion() === true;
-  const pin = useMemo(() => PinProgress.ofStickyFrame(story.through("orchestra"), chapterDvh), [story, chapterDvh]);
   const [still] = useState(() => new StillProgress(STILL_FRACTION));
   const [roster] = useState(() => Roster.of(orchestra.departments, orchestra.steps));
   const [script] = useState(() => new LifecycleScript(orchestra.steps, roster, orchestra.principles.length));

@@ -320,9 +320,17 @@ export const SITE: SiteContent = {
         illustration: "storyboard",
       },
     ],
+    caseStudy: {
+      title: "Case study",
+      caption: "How Orchestra runs a software lifecycle with agents, and the board running live.",
+      name: "Orchestra",
+      lede: "A Claude Code plugin that runs a software company: seven departments of agents take a feature from idea to release, and code checks every step.",
+      href: "/orchestra",
+      cta: "Read the case study",
+    },
   },
   orchestra: {
-    label: "05.3 — Live demo",
+    label: "Live demo",
     heading: "Orchestra",
     intro: "Orchestra is a Claude Code plugin. Independent departments pass tickets to each other, from idea to release.",
     principles: [

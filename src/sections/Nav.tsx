@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import type { NavItem } from "@/content";
 import { useActiveChapter, type ChapterId } from "@/story";
-import { Container, cx } from "@/ui";
+import { Container, cx, initialsOf } from "@/ui";
 import { LiveClock } from "./LiveClock";
 
 type NavProps = Readonly<{
@@ -50,7 +50,6 @@ function surfaceFor(chapter: ChapterId): NavSurface {
     case "hero":
       return TRANSPARENT;
     case "capabilities":
-    case "orchestra":
       return GRAPHITE;
     case "timeline":
     case "craft":
@@ -65,15 +64,6 @@ function surfaceFor(chapter: ChapterId): NavSurface {
 
 function assertNever(value: never): never {
   throw new Error(`Unhandled chapter: ${String(value)}`);
-}
-
-function initialsOf(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
 }
 
 /** Fixed chrome: monogram, chapter links with the active one marked, and the live clock. */

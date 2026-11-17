@@ -157,8 +157,23 @@ export type Craft = Domain &
 /** The back-end domain: skills and repositories only. */
 export type Systems = Domain;
 
-/** The AI domain; its live demo is the pinned Orchestra chapter that follows it. */
-export type Ai = Domain;
+/** The wide link card that opens the Orchestra case study from the AI chapter. */
+export type CaseStudyCard = Readonly<{
+  /** The sub-section title. */
+  title: string;
+  /** The sub-section caption. */
+  caption: string;
+  /** The card's own title. */
+  name: string;
+  /** One sentence. */
+  lede: string;
+  href: string;
+  /** The orange call to action; its arrow is drawn by the card. */
+  cta: string;
+}>;
+
+/** The AI domain; its third part is the case study that lives on its own page. */
+export type Ai = Domain & Readonly<{ caseStudy: CaseStudyCard }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 
@@ -195,6 +210,54 @@ export type Orchestra = Readonly<{
   departments: readonly Department[];
   /** The lifecycle of one feature, in order; scroll plays it. */
   steps: readonly OrchestraStep[];
+}>;
+
+/** One point of a case-study section: a bold lead phrase, then one sentence. */
+export type CasePoint = Readonly<{
+  lead: string;
+  text: string;
+}>;
+
+/** What every numbered section of the case study carries. */
+type CaseSectionBase = Readonly<{
+  /** Two digits, e.g. "02". */
+  number: string;
+  title: string;
+  /** One sentence that opens the section. */
+  intro: string;
+}>;
+
+/** A short intro and a list of points. */
+export type PointsSection = CaseSectionBase &
+  Readonly<{
+    kind: "points";
+    points: readonly CasePoint[];
+  }>;
+
+/** The seven departments, each with a duty line; names and agents come from `SITE.orchestra`. */
+export type DepartmentsSection = CaseSectionBase &
+  Readonly<{
+    kind: "departments";
+    duties: Readonly<Record<DepartmentId, string>>;
+  }>;
+
+export type CaseSection = PointsSection | DepartmentsSection;
+
+/** Everything on the `/orchestra` page that is not already in `SITE.orchestra`. */
+export type OrchestraPage = Readonly<{
+  metadata: Readonly<{ title: string; description: string }>;
+  bar: Readonly<{ home: Link; back: Link }>;
+  hero: Readonly<{
+    label: string;
+    heading: string;
+    lede: string;
+    facts: readonly string[];
+  }>;
+  demo: Readonly<{ number: string; title: string; caption: string }>;
+  /** Sections 02 to 08, in order. */
+  sections: readonly CaseSection[];
+  builtWith: Readonly<{ title: string; tools: readonly string[] }>;
+  footer: Readonly<{ back: Link }>;
 }>;
 
 export type Contact = Readonly<{
