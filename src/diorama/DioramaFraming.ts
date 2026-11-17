@@ -1,4 +1,4 @@
-import type { IsometricView, ScreenBounds } from "../layers/IsometricView";
+import type { IsometricView, ScreenBounds } from "@/craft/layers/IsometricView";
 import { along, point, type Point3 } from "./space";
 
 /** How far the island may turn either way from rest: under a drag and the pointer's lean (yaw), and the lean's tip (tilt). */

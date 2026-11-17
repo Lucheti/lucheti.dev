@@ -1,6 +1,6 @@
 import { Group, type Mesh } from "three";
-import type { CardBlueprint } from "../layers/CardBlueprint";
-import { StackMeshes } from "../layers/StackMeshes";
+import type { CardBlueprint } from "@/craft/layers/CardBlueprint";
+import { StackMeshes } from "@/craft/layers/StackMeshes";
 import type { CardSpread } from "./CardSpread";
 import type { CardPlacement } from "./DioramaLayout";
 import { point, type Point3 } from "./space";

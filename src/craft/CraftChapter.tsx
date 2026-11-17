@@ -2,18 +2,18 @@ import type { ReactNode } from "react";
 import type { Capabilities, Craft } from "@/content";
 import { Chapter } from "@/story";
 import { Container, DomainHeader, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
-import { DioramaPanel } from "./DioramaPanel";
+import { LaptopPanel } from "./LaptopPanel";
 import { SpecWorkbench } from "./SpecWorkbench";
 
 type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
 
-/** The front end: its heading beside the diorama, then skills, repositories, and a specimen whose spec the visitor can switch on. */
+/** The front end: its heading beside the laptop corner, then skills, repositories, and a specimen whose spec the visitor can switch on. */
 export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
     <Chapter id="craft" className="relative bg-paper-raised py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
-        <DomainHeader heading={craft.heading} intro={craft.intro} panel={<DioramaPanel diorama={craft.diorama} />} />
+        <DomainHeader heading={craft.heading} intro={craft.intro} panel={<LaptopPanel laptop={craft.laptop} />} />
         <section aria-labelledby="craft-skills">
           <SubsectionHeader id="craft-skills" title={subsections.skills.title} caption={subsections.skills.caption} />
           <SkillTable areas={craft.areas} caption={`${craft.heading} skills`} />

@@ -1,4 +1,4 @@
-import { assertNever } from "../layers/assertNever";
+import { assertNever } from "@/craft/layers/assertNever";
 
 /**
  * How the diorama plays on this screen:

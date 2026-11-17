@@ -1,4 +1,4 @@
-import { smoothstep } from "../layers/easing";
+import { smoothstep } from "@/craft/layers/easing";
 
 /** The pace and reach of the island's small life. Lengths in seconds, distances in island units, angles in radians. */
 export type IdleRules = Readonly<{

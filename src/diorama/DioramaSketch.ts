@@ -1,5 +1,5 @@
-import { assertNever } from "../layers/assertNever";
-import type { IsometricView, ScreenBounds, Vec2 } from "../layers/IsometricView";
+import { assertNever } from "@/craft/layers/assertNever";
+import type { IsometricView, ScreenBounds, Vec2 } from "@/craft/layers/IsometricView";
 import type { DioramaLayout } from "./DioramaLayout";
 import type { Part, Solid, Tone } from "./Solid";
 import { dot, point, type Point3 } from "./space";

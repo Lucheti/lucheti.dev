@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { assertNever } from "../layers/assertNever";
-import type { ScreenBounds } from "../layers/IsometricView";
+import { assertNever } from "@/craft/layers/assertNever";
+import type { ScreenBounds } from "@/craft/layers/IsometricView";
 import type { DioramaSketch, FaceSide } from "./DioramaSketch";
 import { INK, LIGHT, shade, TOON } from "./toon";
 

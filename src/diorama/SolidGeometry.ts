@@ -14,7 +14,7 @@ import {
 } from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries, toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
-import { assertNever } from "../layers/assertNever";
+import { assertNever } from "@/craft/layers/assertNever";
 import type { Solid, Turn } from "./Solid";
 import type { Point3 } from "./space";
 

@@ -184,12 +184,84 @@ export type DioramaControls = Readonly<{
   card: string;
 }>;
 
-/** The Front end chapter's 3D diorama: a little workroom you can turn and play with. */
+/** The 3D diorama, parked for a later section: a little workroom you can turn and play with. */
 export type Diorama = Readonly<{
   /** What the scene shows, for screen readers. */
   label: string;
   screen: DioramaScreen;
   controls: DioramaControls;
+}>;
+
+/** Where a task stands. */
+export type TaskStatus = "todo" | "doing" | "done";
+
+/** The colour of a label's dot. */
+export type LabelHue = "red" | "violet" | "amber" | "blue" | "green";
+
+/** One task in the laptop's task tracker. People, projects and labels are named by their ids. */
+export type LaptopTask = Readonly<{
+  /** Unique within the panel. */
+  id: string;
+  title: string;
+  status: TaskStatus;
+  project: string;
+  label: string;
+  owner: string;
+  /** A short due date, e.g. "Today" or "Fri". */
+  due: string;
+}>;
+
+/** The words around the laptop's command palette. */
+export type LaptopSearch = Readonly<{
+  /** The sidebar button that opens it. */
+  button: string;
+  placeholder: string;
+  /** Group headings in the results. */
+  tasks: string;
+  views: string;
+  /** Shown when nothing matches. */
+  empty: string;
+  /** The footer's key hints. */
+  hints: Readonly<{ move: string; open: string; close: string }>;
+  /** What the idle ghost cursor types; it should find a task. */
+  sample: string;
+}>;
+
+/**
+ * The Front end panel: the top-left corner of a laptop screen with a small task tracker open. Copy only;
+ * the panel decides how it looks.
+ */
+export type Laptop = Readonly<{
+  /** What the panel shows, for screen readers. */
+  label: string;
+  /** The app's name, bold in the menu bar. */
+  app: string;
+  /** The menu bar's menus after the app's name. */
+  menus: readonly string[];
+  /** The workspace in the sidebar's switcher. */
+  workspace: string;
+  /** The person the laptop belongs to: "My tasks" are theirs, and "Assign to me" gives a task to them. */
+  me: string;
+  people: readonly Readonly<{ id: string; name: string }>[];
+  projects: readonly Readonly<{ id: string; name: string }>[];
+  labels: readonly Readonly<{ id: string; name: string; hue: LabelHue }>[];
+  /** The sidebar's views and the heading of its projects group. */
+  views: Readonly<{ mine: string; all: string; done: string; projects: string }>;
+  /** The list's group headings. */
+  statuses: Readonly<Record<TaskStatus, string>>;
+  /** The tasks on screen at first. */
+  tasks: readonly LaptopTask[];
+  /** Tasks that arrive now and then, in turn; finished tasks join the end of the line. */
+  incoming: readonly LaptopTask[];
+  search: LaptopSearch;
+  /** A row's hover actions, and the toolbar's new-task button. */
+  actions: Readonly<{ complete: string; reopen: string; assign: string; newTask: string }>;
+  /** The word on a task that has just arrived. */
+  fresh: string;
+  /** The due date that means today; open tasks due then show it in orange. */
+  today: string;
+  /** Shown in a view with no tasks. */
+  empty: string;
 }>;
 
 /** The back-end feature panel: a toy message queue, from a producer through a broker to consumer services. */
@@ -256,7 +328,7 @@ export type AgentPanel = Readonly<{
 
 export type Craft = Domain &
   Readonly<{
-    diorama: Diorama;
+    laptop: Laptop;
     /** The line under the "Live demo" sub-section title. */
     demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
@@ -393,6 +465,8 @@ export type SiteContent = Readonly<{
   timeline: Timeline;
   capabilities: Capabilities;
   craft: Craft;
+  /** The 3D diorama, parked: not on the page for now. */
+  diorama: Diorama;
   systems: Systems;
   ai: Ai;
   orchestra: Orchestra;

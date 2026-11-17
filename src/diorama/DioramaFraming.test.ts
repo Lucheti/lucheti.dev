@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IsometricView, type Vec2 } from "../layers/IsometricView";
+import { IsometricView, type Vec2 } from "@/craft/layers/IsometricView";
 import { DioramaFraming } from "./DioramaFraming";
 import { corners, dot, minus, point, type Point3 } from "./space";
 
