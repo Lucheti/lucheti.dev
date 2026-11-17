@@ -124,72 +124,34 @@ export const SITE: SiteContent = {
   craft: {
     heading: "Front end",
     intro: "React and TypeScript since 2019, from Salesforce's Anypoint Platform to Clarifai and Front.",
-    room: {
+    diorama: {
       label:
-        "A clay model of a designer's workbench: a desk with a monitor, a keyboard, a lamp, a mug and a plant, a pegboard of UI components on the wall, and UI cards that split into their layers as the view moves in to the monitor.",
+        "A small 3D model of a front-end developer's room: a desk with a monitor, a keyboard, a mug, a lamp and a rubber duck, a pegboard of chunky UI controls that drive the app on the monitor, a window, a shelf of books, a plant, and a UI card floating apart into its layers.",
       screen: {
-        label: "A small support inbox on the monitor",
-        workspace: "Northwind support",
-        nav: [{ label: "Inbox", count: 4 }, { label: "Mentions", count: 1 }, { label: "Contacts" }, { label: "Reports" }, { label: "Settings" }],
-        inbox: "Inbox",
-        conversations: [
-          {
-            name: "Martina Ruiz",
-            channel: "WhatsApp",
-            time: "09:41",
-            preview: "Can I still change the delivery address?",
-            unread: true,
-            messages: [
-              { from: "them", text: "Hi! I ordered a lamp this morning." },
-              { from: "them", text: "Can I still change the delivery address?" },
-              { from: "me", text: "Of course. It hasn't shipped yet, so send me the new address and I'll update it." },
-            ],
-          },
-          {
-            name: "Tomás Álvarez",
-            channel: "Email",
-            time: "09:12",
-            preview: "The invoice for October is missing the tax ID.",
-            unread: true,
-            messages: [
-              { from: "them", text: "The invoice for October is missing the tax ID." },
-              { from: "me", text: "Thanks for flagging it. I'm sending a corrected one now." },
-            ],
-          },
-          {
-            name: "Sofía Benítez",
-            channel: "Web chat",
-            time: "Yesterday",
-            preview: "Love the new dark mode, by the way.",
-            unread: false,
-            messages: [
-              { from: "them", text: "Love the new dark mode, by the way." },
-              { from: "me", text: "That's great to hear. I'll pass it on to the team." },
-            ],
-          },
-          {
-            name: "Joaquín Paz",
-            channel: "WhatsApp",
-            time: "Mon",
-            preview: "Is the desk available in oak?",
-            unread: false,
-            messages: [
-              { from: "them", text: "Is the desk available in oak?" },
-              { from: "me", text: "It is, in oak and in ash. Both ship in about a week." },
-            ],
-          },
+        title: "Tasks",
+        pinned: { name: "Navbar", owner: "Ana" },
+        incoming: [
+          { name: "Dark mode", owner: "Leo" },
+          { name: "Search", owner: "Mia" },
+          { name: "Onboarding", owner: "Tom" },
+          { name: "Date picker", owner: "Eva" },
+          { name: "Empty state", owner: "Sam" },
         ],
-        toggle: "Auto-assign",
-        chart: {
-          title: "Replies this week",
-          value: "248",
-          caption: "Median first reply 4 min",
-          days: ["M", "T", "W", "T", "F", "S", "S"],
-          values: [34, 41, 38, 52, 47, 18, 18],
-        },
-        composer: "Write a reply…",
-        action: { idle: "Resolve", done: "Reopen" },
-        resolved: "Resolved",
+        fresh: "New",
+        toast: "Saved!",
+        chart: [0.45, 0.7, 0.55, 0.85, 0.3],
+      },
+      controls: {
+        label: "Play with the room",
+        toggle: "Flip the toggle to switch the screen between light and dark",
+        button: "Press the orange button to pop a toast on the screen",
+        slider: "Move the slider to change the screen's text size",
+        star: "Give the task {count} stars",
+        checkbox: "Tick the checkbox to mark the task done",
+        lamp: "Switch the desk lamp on or off",
+        duck: "Squeeze the rubber duck",
+        plant: "Wiggle the plant",
+        card: "Pop the floating card apart",
       },
     },
     areas: [

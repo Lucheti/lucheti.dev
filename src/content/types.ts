@@ -144,49 +144,52 @@ export type PanelNode = Readonly<{
   detail?: string;
 }>;
 
-/** The layers of the workbench room's exploded UI cards, bottom to top. */
+/** The layers of the diorama's floating UI card, bottom to top. */
 export type LayerKind = "tokens" | "layout" | "components" | "content" | "interaction";
 
-/** One message in a conversation on the room's monitor. */
-export type RoomMessage = Readonly<{ from: "them" | "me"; text: string }>;
+/** One task on the diorama's monitor: a couple of words and who owns it. */
+export type ScreenTask = Readonly<{ name: string; owner: string }>;
 
-/** One conversation in the inbox on the room's monitor. */
-export type RoomConversation = Readonly<{
-  name: string;
-  /** Where it came in, e.g. "WhatsApp". */
-  channel: string;
-  time: string;
-  preview: string;
-  unread: boolean;
-  messages: readonly RoomMessage[];
+/** The little app on the diorama's monitor, made for its real size: big shapes, few words. */
+export type DioramaScreen = Readonly<{
+  /** The app's title in its header bar. */
+  title: string;
+  /** The selected task at the top of the list; the stars and the checkbox act on it. */
+  pinned: ScreenTask;
+  /** The tasks that arrive under it, one after another, in turn. */
+  incoming: readonly ScreenTask[];
+  /** The word on a task that has just arrived. */
+  fresh: string;
+  /** What the toast says when the orange button is pressed. */
+  toast: string;
+  /** The small bar chart's heights, as shares of its full height; the last bar is today's and grows. */
+  chart: readonly number[];
 }>;
 
-/** The live interface on the room's monitor: a small support inbox, real DOM the visitor can click. */
-export type RoomScreen = Readonly<{
-  /** The accessible name of the interface. */
+/**
+ * The names of the hidden buttons that mirror the diorama's clickable pieces, for keyboard and screen
+ * readers. `{count}` in `star` is replaced by the number of stars.
+ */
+export type DioramaControls = Readonly<{
+  /** The group's name. */
   label: string;
-  workspace: string;
-  nav: readonly Readonly<{ label: string; count?: number }>[];
-  /** The title over the conversation list. */
-  inbox: string;
-  conversations: readonly RoomConversation[];
-  /** The switch in the conversation header. */
   toggle: string;
-  /** The small chart beside the thread. */
-  chart: Readonly<{ title: string; value: string; caption: string; days: readonly string[]; values: readonly number[] }>;
-  /** The reply box's placeholder. */
-  composer: string;
-  /** The orange primary button, before and after it is pressed. */
-  action: Readonly<{ idle: string; done: string }>;
-  /** The chip a resolved conversation shows. */
-  resolved: string;
+  button: string;
+  slider: string;
+  star: string;
+  checkbox: string;
+  lamp: string;
+  duck: string;
+  plant: string;
+  card: string;
 }>;
 
-/** The Front end chapter's opening: a pinned 3D workbench room the camera moves through to a live screen. */
-export type WorkbenchRoom = Readonly<{
+/** The Front end chapter's 3D diorama: a little workroom you can turn and play with. */
+export type Diorama = Readonly<{
   /** What the scene shows, for screen readers. */
   label: string;
-  screen: RoomScreen;
+  screen: DioramaScreen;
+  controls: DioramaControls;
 }>;
 
 /** The back-end feature panel: a toy message queue, from a producer through a broker to consumer services. */
@@ -253,7 +256,7 @@ export type AgentPanel = Readonly<{
 
 export type Craft = Domain &
   Readonly<{
-    room: WorkbenchRoom;
+    diorama: Diorama;
     /** The line under the "Live demo" sub-section title. */
     demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
