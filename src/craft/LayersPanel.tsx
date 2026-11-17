@@ -90,7 +90,7 @@ export function LayersPanel({ panel }: Readonly<{ panel: LayersContent }>): Reac
         aria-hidden
         onPointerMove={onPointerMove}
         onPointerLeave={() => toy.tilt.release()}
-        className="relative min-h-[15rem] min-w-0 flex-1 select-none overflow-hidden sm:min-h-[18rem] lg:min-h-[20rem]"
+        className="relative min-h-[17rem] min-w-0 flex-1 select-none overflow-hidden sm:min-h-[22rem] lg:min-h-[26rem]"
       >
         <StackSketch
           shapes={sketch}
