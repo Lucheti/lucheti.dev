@@ -1,5 +1,6 @@
 import { ManualClock } from "./Clock";
-import { FlightPainter } from "./FlightPainter";
+import { FlightPainter, type FramePainter } from "./FlightPainter";
+import { PainterFan } from "./FlightRelay";
 import { QueueAnnouncer, type AnnouncementTemplates } from "./QueueAnnouncer";
 import { BrowserFrames, QueueLoop } from "./QueueLoop";
 import { QueueSimulation } from "./QueueSimulation";
@@ -37,8 +38,15 @@ export type QueueToy = Readonly<{
   overloadMs: number;
 }>;
 
-/** The panel's composition root: builds the simulation, its clock, the painter and the loop. */
-export function composeQueueToy(serviceNames: readonly string[], templates: AnnouncementTemplates): QueueToy {
+/**
+ * The panel's composition root: builds the simulation, its clock, the painter and the loop. `relays` are
+ * more painters handed every frame's flights alongside the 2D board's, such as the 3D diorama's.
+ */
+export function composeQueueToy(
+  serviceNames: readonly string[],
+  templates: AnnouncementTemplates,
+  relays: readonly FramePainter[] = [],
+): QueueToy {
   if (serviceNames.length !== QUEUE_CONFIG.services.length) {
     throw new Error(`The queue is tuned for ${QUEUE_CONFIG.services.length} services, got ${serviceNames.length}`);
   }
@@ -49,8 +57,9 @@ export function composeQueueToy(serviceNames: readonly string[], templates: Anno
   simulation.takeEvents();
 
   const painter = new FlightPainter(FLYING_DOTS);
+  const painters: FramePainter = relays.length === 0 ? painter : new PainterFan([painter, ...relays]);
   return {
-    loop: new QueueLoop(simulation, clock, new BrowserFrames(), painter, PLAYBACK_SPEED),
+    loop: new QueueLoop(simulation, clock, new BrowserFrames(), painters, PLAYBACK_SPEED),
     painter,
     announcer: new QueueAnnouncer(templates, serviceNames),
     slots: { limit: QUEUE_CONFIG.rules.limit, capacity: QUEUE_CONFIG.broker.capacity },
