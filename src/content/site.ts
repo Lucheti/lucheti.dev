@@ -283,11 +283,6 @@ export const SITE: SiteContent = {
         where: [],
       },
     ],
-    exhibit: {
-      label: "Exhibit C — Agentic SDLC",
-      title: "Orchestra",
-      caption: "Independent departments of agents pass one feature from idea to release. Scroll to run it.",
-    },
   },
   orchestra: {
     label: "Exhibit C — Agentic SDLC",

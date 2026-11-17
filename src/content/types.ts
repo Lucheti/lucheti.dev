@@ -134,7 +134,8 @@ export type Systems = Domain &
     repo: Readonly<{ label: string; href: string; note: string }>;
   }>;
 
-export type Ai = Domain & Readonly<{ exhibit: Exhibit }>;
+/** The AI domain; its exhibit is the pinned Orchestra chapter that follows it. */
+export type Ai = Domain;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 

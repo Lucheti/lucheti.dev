@@ -47,10 +47,11 @@ function ToolList({ tools, separator }: { readonly tools: readonly string[]; rea
         <Fragment key={tool}>
           {index > 0 && (
             <>
-              <span aria-hidden className={cx("mx-2", separator)}>
+              <span aria-hidden className={cx("ml-2 mr-1", separator)}>
                 ·
               </span>
-              <span className="sr-only">, </span>
+              <span className="sr-only">,</span>
+              {/* The space is the line-break opportunity between nowrap tools. */}{" "}
             </>
           )}
           <span className="whitespace-nowrap">{tool}</span>
