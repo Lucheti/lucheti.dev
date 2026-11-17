@@ -102,7 +102,7 @@ export function VerticalTimeline({ timeline }: { readonly timeline: Timeline }):
   return (
     <div className="bg-paper py-24 md:hidden">
       <Container>
-        <SectionHeader index="02" label={timeline.label} heading={timeline.heading} intro={timeline.intro} />
+        <SectionHeader label={timeline.label} heading={timeline.heading} intro={timeline.intro} />
 
         <div className="mt-14">
           <Label className="mb-6 pl-8">{timeline.eras["pre-ai"]}</Label>

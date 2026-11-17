@@ -11,8 +11,6 @@ type ContactSectionProps = Readonly<{
   city: string;
 }>;
 
-const CHAPTER_NUMBER = "06";
-
 const RAIL_TEXT = "font-label font-medium text-[11px] uppercase tracking-[0.14em] text-mute";
 
 /** Splits a heading so its last word can take the accent. */
@@ -24,7 +22,7 @@ function splitLastWord(heading: string): Readonly<{ lead: string; last: string }
   return { lead: heading.slice(0, cut + 1), last: heading.slice(cut + 1) };
 }
 
-/** Chapter 06: one line, one button, sign-off. The right 40% stays clear for the artifact. */
+/** The last chapter: one line, one button, sign-off. The right 40% stays clear for the artifact. */
 export function ContactSection({ contact, timeZone, city }: ContactSectionProps): ReactNode {
   const { lead, last } = splitLastWord(contact.heading);
   const [firstLink, ...otherLinks] = contact.links;
@@ -34,7 +32,7 @@ export function ContactSection({ contact, timeZone, city }: ContactSectionProps)
       <Container className="flex flex-1 flex-col justify-center gap-10 py-28 lg:py-32">
         <div className="flex flex-col gap-8 lg:max-w-[60%]">
           <Reveal>
-            <Label marked>{`${CHAPTER_NUMBER} — ${contact.label}`}</Label>
+            <Label marked>{contact.label}</Label>
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="text-balance font-display text-[clamp(3rem,8vw,8rem)] font-bold leading-[0.92] tracking-[-0.05em] text-ink">

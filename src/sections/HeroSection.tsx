@@ -9,7 +9,7 @@ type HeroSectionProps = Readonly<{
   city: string;
 }>;
 
-/** Chapter 01: name, role and face, composed in layers on a spec sheet. */
+/** The opening chapter: name, role and face, composed in layers. */
 export function HeroSection({ hero }: HeroSectionProps): ReactNode {
   return (
     <Chapter id="hero">

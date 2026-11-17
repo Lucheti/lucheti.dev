@@ -33,8 +33,6 @@ export type Hero = Readonly<{
   facts: readonly Fact[];
   primary: Link;
   secondary: Link;
-  /** Corner annotations of the spec-sheet frame. */
-  sheet: Readonly<{ code: string; title: string; revision: string; scroll: string }>;
 }>;
 
 export type Era = "pre-ai" | "ai";
@@ -121,29 +119,100 @@ export type RepoLabels = Readonly<{
 
 /** A capability domain: Front end, Back end or AI. */
 export type Domain = Readonly<{
-  label: string;
   heading: string;
   intro: string;
   areas: readonly SkillArea[];
   repos: readonly Repo[];
 }>;
 
-/** The title and caption of a numbered sub-section of a domain chapter. */
+/** The title and caption of a sub-section of a domain chapter. */
 export type Subsection = Readonly<{ title: string; caption: string }>;
 
 export type Capabilities = Readonly<{
-  label: string;
   heading: string;
   intro: string;
-  range: string;
   repoLabels: RepoLabels;
   subsections: Readonly<{ skills: Subsection; repos: Subsection; demo: Subsection }>;
-  /** Units for the sub-section counts, e.g. "areas" in "05 areas". */
-  countUnits: Readonly<{ areas: string; repos: string }>;
+}>;
+
+/** One part of a feature panel, painted with the brand swatch of the tool it runs on. */
+export type PanelNode = Readonly<{
+  name: string;
+  /** A tool label from the icon registry; its brand colour paints the node's swatch. */
+  tool: string;
+  /** A short second line, e.g. "event bus". */
+  detail?: string;
+}>;
+
+/** A named colour of a design system. */
+export type ColourToken = Readonly<{
+  name: string;
+  /** `#rrggbb`. */
+  hex: string;
+}>;
+
+/** The front-end feature panel: a few working components of a design system. */
+export type DesignSystemPanel = Readonly<{
+  /** What the panel shows, for screen readers. */
+  label: string;
+  title: string;
+  /** Tool labels shown as a stack of brand swatches beside the title. */
+  stack: readonly string[];
+  notification: Readonly<{ from: PanelNode; message: string; time: string }>;
+  /** The label of the switch that flips by itself until the visitor takes over. */
+  toggle: string;
+  /** A segmented control: its accessible name and its options. */
+  segments: Readonly<{ label: string; options: readonly string[] }>;
+  progress: Readonly<{ label: string; detail: string; percent: number }>;
+  tokens: readonly ColourToken[];
+}>;
+
+/** The back-end feature panel: one request through gateway, services, bus and stores. */
+export type RequestPanel = Readonly<{
+  label: string;
+  title: string;
+  client: string;
+  /** What the client sends, e.g. "POST /orders". */
+  request: string;
+  gateway: PanelNode;
+  services: readonly PanelNode[];
+  bus: PanelNode;
+  stores: readonly PanelNode[];
+}>;
+
+/** How a storyboard frame is shot. */
+export type ShotFraming = "wide" | "medium" | "close";
+
+export type StoryboardShot = Readonly<{
+  name: string;
+  framing: ShotFraming;
+}>;
+
+/** The AI feature panel: a chat where an agent calls a tool and the storyboard updates. */
+export type AgentPanel = Readonly<{
+  label: string;
+  title: string;
+  /** What the visitor's side asks for. */
+  prompt: string;
+  call: Readonly<{
+    name: string;
+    args: string;
+    /** The tool label whose swatch marks the call. */
+    tool: string;
+  }>;
+  shots: readonly StoryboardShot[];
+  /** The shot the call reframes (0-based) and its framing afterwards. */
+  edit: Readonly<{ shot: number; framing: ShotFraming }>;
+  framings: Readonly<Record<ShotFraming, string>>;
+  reply: string;
+  placeholder: string;
+  /** The tools the agent can reach, shown beside the title. */
+  tools: readonly PanelNode[];
 }>;
 
 export type Craft = Domain &
   Readonly<{
+    panel: DesignSystemPanel;
     /** The line under the "Live demo" sub-section title. */
     demoCaption: string;
     specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
@@ -151,8 +220,8 @@ export type Craft = Domain &
     toggle: Readonly<{ show: string; hide: string }>;
   }>;
 
-/** The back-end domain: skills and repositories only. */
-export type Systems = Domain;
+/** The back-end domain: skills and repositories, introduced by the request panel. */
+export type Systems = Domain & Readonly<{ panel: RequestPanel }>;
 
 /** The wide link card that opens the Orchestra page, the featured project, from the AI chapter. */
 export type CaseStudyCard = Readonly<{
@@ -170,7 +239,7 @@ export type CaseStudyCard = Readonly<{
 }>;
 
 /** The AI domain; its third part is the case study that lives on its own page. */
-export type Ai = Domain & Readonly<{ caseStudy: CaseStudyCard }>;
+export type Ai = Domain & Readonly<{ panel: AgentPanel; caseStudy: CaseStudyCard }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 
@@ -215,10 +284,8 @@ export type CasePoint = Readonly<{
   text: string;
 }>;
 
-/** What every numbered section of the case study carries. */
+/** What every section of the case study carries. */
 type CaseSectionBase = Readonly<{
-  /** Two digits, e.g. "02". */
-  number: string;
   title: string;
   /** One sentence that opens the section. */
   intro: string;
@@ -252,8 +319,8 @@ export type OrchestraPage = Readonly<{
     /** The public repository. */
     repo: Link;
   }>;
-  demo: Readonly<{ number: string; title: string; caption: string }>;
-  /** Sections 02 to 08, in order. */
+  demo: Readonly<{ title: string; caption: string }>;
+  /** The sections after the live demo, in order. */
   sections: readonly CaseSection[];
   builtWith: Readonly<{ title: string; tools: readonly string[] }>;
   footer: Readonly<{ back: Link }>;

@@ -85,9 +85,7 @@ export function OrchestraStage({ orchestra, sequence, progress: pin }: Orchestra
                   index < state.principles ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
                 )}
               >
-                <span className="pt-[4px] font-label text-[11px] tracking-[0.16em] text-signal">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+                <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 bg-signal" />
                 <span className="text-[15px] leading-[1.45] text-fog lg:text-base 2xl:text-[17px]">{principle}</span>
               </li>
             ))}

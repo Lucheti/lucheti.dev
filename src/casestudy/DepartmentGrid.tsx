@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Department, DepartmentsSection } from "@/content";
-import { ToolPills, twoDigits } from "@/ui";
+import { ToolPills } from "@/ui";
 
 type DepartmentGridProps = Readonly<{
   departments: readonly Department[];
@@ -11,13 +11,10 @@ type DepartmentGridProps = Readonly<{
 export function DepartmentGrid({ departments, duties }: DepartmentGridProps): ReactNode {
   return (
     <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {departments.map((department, index) => (
+      {departments.map((department) => (
         <li key={department.id} className="min-w-0">
           <article className="flex h-full flex-col rounded-lg border border-line bg-paper-raised p-6">
-            <span aria-hidden className="font-dot text-xl text-signal-ink">
-              {twoDigits(index + 1)}
-            </span>
-            <h4 className="mt-4 font-display text-xl font-semibold tracking-[-0.02em] text-ink md:text-2xl">{department.name}</h4>
+            <h4 className="font-display text-xl font-semibold tracking-[-0.02em] text-ink md:text-2xl">{department.name}</h4>
             <p className="mt-3 text-[15px] leading-[1.55] text-ink-soft">{duties[department.id]}</p>
             <div className="mt-auto pt-6">
               <div className="border-t border-line pt-4">

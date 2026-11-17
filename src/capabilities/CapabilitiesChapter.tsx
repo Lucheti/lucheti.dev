@@ -11,9 +11,7 @@ type CapabilitiesChapterProps = Readonly<{
   ai: Ai;
 }>;
 
-const LABEL_CAPS = "font-label font-medium text-[11px] uppercase tracking-[0.16em]";
-
-/** One domain as a link card: its number, its name and the first tools it uses. */
+/** One domain as a link card: its name in the accent and the first tools it uses. */
 function IndexCard({ row }: { readonly row: CapabilityRow }): ReactNode {
   return (
     <li className="min-w-0">
@@ -21,10 +19,8 @@ function IndexCard({ row }: { readonly row: CapabilityRow }): ReactNode {
         href={`#${row.chapter}`}
         className="group flex h-full flex-col rounded-lg border border-line-dark bg-graphite-raised p-6 transition-colors duration-300 hover:border-signal focus-visible:border-signal lg:p-7"
       >
-        <span className="flex items-center justify-between gap-4">
-          <span aria-hidden className="font-dot text-3xl text-signal">
-            {row.number}
-          </span>
+        <span className="flex items-baseline justify-between gap-4">
+          <span className="font-display text-3xl font-semibold tracking-[-0.04em] text-signal md:text-4xl">{row.name}</span>
           <span
             aria-hidden
             className="font-display text-2xl leading-none text-fog-dim transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-signal group-focus-visible:translate-x-1 group-focus-visible:text-signal"
@@ -32,10 +28,7 @@ function IndexCard({ row }: { readonly row: CapabilityRow }): ReactNode {
             →
           </span>
         </span>
-        <span className="mt-8 font-display text-3xl font-semibold tracking-[-0.04em] text-fog transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal">
-          {row.name}
-        </span>
-        <ToolPills tools={row.preview} tone="dark" className="mt-6" />
+        <ToolPills tools={row.preview} tone="dark" className="mt-8" />
       </a>
     </li>
   );
@@ -57,19 +50,13 @@ export function CapabilitiesChapter({ capabilities, craft, systems, ai }: Capabi
           <h2 className="font-display text-[clamp(3.5rem,9vw,8.5rem)] font-bold leading-[0.88] tracking-[-0.06em] text-fog lg:col-span-7">
             {capabilities.heading}
           </h2>
-          <div className="flex flex-col gap-5 lg:col-span-5 lg:pb-2">
-            <div className={`flex items-center justify-between border-b border-line-dark pb-3 text-fog-dim ${LABEL_CAPS}`}>
-              <p>{capabilities.label}</p>
-              <p>{capabilities.range}</p>
-            </div>
-            <Reveal>
-              <p className="max-w-[34rem] text-base leading-[1.6] text-fog-dim md:text-lg">{capabilities.intro}</p>
-            </Reveal>
-          </div>
+          <Reveal className="lg:col-span-5 lg:pb-3">
+            <p className="max-w-[34rem] text-base leading-[1.6] text-fog-dim md:text-lg">{capabilities.intro}</p>
+          </Reveal>
         </div>
 
         <Reveal>
-          <nav aria-label={capabilities.label}>
+          <nav aria-label={capabilities.heading}>
             <ul className="grid gap-4 lg:grid-cols-3">
               {rows.map((row) => (
                 <IndexCard key={row.chapter} row={row} />

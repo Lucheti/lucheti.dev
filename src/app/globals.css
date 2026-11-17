@@ -13,7 +13,7 @@
   --color-paper-sunk: #e7e6e0;
   --color-ink: #0e0e0e;
   --color-ink-soft: #46463f;
-  /* AA (4.5:1) for 11 px labels on paper-sunk and under the domain backdrops' warm tint. */
+  /* AA (4.5:1) for 11 px labels on paper-sunk. */
   --color-mute: #66665f;
   --color-line: rgb(14 14 14 / 0.12);
   --color-line-strong: rgb(14 14 14 / 0.3);
@@ -117,68 +117,39 @@ body {
 }
 
 /*
- * Domain backdrops (src/ui/backdrop): slow drifts behind the domain chapters.
- * Transforms only, always behind motion-safe:. Off screen a backdrop carries
- * .backdrop-paused and nothing in it moves; this rule is unlayered, so it
- * wins over the animation utilities.
+ * Feature panels (src/ui/panels and the domain folders). A panel only adds the
+ * animation class while it is on screen and motion is allowed, so nothing here
+ * needs pausing. Transforms and opacity only.
  */
-.backdrop-paused,
-.backdrop-paused * {
-  animation-play-state: paused;
-}
 
-/* The glows: a slow loop around their resting place. */
-@keyframes backdrop-drift-a {
+/* A request packet dropping down one 20 px link, then waiting for its next turn. */
+@keyframes panel-packet {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translateY(-6px);
+    opacity: 0;
   }
-  50% {
-    transform: translate3d(-7%, 5%, 0) scale(1.08);
+  6% {
+    opacity: 1;
   }
+  24% {
+    opacity: 1;
+  }
+  30%,
   100% {
-    transform: translate3d(4%, 9%, 0) scale(0.97);
+    transform: translateY(20px);
+    opacity: 0;
   }
 }
 
-@keyframes backdrop-drift-b {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1.04);
+/* A text caret. */
+@keyframes panel-caret {
+  0%,
+  49% {
+    opacity: 1;
   }
-  50% {
-    transform: translate3d(8%, -6%, 0) scale(0.95);
-  }
+  50%,
   100% {
-    transform: translate3d(-3%, -10%, 0) scale(1.06);
-  }
-}
-
-/* The front-end fragments: a few pixels of float and a hint of tilt. */
-@keyframes backdrop-float-a {
-  to {
-    transform: translate3d(10px, -16px, 0) rotate(-1.2deg);
-  }
-}
-
-@keyframes backdrop-float-b {
-  to {
-    transform: translate3d(-12px, 12px, 0) rotate(1deg);
-  }
-}
-
-/* The cursor, closing in on the selection. */
-@keyframes backdrop-float-c {
-  to {
-    transform: translate3d(-22px, -16px, 0);
-  }
-}
-
-/* The AI strands: each sheet rises, falls and tilts on its own clock. */
-@keyframes backdrop-sway {
-  from {
-    transform: translate3d(0, -10px, 0) rotate(-0.6deg);
-  }
-  to {
-    transform: translate3d(0, 10px, 0) rotate(0.6deg);
+    opacity: 0;
   }
 }
 

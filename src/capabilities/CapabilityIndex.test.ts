@@ -4,7 +4,6 @@ import { buildCapabilityIndex } from "./CapabilityIndex";
 
 function domain(heading: string, ...toolLists: readonly (readonly string[])[]): Domain {
   return {
-    label: "Capabilities",
     heading,
     intro: "",
     areas: toolLists.map((tools, index) => ({ name: `Area ${index}`, summary: "", tools })),
@@ -19,11 +18,11 @@ describe("buildCapabilityIndex", () => {
     { chapter: "ai", domain: domain("AI") },
   ]);
 
-  it("numbers the rows from 03 and carries name and chapter", () => {
-    expect(rows.map((row) => [row.number, row.name, row.chapter])).toEqual([
-      ["03", "Front end", "craft"],
-      ["04", "Back end", "systems"],
-      ["05", "AI", "ai"],
+  it("carries each domain's name and chapter, in order", () => {
+    expect(rows.map((row) => [row.name, row.chapter])).toEqual([
+      ["Front end", "craft"],
+      ["Back end", "systems"],
+      ["AI", "ai"],
     ]);
   });
 

@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx";
-import { BrandIcon, toolIcon } from "./icons";
+import { ToolSwatch } from "./icons";
 import type { Tone } from "./Tone";
 
-const PILL = "inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium leading-5";
+const PILL = "inline-flex max-w-full items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm font-medium leading-5";
 
 const SKINS: Readonly<Record<Tone, string>> = {
   light: "border-line-strong bg-paper/70 text-ink",
@@ -15,12 +15,11 @@ type ToolPillProps = Readonly<{
   tone?: Tone;
 }>;
 
-/** One tool as a rounded pill, led by its brand mark when the tool has an official one. */
+/** One tool as a rounded pill, led by a circle in its brand colour (or its initial when it has no mark). */
 export function ToolPill({ tool, tone = "light" }: ToolPillProps): ReactNode {
-  const icon = toolIcon(tool);
   return (
     <span className={cx(PILL, SKINS[tone])}>
-      {icon ? <BrandIcon icon={icon} className="size-3.5 shrink-0" /> : null}
+      <ToolSwatch tool={tool} tone={tone} />
       <span className="min-w-0">{tool}</span>
     </span>
   );
