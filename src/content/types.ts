@@ -216,34 +216,43 @@ export type QueuePanel = Readonly<{
   announcements: Readonly<{ down: string; restarting: string; recovered: string; settled: string }>;
 }>;
 
-/** How a storyboard frame is shot. */
-export type ShotFraming = "wide" | "medium" | "close";
+/** What the toy paints: the subject of the picture. */
+export type DiffusionSubject = "lighthouse" | "vase" | "mountain" | "city";
+/** The mood of the picture: its palette and light. */
+export type DiffusionMood = "dusk" | "night" | "morning" | "storm";
+/** How close the camera is. */
+export type DiffusionFraming = "wide" | "close-up";
 
-export type StoryboardShot = Readonly<{
-  name: string;
-  framing: ShotFraming;
+/** One choice in a chip row; `phrase` is how it reads inside the prompt sentence. */
+export type DiffusionOption<Id extends string> = Readonly<{
+  id: Id;
+  label: string;
+  phrase: string;
 }>;
 
-/** The AI feature panel: a chat where an agent calls a tool and the storyboard updates. */
-export type AgentPanel = Readonly<{
+/** The AI feature panel: "Tiny diffusion", a toy that denoises a little picture built from three chips. */
+export type DiffusionPanel = Readonly<{
+  /** What the panel shows, for screen readers. */
   label: string;
   title: string;
-  /** What the visitor's side asks for. */
-  prompt: string;
-  call: Readonly<{
-    name: string;
-    args: string;
-    /** The tool label whose swatch marks the call. */
-    tool: string;
+  /** Says outright that it is a toy and not a real model. */
+  caption: string;
+  groups: Readonly<{
+    subject: Readonly<{ label: string; options: readonly DiffusionOption<DiffusionSubject>[] }>;
+    mood: Readonly<{ label: string; options: readonly DiffusionOption<DiffusionMood>[] }>;
+    framing: Readonly<{ label: string; options: readonly DiffusionOption<DiffusionFraming>[] }>;
   }>;
-  shots: readonly StoryboardShot[];
-  /** The shot the call reframes (0-based) and its framing afterwards. */
-  edit: Readonly<{ shot: number; framing: ShotFraming }>;
-  framings: Readonly<Record<ShotFraming, string>>;
-  reply: string;
-  placeholder: string;
-  /** The tools the agent can reach, shown beside the title. */
-  tools: readonly PanelNode[];
+  /** The orange button. */
+  generate: string;
+  /** The status line while denoising. */
+  generating: string;
+  /** The status line when a picture has finished. */
+  done: string;
+  seed: string;
+  /** The label of the re-roll button. */
+  reroll: string;
+  /** The label of the strip of past generations. */
+  gallery: string;
 }>;
 
 export type Craft = Domain &
@@ -275,7 +284,7 @@ export type CaseStudyCard = Readonly<{
 }>;
 
 /** The AI domain; its third part is the case study that lives on its own page. */
-export type Ai = Domain & Readonly<{ panel: AgentPanel; caseStudy: CaseStudyCard }>;
+export type Ai = Domain & Readonly<{ panel: DiffusionPanel; caseStudy: CaseStudyCard }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 

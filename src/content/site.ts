@@ -311,23 +311,42 @@ export const SITE: SiteContent = {
     intro: "Agent workflows for writing and reviewing code, and the AI products I've worked on.",
     panel: {
       label:
-        "An agent loop: asked to make shot 3 a close-up, the agent calls the update_shot tool and the storyboard frame changes.",
-      title: "shot-planner",
-      prompt: "Make shot 3 a close-up",
-      call: { name: "update_shot", args: "framing → close-up", tool: "Claude Code" },
-      shots: [
-        { name: "Shot 1", framing: "wide" },
-        { name: "Shot 2", framing: "medium" },
-        { name: "Shot 3", framing: "wide" },
-      ],
-      edit: { shot: 2, framing: "close" },
-      framings: { wide: "Wide", medium: "Medium", close: "Close-up" },
-      reply: "Done. Shot 3 is now a close-up.",
-      placeholder: "Message shot-planner",
-      tools: [
-        { name: "MCP", tool: "Model Context Protocol SDK" },
-        { name: "Anthropic SDK", tool: "Anthropic SDK" },
-      ],
+        "A toy image generator: pick a subject, a mood and a framing, press Generate, and watch a little picture resolve out of noise.",
+      title: "Tiny diffusion",
+      caption: "A toy, not a real model: it draws with shapes and a seeded random number, no neural network.",
+      groups: {
+        subject: {
+          label: "Subject",
+          options: [
+            { id: "lighthouse", label: "lighthouse", phrase: "lighthouse" },
+            { id: "vase", label: "ceramic vase", phrase: "ceramic vase" },
+            { id: "mountain", label: "mountain", phrase: "mountain" },
+            { id: "city", label: "city", phrase: "city" },
+          ],
+        },
+        mood: {
+          label: "Mood",
+          options: [
+            { id: "dusk", label: "dusk", phrase: "at dusk" },
+            { id: "night", label: "night", phrase: "at night" },
+            { id: "morning", label: "morning", phrase: "in the morning" },
+            { id: "storm", label: "storm", phrase: "in a storm" },
+          ],
+        },
+        framing: {
+          label: "Framing",
+          options: [
+            { id: "wide", label: "wide", phrase: "wide" },
+            { id: "close-up", label: "close-up", phrase: "close-up" },
+          ],
+        },
+      },
+      generate: "Generate",
+      generating: "Denoising",
+      done: "Done",
+      seed: "Seed",
+      reroll: "New seed",
+      gallery: "Recent pictures",
     },
     areas: [
       {
