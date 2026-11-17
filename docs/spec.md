@@ -1152,3 +1152,70 @@ keyboard: an HTML list of visually hidden buttons that mirror the controls, with
 - **Drag/spring:** clamping and spring-back as a pure stepper.
 - **Idle loops:** pure functions of time.
 - **Composition:** one composition root; nothing is instantiated at module load.
+
+## v2.13 — The Front end panel becomes a MacBook corner (WP-M)
+
+The owner's direction (2026-11-17): for the Front end chapter, try a component that looks like **the top-left
+corner of a MacBook's screen showing a UI**. The v2.12 diorama is kept for another section later, so it is parked,
+not deleted.
+
+### Parking the diorama
+- **Move:** `src/craft/DioramaPanel.tsx` and `src/craft/diorama/` go into their own module, `src/diorama/`, with an
+  `index.ts` that exports `DioramaPanel`. All its tests keep passing.
+- **Content:** the copy moves from `craft.diorama` to a top-level `diorama` entry in the site content, with its
+  types.
+- **Not rendered:** nothing renders it for now. Do not delete any of it.
+
+### The panel: a MacBook seen from its top-left corner
+- **Framing:** the panel is a close crop of a MacBook Pro display's top-left corner, and the panel's box cuts the
+  laptop off. We see:
+  - the outer aluminium edge, a thin space-grey rim with a subtle highlight;
+  - the black glass bezel, with its rounded corner at the top-left;
+  - the screen, which continues off the panel's right and bottom edges, as if the laptop were much bigger than the
+    box.
+- **Overall shape:** it reads as a crop of something real, not a drawn mock-up. Use the same `DomainHeader` slot as
+  the other domains, with no card around it. The crop edges can fade softly into the page, or cut cleanly; pick
+  the one that looks better.
+- **Depth:**
+  - a slight 3D perspective, like a product shot from a little to the left and above, done with a CSS transform;
+  - a gentle tilt toward the pointer, damped and a few degrees at most;
+  - a soft, realistic screen glare that shifts a little with the tilt;
+  - a soft shadow on the page.
+- **Rendering:** all DOM and CSS (or SVG for the aluminium and bezel). No WebGL, so the UI text is crisp and real.
+  It must look premium, the kind of crop used on Apple or Linear marketing pages.
+
+### What the screen shows
+- **macOS chrome:**
+  - **Menu bar** across the top: the Apple logo, the app name in bold, then File, Edit, View, Window and Help, in
+    macOS's style (translucent bar, SF-like system sans; Geist sans is fine).
+  - **Desktop:** a wallpaper behind the window in the site's palette, a soft warm gradient with signal orange
+    `#ff5a1f`. It must not be a copy of Apple's wallpapers.
+  - **App window:** its top-left corner sits in view, with traffic lights, a toolbar and a sidebar. The window runs
+    off the crop to the right and bottom, so we see its first part in full detail rather than a tiny whole app.
+- **The app:** a well-crafted product UI that shows front-end taste:
+  - **Sidebar:** a workspace switcher, navigation with counts and a "Projects" group.
+  - **Main area:** a task list with status icons, labels, assignee avatars and keyboard hints.
+  - **Style:** crisp typography, real hover and focus states, small transitions, a light theme with the orange
+    accent.
+  - **Copy:** a mini task tracker, kept consistent with the parked diorama's screen if easy. The copy lives in
+    `src/content/site.ts` under `craft`.
+- **Interactive** (real DOM, keyboard accessible):
+  - selecting sidebar items switches the list;
+  - clicking a status icon completes a task, with a satisfying check animation;
+  - hovering rows shows actions;
+  - **⌘K or a search button** opens a small command palette inside the window.
+- **Alive when idle:**
+  - **Ghost cursor:** a macOS-style cursor drifts through a short loop of real actions: it hovers a row, completes a
+    task, opens the palette, types a few letters and closes it. It stops as soon as the visitor's pointer enters the
+    panel, and resumes a few seconds after it leaves.
+  - **Updates:** the menu bar clock ticks, and occasionally a new task slides in.
+  - **Pace:** calm and readable, never frantic.
+- **Phones (< 768 px):** the same crop, scaled to the column. The tilt is off and taps work.
+- **Reduced motion:** no ghost cursor, tilt or slide-ins. Interactions stay, with instant changes.
+
+### Logic (pure, tested)
+- **Task list state:** select a view, complete, add, and filter by palette query. Use domain methods.
+- **Ghost cursor script:** a timeline of steps (move, hover, click, type), as a pure function of time, so tests can
+  ask where the cursor is and what it is doing at time t.
+- **Tilt:** pointer to tilt, damped, as a pure stepper. Reuse `HoverTilt` from `src/craft/layers` if it fits.
+- **Composition:** one composition root; nothing is instantiated at module load.
