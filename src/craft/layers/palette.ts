@@ -39,3 +39,7 @@ export const SURFACES: Readonly<Record<LayerSurface, SlabPaint>> = {
 
 /** The soft shadow under the stack. */
 export const SHADOW = { color: "#0e0e0e", opacity: 0.16 } as const;
+
+/** How far the shadow sits toward the viewer from the bottom slab, and how soft it is, in card units. */
+export const SHADOW_SHIFT = 0.14;
+export const SHADOW_SOFTNESS = 0.16;

@@ -1,19 +1,19 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Craft } from "@/content";
 import { Chapter } from "@/story";
-import { Container, DomainHeader, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
-import { LayersPanel } from "./LayersPanel";
+import { Container, RepoCards, SkillTable, SubsectionHeader } from "@/ui";
 import { SpecWorkbench } from "./SpecWorkbench";
+import { WorkbenchRoom } from "./WorkbenchRoom";
 
 type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
 
-/** The front end in three parts: skills, repositories, and a specimen whose spec the visitor can switch on. */
+/** The front end: the workbench room it opens on, then skills, repositories, and a specimen whose spec the visitor can switch on. */
 export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
-    <Chapter id="craft" className="relative bg-paper-raised py-32 lg:py-48">
-      <Container className="relative flex flex-col gap-24 lg:gap-36">
-        <DomainHeader heading={craft.heading} intro={craft.intro} panel={<LayersPanel panel={craft.panel} />} />
+    <Chapter id="craft" className="relative bg-paper-raised pb-32 lg:pb-48">
+      <WorkbenchRoom heading={craft.heading} intro={craft.intro} room={craft.room} />
+      <Container className="relative flex flex-col gap-24 pt-16 lg:gap-36 lg:pt-8">
         <section aria-labelledby="craft-skills">
           <SubsectionHeader id="craft-skills" title={subsections.skills.title} caption={subsections.skills.caption} />
           <SkillTable areas={craft.areas} caption={`${craft.heading} skills`} />

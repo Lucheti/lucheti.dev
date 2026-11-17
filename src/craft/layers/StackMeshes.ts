@@ -24,10 +24,9 @@ import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { assertNever } from "./assertNever";
 import type { CardBlueprint, LayerSpec, Mark, Tone, Weight } from "./CardBlueprint";
-import { SHADOW_SHIFT, SHADOW_SOFTNESS } from "./FallbackSketch";
 import type { Vec3 } from "./IsometricView";
 import { roundedBox, type Outline } from "./outline";
-import { SHADOW, SURFACES, TONES, WEIGHTS, type SlabPaint } from "./palette";
+import { SHADOW, SHADOW_SHIFT, SHADOW_SOFTNESS, SURFACES, TONES, WEIGHTS, type SlabPaint } from "./palette";
 
 /** Each mark sits this far above the one before it, so overlapping marks never fight for the same depth. */
 const MARK_STEP = 0.0015;
