@@ -511,3 +511,79 @@ their card says "In progress" and links nowhere. The page is not deployed while 
   turns `border-ink` and its arrow nudges. An in-progress card is an `<article>` with no link.
 - Each card's status is a discriminated union, `{ kind: "public"; href } | { kind: "soon" }`, rendered with a
   `switch` and `assertNever`.
+
+## v2.5 — Labels in sans, numbered sub-sections, drawn repo illustrations (WP-L)
+
+The owner's review (2026-11-17):
+
+- He dislikes the "terminal font" (Geist Mono). The dotted Doto numerals stay.
+- The sub-parts of the domain chapters are too small to explain why they are there, and need more space between
+  them.
+- The repository cards need an image. He chose diagrams drawn in code over generated images.
+
+### Labels font
+
+- Add `--font-label: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif` to the theme, and replace every
+  `font-mono` class in `src/` with `font-label`.
+- Remove `--font-mono` and the `Geist_Mono` font load.
+- Doto's fallback becomes the sans stack.
+- Labels keep their uppercase, size and tracking, but get `font-medium` where they are 11–12 px, so the sans
+  holds up at that size.
+- Repo names become `font-display` semibold with `tracking-[-0.02em]`.
+
+### Numbered sub-sections
+
+Each domain chapter is split into numbered sub-sections, separated by `gap-24 lg:gap-36`. Each one opens with a
+`SubsectionHeader` (`src/ui/SubsectionHeader.tsx`):
+
+- **Rule:** a 1 px `border-ink` rule across the top, then `pt-6`.
+- **Left side:**
+  - the number in Doto (`font-dot text-2xl md:text-3xl text-signal`, e.g. "03.1");
+  - the title as display type (`text-3xl md:text-[2.75rem] font-semibold tracking-[-0.035em] text-ink`);
+  - an optional caption (`text-base md:text-lg text-ink-soft`, max 44ch).
+- **Right side:** on md and up, an optional count as a small uppercase label ("05 areas", "02 repos").
+- **Spacing:** `mb-10 lg:mb-14` before the content.
+
+The sub-sections:
+
+- **Front end:**
+  - 03.1 Skills
+  - 03.2 Repositories
+  - 03.3 Live demo (it replaces "Exhibit A"; `ExhibitHeader` and the `Exhibit` type are removed)
+- **Back end:**
+  - 04.1 Skills
+  - 04.2 Repositories
+- **AI:**
+  - 05.1 Skills
+  - 05.2 Repositories
+  - The pinned Orchestra stage's label becomes "05.3 — Live demo", and its heading stays "Orchestra".
+
+`RepoCards` loses its own small header row; the sub-section header now carries the title and count.
+
+### Repo illustrations
+
+- `Repo` gains `illustration`, one of: `"node-graph" | "website" | "saga" | "job-queue" | "departments" | "storyboard"`.
+- `RepoIllustration` (`src/ui/illustrations/`) maps it with a `switch`/`assertNever` to one inline SVG component per
+  kind.
+- Every drawing uses viewBox `0 0 320 180`, at the top of the card in a `rounded-md border border-line
+  bg-paper-sunk bg-grid aspect-[16/9]` frame, `aria-hidden`. The repo name is the accessible text.
+- **Style:** the spec-sheet line style. `stroke-ink` hairlines (1–1.25), `fill-paper` boxes with `rx` 4–6,
+  `stroke-line-strong` for secondary lines, and `signal` orange only for the one thing that is "happening".
+  Text labels are 9–10 px Geist sans (`font-label`), uppercase where they are labels.
+- **Motion:** at most one subtle CSS animation per drawing (a dot travelling an edge, a progress bar filling),
+  only under `motion-safe:`. Static under reduced motion.
+- **The drawings:**
+  - **node-graph** (`reel-graph`): four nodes, "Clip", "Trim", "Blur" and "Export", linked by bezier edges with round
+    port handles. "Clip" shows a tiny filmstrip thumbnail. The edge into "Export" is orange, with a dot travelling
+    along it.
+  - **website** (`lucheti.dev`): a browser window with three dots in the title bar. Inside, two thick headline bars
+    on the left and an orange disc with a thin ring on the right, with a small faceted polygon overlapping it.
+  - **saga** (`transactional-microservices`): a hub circle "Orchestrator" in the centre, with four service boxes
+    around it ("Orders", "Payments", "Inventory", "Shipping") joined by spokes. "Inventory" has an orange ✕, and a
+    dashed orange arrow curves back to "Payments" (the compensation).
+  - **job-queue** (`render-queue`): an upload arrow into a queue of stacked slots, which fans out to three worker
+    boxes with progress bars (one orange and filling), and then into a storage cylinder.
+  - **departments** (`orchestra`): a 3×2 grid of small department cards, each with a name and two or three worker
+    dots, plus an orange ticket packet moving between two of them.
+  - **storyboard** (`shot-planner`): a chat bubble with two text lines on the left, an arrow, then three 16:9
+    storyboard frames with simple shapes inside. The third frame is being generated, with an orange progress bar.
