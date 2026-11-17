@@ -36,9 +36,9 @@ export function Sections({ content }: SectionsProps): ReactNode {
           systems={content.systems}
           ai={content.ai}
         />
-        <CraftChapter craft={content.craft} />
-        <SystemsChapter systems={content.systems} />
-        <AiChapter ai={content.ai} />
+        <CraftChapter craft={content.craft} repoLabels={content.capabilities.repoLabels} />
+        <SystemsChapter systems={content.systems} repoLabels={content.capabilities.repoLabels} />
+        <AiChapter ai={content.ai} repoLabels={content.capabilities.repoLabels} />
         <OrchestraChapter orchestra={content.orchestra} sequence={ORCHESTRA_SEQUENCE} />
         <ContactSection contact={content.contact} timeZone={content.timeZone} city={content.city} />
       </main>

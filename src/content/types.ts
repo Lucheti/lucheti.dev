@@ -100,10 +100,44 @@ export type SkillArea = Readonly<{
 /** The small header that introduces a chapter's demo. */
 export type Exhibit = Readonly<{ label: string; title: string; caption: string }>;
 
-/** A capability domain: Front end, Back end or AI. */
-export type Domain = Readonly<{ label: string; heading: string; intro: string; areas: readonly SkillArea[] }>;
+/** Where a repository card points: a public repository, or one still being built. */
+export type RepoStatus = Readonly<{ kind: "public"; href: string }> | Readonly<{ kind: "soon" }>;
 
-export type Capabilities = Readonly<{ label: string; heading: string; intro: string; range: string }>;
+/** A repository a recruiter can open. */
+export type Repo = Readonly<{
+  /** The GitHub repository name, shown in mono. */
+  name: string;
+  /** Two or three short sentences. */
+  description: string;
+  tools: readonly string[];
+  status: RepoStatus;
+}>;
+
+export type RepoLabels = Readonly<{
+  heading: string;
+  public: string;
+  soon: string;
+  open: string;
+  pending: string;
+  item: string;
+}>;
+
+/** A capability domain: Front end, Back end or AI. */
+export type Domain = Readonly<{
+  label: string;
+  heading: string;
+  intro: string;
+  areas: readonly SkillArea[];
+  repos: readonly Repo[];
+}>;
+
+export type Capabilities = Readonly<{
+  label: string;
+  heading: string;
+  intro: string;
+  range: string;
+  repoLabels: RepoLabels;
+}>;
 
 export type Craft = Domain &
   Readonly<{
@@ -113,26 +147,8 @@ export type Craft = Domain &
     toggle: Readonly<{ show: string; hide: string }>;
   }>;
 
-export type SagaStep = Readonly<{
-  service: string;
-  action: string;
-  /** The undo; empty when the step has nothing to compensate. */
-  compensation: string;
-}>;
-
-export type Systems = Domain &
-  Readonly<{
-    exhibit: Exhibit;
-    edge: Readonly<{ client: string; gateway: string; bus: string; orchestrator: string }>;
-    steps: readonly SagaStep[];
-    /** Index into `steps` of the step that fails in the failure run. */
-    failingStep: number;
-    controls: Readonly<{ run: string; fail: string }>;
-    outcomes: Readonly<{ committed: string; rolledBack: string }>;
-    principles: readonly string[];
-    /** The public repository the diagram is modelled on. */
-    repo: Readonly<{ label: string; href: string; note: string }>;
-  }>;
+/** The back-end domain: skills and repositories only. */
+export type Systems = Domain;
 
 /** The AI domain; its exhibit is the pinned Orchestra chapter that follows it. */
 export type Ai = Domain;

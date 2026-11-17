@@ -1,7 +1,8 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { SkillArea } from "@/content";
 import { cx } from "./cx";
 import type { Tone } from "./Tone";
+import { ToolList } from "./ToolList";
 
 type SkillTableProps = Readonly<{
   areas: readonly SkillArea[];
@@ -39,27 +40,6 @@ const SKINS: Readonly<Record<Tone, TableSkin>> = {
 };
 
 const MONO_CAPS = "font-mono text-[11px] uppercase tracking-[0.14em]";
-
-function ToolList({ tools, separator }: { readonly tools: readonly string[]; readonly separator: string }): ReactNode {
-  return (
-    <>
-      {tools.map((tool, index) => (
-        <Fragment key={tool}>
-          {index > 0 && (
-            <>
-              <span aria-hidden className={cx("ml-2 mr-1", separator)}>
-                ·
-              </span>
-              <span className="sr-only">,</span>
-              {/* The space is the line-break opportunity between nowrap tools. */}{" "}
-            </>
-          )}
-          <span className="whitespace-nowrap">{tool}</span>
-        </Fragment>
-      ))}
-    </>
-  );
-}
 
 /**
  * A resume skill table: area and summary, the libraries used, and the employers where it was the job.
