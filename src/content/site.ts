@@ -261,7 +261,7 @@ export const SITE: SiteContent = {
         description:
           "An API for media uploads and render jobs: presigned S3 uploads, a job queue with workers, and progress over server-sent events. Ships as containers for ECS Fargate.",
         tools: ["Node.js", "Fastify", "BullMQ", "PostgreSQL", "Drizzle", "Docker", "AWS ECS Fargate"],
-        status: { kind: "soon" },
+        status: { kind: "public", href: "https://github.com/Lucheti/render-queue" },
         illustration: "job-queue",
       },
     ],
@@ -315,8 +315,8 @@ export const SITE: SiteContent = {
         name: "shot-planner",
         description:
           "A chat agent that turns a creative brief into a storyboard, then generates each shot through image and video APIs with tool calls.",
-        tools: ["Anthropic SDK", "tool use", "streaming", "React", "Node.js"],
-        status: { kind: "soon" },
+        tools: ["Anthropic SDK", "Runway API", "tool use", "streaming", "React", "Node.js"],
+        status: { kind: "public", href: "https://github.com/Lucheti/shot-planner" },
         illustration: "storyboard",
       },
     ],
