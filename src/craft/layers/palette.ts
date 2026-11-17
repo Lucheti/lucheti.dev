@@ -1,22 +1,25 @@
 import type { LayerSurface, Tone, Weight } from "./CardBlueprint";
 
-/** The model's colours, from the site's tokens: paper, ink, a few warm greys between them, and the signal orange. */
+/**
+ * The floating card's colours, in the diorama's toy palette: warm cream for the paper, a periwinkle and a
+ * honey for the picture, the diorama's warm ink, and the signal orange for the interaction layer.
+ */
 export const TONES: Readonly<Record<Tone, string>> = {
-  paper: "#f3f2ee",
+  paper: "#fff5e2",
   white: "#ffffff",
-  mist: "#eeede8",
-  stone: "#dddcd5",
-  slate: "#bdbcb4",
-  graphite: "#46463f",
-  ink: "#0e0e0e",
+  mist: "#d9e2ff",
+  stone: "#f3c98a",
+  slate: "#8fa2ff",
+  graphite: "#3d2f52",
+  ink: "#2a1d33",
   signal: "#ff5a1f",
 };
 
 /** How opaque a hairline of each weight is. */
 export const WEIGHTS: Readonly<Record<Weight, number>> = {
-  faint: 0.07,
-  fine: 0.2,
-  firm: 0.4,
+  faint: 0.12,
+  fine: 0.3,
+  firm: 0.55,
   solid: 1,
 };
 
@@ -31,14 +34,14 @@ export type SlabPaint = Readonly<{
   edge: Weight;
 }>;
 
-/** A solid slab is warm paper; a glass one is a white sheet you can see through, with a slightly firmer edge. */
+/** A solid slab is warm cream; a glass one is a white sheet you can see through, with a warm edge. */
 export const SURFACES: Readonly<Record<LayerSurface, SlabPaint>> = {
-  solid: { top: "#f3f2ee", topOpacity: 1, wallLit: "#e6e5df", wallShade: "#d3d2cb", wallOpacity: 1, edge: "fine" },
-  glass: { top: "#ffffff", topOpacity: 0.5, wallLit: "#eeede8", wallShade: "#d6d5ce", wallOpacity: 0.95, edge: "fine" },
+  solid: { top: "#fff5e2", topOpacity: 1, wallLit: "#ffe3b8", wallShade: "#f0c487", wallOpacity: 1, edge: "firm" },
+  glass: { top: "#ffffff", topOpacity: 0.62, wallLit: "#fff0d6", wallShade: "#f5d3a2", wallOpacity: 0.95, edge: "firm" },
 };
 
 /** The soft shadow under the stack. */
-export const SHADOW = { color: "#0e0e0e", opacity: 0.16 } as const;
+export const SHADOW = { color: "#2a1d33", opacity: 0.18 } as const;
 
 /** How far the shadow sits toward the viewer from the bottom slab, and how soft it is, in card units. */
 export const SHADOW_SHIFT = 0.14;

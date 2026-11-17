@@ -176,6 +176,61 @@ body {
   }
 }
 
+/* The Front end diorama's screen (src/craft/diorama): a toast pops up, holds, and goes. */
+@keyframes screen-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.92);
+  }
+}
+
+/* The same toast without movement, for reduced motion: it shows, holds and goes. */
+@keyframes screen-toast-still {
+  0%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The diorama's screen: a task that has just arrived slides in. */
+@keyframes screen-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The diorama's screen: the done tick pops in. */
+@keyframes screen-pop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 /* The Capabilities wall: a row holds its run twice, so sliding one run plus the 0.75rem gap loops seamlessly. */
 @keyframes wall-slide {
