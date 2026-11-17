@@ -587,3 +587,89 @@ The sub-sections:
     dots, plus an orange ticket packet moving between two of them.
   - **storyboard** (`shot-planner`): a chat bubble with two text lines on the left, an arrow, then three 16:9
     storyboard frames with simple shapes inside. The third frame is being generated, with an orange progress bar.
+
+## v2.6 — Orchestra moves to its own page, `/orchestra` (WP-P)
+
+The owner's direction (2026-11-17): Orchestra no longer belongs on the main page. It gets its own path, where it is
+explained properly as a case study, and the live board runs there.
+
+### Main page
+
+- `CHAPTER_IDS` drops `"orchestra"`: hero, timeline, capabilities, craft, systems, ai, contact. Update the pose tables,
+  the Nav `switch` and the tests (contact becomes index 6), keeping the meaning of every assertion.
+- The AI chapter's third sub-section becomes **05.3 Case study**, with the caption "How Orchestra runs a software
+  lifecycle with agents, and the board running live."
+  - Its content is one wide link card, `<a href="/orchestra">`, laid out in two columns on lg (the drawing on the
+    left at 7/12, the text on the right at 5/12).
+  - **Drawing:** the `departments` drawing, large.
+  - **Text:**
+    - the title "Orchestra" (display, `text-3xl md:text-4xl`);
+    - the one-sentence lede;
+    - three stats in a row (Doto numerals, e.g. "07 Departments");
+    - an orange "Read the case study →" line.
+  - **Hover:** the border turns `border-ink` and the arrow nudges.
+- The `orchestra` repo card stays as it is ("In progress", until the repository is public).
+
+### `/orchestra` (`src/app/orchestra/page.tsx`, a second composition root)
+
+- **Metadata:** `title: "Orchestra — Lucas Garcia"`, plus a one-line description.
+- **Top bar:** fixed, paper with a hairline, the same height as the main nav. On the left, the monogram and "Lucas
+  Garcia" link back to `/`. On the right, "← Back to the portfolio" links to `/#ai`.
+- **Hero** (`bg-paper`, `pt-40 pb-24`):
+  - the label "Case study";
+  - an h1 "Orchestra" at the size of the main hero name's smaller breakpoint (`text-[clamp(4rem,12vw,10rem)]`);
+  - the lede;
+  - a facts row (16 agents · 7 departments · 3 parallel workflows · built on Claude Code).
+- **01 Live demo:** a short `SubsectionHeader` inside a Container, then the existing pinned board (`OrchestraStage`,
+  dark, its own 320dvh section) exactly as it is today. Its pin progress comes from a new element-scroll signal
+  instead of the main page's story (see below). Its label becomes "Live demo" and its heading stays "Orchestra".
+- **02–08:** numbered sub-sections on paper, with the same `SubsectionHeader` and `gap-24 lg:gap-36` rhythm as the
+  domain chapters. Each one is a short intro sentence plus a list of 3–5 points: a bold lead phrase, then one
+  sentence. No walls of text. The order and substance:
+  - **02 The idea:** an autonomous software company as a Claude Code plugin. Departments are groups of agents with a
+    head who owns their work. They coordinate only through tickets. You lock the mission and the architecture at
+    genesis; after that the company runs and improves itself.
+  - **03 Departments:** a grid of the seven departments (3 columns on lg). Each card shows the name, a one-line duty,
+    and its agents (head first) from `orchestra.departments`.
+  - **04 Code decides, not models:**
+    - `company.yaml` is the single source of departments, roles, lifecycles, evidence and budgets.
+    - `orch` is the only thing that changes state. It checks who may make each transition and verifies the evidence
+      itself: tests, scope, protected paths, skipped tests, docs, and the independence of reviewers.
+    - The wake planner decides what runs next.
+    - Merging, releasing, deploying and rolling back are done by code, never by an agent.
+  - **05 Tickets, not chat:**
+    - intake to the head of product;
+    - templates (feature, bugfix, spike, sprint);
+    - documents merge like code;
+    - requests between departments;
+    - ordering between cards;
+    - decisions recorded in the tracker.
+  - **06 Guardrails:** the hooks.
+    - SessionStart injects the brief or inbox.
+    - PreToolUse on Bash denies raw tracker writes, force pushes and deploys.
+    - PreToolUse on Edit/Write keeps edits inside the ticket's scope.
+    - Stop: a worker cannot quit with its ticket unfinished.
+    - PostToolUse runs the formatter.
+  - **07 Releases with a safety net:**
+    - stage on QA, then a QA sign-off through a parallel regression sweep;
+    - ship only the signed-off commit;
+    - production health checks with automatic rollback, and a bug filed;
+    - stuck releases wake the release manager.
+  - **08 Learning:**
+    - retros after friction;
+    - lessons that reach every matching brief;
+    - promotion to a global playbook (seen 3 times or in 2 projects);
+    - handbook changes approved by the department head.
+- **Built with:** a final row of tools as a `ToolList`: TypeScript, Bun, Claude Code plugins (agents, hooks, skills,
+  workflows, monitors), Beads, launchd.
+- **Footer:** the same as the main contact footer's bottom line, plus a link back to the portfolio.
+- **Content:** all copy lives in `src/content/orchestraPage.ts` (typed in `types.ts`), and reuses `SITE.orchestra`
+  for departments, steps, stats and principles.
+
+### Progress without the main story
+
+`OrchestraStage` takes a `progress: Signal<Progress>` prop instead of calling `useStory()`. A new
+`ElementScrollProgress` (in `src/story`, implementing `Signal<Progress>`, with a test for its maths) maps an element's
+scroll to 0 when its top meets the viewport top, and 1 when its bottom meets the viewport bottom. That is exactly the
+sticky frame's pinned span, so `PinProgress` is not needed on that page. Remove `PinProgress` if nothing else uses
+it. The `/orchestra` page runs Lenis smooth scrolling like the main page.
