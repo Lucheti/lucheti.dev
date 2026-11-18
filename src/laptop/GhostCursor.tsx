@@ -18,12 +18,11 @@ export function GhostCursor({ bind }: Readonly<{ bind: Ref<HTMLDivElement> }>): 
   );
 }
 
-/** The screen's glass: the desktop and everything on it, clipped to the display's rounded corners. */
+/** The surface the app window sits on and the ghost measures from: the whole stage, with no frame of its own. */
 export function Screen({ bind, children }: Readonly<{ bind: Ref<HTMLDivElement>; children: ReactNode }>): ReactNode {
   return (
-    <div ref={bind} className="absolute inset-[18px] overflow-hidden rounded-[10px] bg-[#ff7a3d]">
+    <div ref={bind} className="absolute inset-0">
       {children}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-[60] rounded-[10px] shadow-[inset_0_0_0_0.75px_rgb(0_0_0/0.55),inset_0_1px_2px_rgb(0_0_0/0.25)]" />
     </div>
   );
 }

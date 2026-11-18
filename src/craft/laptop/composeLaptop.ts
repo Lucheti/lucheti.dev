@@ -8,7 +8,6 @@ import {
   GhostDirector,
   GhostPresence,
   GhostScript,
-  MenuClock,
   type GhostStep,
 } from "@/laptop";
 import { CommandPalette, type Destination } from "./CommandPalette";
@@ -71,7 +70,6 @@ export type LaptopParts = Readonly<{
   director: GhostDirector<TaskTarget, TaskEffect>;
   loop: FrameLoop;
   surface: DomGhostSurface<TaskTarget>;
-  clock: MenuClock;
   roster: Roster;
 }>;
 
@@ -101,7 +99,6 @@ export function composeLaptop(content: Laptop): LaptopParts {
     director,
     loop: new FrameLoop(new BrowserFrames(), [director, arrivals]),
     surface,
-    clock: new MenuClock(),
     roster: new Roster(content),
   };
 }

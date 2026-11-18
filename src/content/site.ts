@@ -127,7 +127,6 @@ export const SITE: SiteContent = {
       label:
         "The top-left corner of a laptop screen with a small task tracker open: a sidebar of views and projects, and a list of front-end tasks you can complete, assign and search.",
       app: "Tasks",
-      menus: ["File", "Edit", "View", "Window", "Help"],
       workspace: "Studio",
       me: "lucas",
       people: [
@@ -246,7 +245,6 @@ export const SITE: SiteContent = {
       label:
         "The top-right corner of a laptop screen with a live service map open. Requests flow from clients through an API gateway to three services, Orders, Payments and Inventory, and on to Postgres, Redis and a NATS queue. Take a service down and the gateway opens its circuit breaker, tests the service with a few requests and closes it again once the service is back. Simulate a spike and the queue fills up, latency rises, then both settle.",
       app: "Ops",
-      menus: ["File", "Edit", "View", "Window", "Help"],
       environment: "Production",
       pages: [
         { name: "Overview", selected: false, count: null },

@@ -237,10 +237,8 @@ export type LaptopSearch = Readonly<{
 export type Laptop = Readonly<{
   /** What the panel shows, for screen readers. */
   label: string;
-  /** The app's name, bold in the menu bar. */
+  /** The app's name, which names its navigation for screen readers. */
   app: string;
-  /** The menu bar's menus after the app's name. */
-  menus: readonly string[];
   /** The workspace in the sidebar's switcher. */
   workspace: string;
   /** The person the laptop belongs to: "My tasks" are theirs, and "Assign to me" gives a task to them. */
@@ -307,10 +305,8 @@ export type MapNodeCopy = Readonly<{ name: string; tool?: string }>;
 export type ServiceMapCopy = Readonly<{
   /** What the panel shows, for screen readers. */
   label: string;
-  /** The app's name, bold in the menu bar. */
+  /** The app's name. */
   app: string;
-  /** The menu bar's menus after the app's name. */
-  menus: readonly string[];
   /** The environment in the sidebar's switcher and at the start of the breadcrumb. */
   environment: string;
   /** The sidebar's pages; the selected one is the map. Their counts show at the crop's edge. */

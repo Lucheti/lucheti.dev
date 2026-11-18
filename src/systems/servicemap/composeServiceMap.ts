@@ -1,5 +1,5 @@
 import type { ServiceMapCopy } from "@/content";
-import { BrowserFrames, DomGhostSurface, FrameLoop, GhostDirector, GhostPresence, GhostScript, MenuClock } from "@/laptop";
+import { BrowserFrames, DomGhostSurface, FrameLoop, GhostDirector, GhostPresence, GhostScript } from "@/laptop";
 import { ManualClock } from "../queue/Clock";
 import { SeededRandom } from "../queue/RandomSource";
 import { buildSimulation } from "./buildSimulation";
@@ -24,7 +24,6 @@ export type ServiceMapParts = Readonly<{
   director: GhostDirector<MapTarget, MapEffect>;
   surface: DomGhostSurface<MapTarget>;
   announcer: MapAnnouncer;
-  clock: MenuClock;
   /** The frames with everything moving: the ghost, the map and its dots. */
   motion: FrameLoop;
   /** The frames under reduced motion: the map alone, with no ghost and no dots. */
@@ -53,7 +52,6 @@ export function composeServiceMap(copy: ServiceMapCopy): ServiceMapParts {
     director,
     surface,
     announcer: new MapAnnouncer(copy),
-    clock: new MenuClock(),
     motion: new FrameLoop(new BrowserFrames(), [director, runner, painter]),
     still: new FrameLoop(new BrowserFrames(), [runner]),
   };
