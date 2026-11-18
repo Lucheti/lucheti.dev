@@ -123,7 +123,7 @@ export const SITE: SiteContent = {
   },
   craft: {
     heading: "Front end",
-    intro: "React and TypeScript since 2019, from Salesforce's Anypoint Platform to Clarifai and Front.",
+    intro: "I build web apps with React and TypeScript, from design systems to the product screens people use every day.",
     laptop: {
       label:
         "The top-left corner of a laptop screen with a small task tracker open: a sidebar of views and projects, and a list of front-end tasks you can complete, assign and search.",
