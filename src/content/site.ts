@@ -10,7 +10,7 @@ export const SITE: SiteContent = {
   name: "Lucas Garcia",
   role: "Product Engineer",
   description:
-    "Lucas Garcia, product engineer in Buenos Aires. Seven years of React and distributed systems at Salesforce, Clarifai and Front, now building with AI agents.",
+    "Lucas Garcia is a product engineer in Buenos Aires who works on front end, back end and AI tooling.",
   timeZone: "America/Argentina/Buenos_Aires",
   city: "Buenos Aires",
   nav: [
@@ -23,7 +23,7 @@ export const SITE: SiteContent = {
   hero: {
     name: ["Lucas", "Garcia"],
     role: "Product Engineer",
-    summary: "Seven years shipping React front ends and distributed back ends at Salesforce, Clarifai and Front.",
+    summary: "I'm a software engineer in Buenos Aires. I build web products end to end, from the interface to the services behind it.",
     portrait: {
       src: "/portrait/lucas.webp",
       alt: "Portrait of Lucas Garcia",
@@ -40,10 +40,10 @@ export const SITE: SiteContent = {
   },
   timeline: {
     label: "Build log",
-    heading: "Seven years. One before and after.",
-    intro: "I learned the craft before AI. Then the ground moved.",
+    heading: "Experience",
+    intro: "Where I've worked and what I did there, next to what was going on in the industry at the time.",
     lanes: { world: "The industry", me: "Me" },
-    eras: { "pre-ai": "Pre-AI", ai: "AI-native" },
+    eras: { "pre-ai": "Before AI", ai: "With AI" },
     stops: [
       {
         year: "2019",
@@ -51,7 +51,7 @@ export const SITE: SiteContent = {
         company: "MuleSoft · Salesforce",
         role: "Engineering intern",
         did: "Wrote the test strategy for Anypoint Platform components.",
-        trend: "React Hooks ship. Components go functional.",
+        trend: "React Hooks are released.",
         era: "pre-ai",
       },
       {
@@ -59,8 +59,8 @@ export const SITE: SiteContent = {
         period: "Oct 2020",
         company: "MuleSoft · Salesforce",
         role: "Associate MTS",
-        did: "React interfaces on top of Java and Scala services.",
-        trend: "Everyone goes remote. TypeScript becomes the default.",
+        did: "Built React interfaces for Java and Scala services.",
+        trend: "Remote work becomes normal, and TypeScript becomes the default.",
         era: "pre-ai",
       },
       {
@@ -68,8 +68,8 @@ export const SITE: SiteContent = {
         period: "Aug 2021",
         company: "MuleSoft · Salesforce",
         role: "Member of Technical Staff",
-        did: "Full stack on Anypoint, with accessibility across my team's components.",
-        trend: "API-led connectivity and microservices everywhere.",
+        did: "Full-stack work on Anypoint Platform, and accessibility for my team's components.",
+        trend: "Microservices and API integrations are everywhere.",
         era: "pre-ai",
       },
       {
@@ -77,8 +77,8 @@ export const SITE: SiteContent = {
         period: "Feb 2023",
         company: "Clarifai",
         role: "Senior SWE · Frontend lead",
-        did: "Led the team that made computer vision usable.",
-        trend: "GPT-4 lands. Every product wants an AI feature.",
+        did: "Led the front-end team for Clarifai's computer vision platform.",
+        trend: "GPT-4 is released, and companies start adding AI features.",
         era: "ai",
       },
       {
@@ -86,8 +86,8 @@ export const SITE: SiteContent = {
         period: "2024",
         company: "Clarifai",
         role: "Senior SWE · Frontend lead",
-        did: "Built the front-end frameworks the AI platform ran on.",
-        trend: "RAG, tool use and the first agents.",
+        did: "Built the shared front-end framework for Clarifai's apps.",
+        trend: "Retrieval, tool use and early AI agents.",
         era: "ai",
       },
       {
@@ -95,8 +95,8 @@ export const SITE: SiteContent = {
         period: "Dec 2025",
         company: "Front",
         role: "Senior Software Engineer",
-        did: "Shipped WhatsApp and Zoom Contact Center channels, with agents in my build and review loop.",
-        trend: "Agentic coding goes mainstream.",
+        did: "Built the WhatsApp and Zoom Contact Center integrations, using AI agents to help write and review code.",
+        trend: "Coding agents become part of everyday work.",
         era: "ai",
       },
     ],
@@ -116,7 +116,7 @@ export const SITE: SiteContent = {
       pending: "Coming soon",
     },
     subsections: {
-      repos: { title: "Repositories", caption: "Code you can open and read." },
+      repos: { title: "Repositories", caption: "Public projects on GitHub." },
     },
   },
   craft: {
@@ -201,7 +201,7 @@ export const SITE: SiteContent = {
       },
       {
         name: "lucheti.dev",
-        description: "This site. A scroll-driven story with a WebGL object, frame-scrubbed video and live demos.",
+        description: "The source code of this site: a Next.js app with 3D scenes, animations and small interactive demos.",
         tools: ["Next.js", "React Three Fiber", "Motion", "Tailwind CSS", "Vitest"],
         status: { kind: "public", href: "https://github.com/Lucheti/lucheti.dev" },
         illustration: "website",
@@ -240,7 +240,7 @@ export const SITE: SiteContent = {
   },
   systems: {
     heading: "Back end",
-    intro: "Node.js services, messaging and data, plus Java and Scala on Salesforce's Anypoint Platform.",
+    intro: "I build APIs and services in Node.js, along with the queues and databases behind them. I've also worked in Java and Scala.",
     panel: {
       label:
         "A toy message queue. Checkout publishes a steady flow of messages to a NATS queue, which deals each one to the least busy of three services: Orders, Payments and Inventory. Send more to flood it: an overloaded service goes down, hands its messages back to the queue, restarts and drains the backlog. No message is ever lost.",
@@ -293,7 +293,7 @@ export const SITE: SiteContent = {
   },
   ai: {
     heading: "AI",
-    intro: "Agent workflows for writing and reviewing code, and the AI products I've worked on.",
+    intro: "I use AI agents to write and review code, and I've worked on products built around AI models.",
     panel: {
       label:
         "A little animated agent picks up a ticket and carries it through its tools: it reads a file, searches the code, edits it, runs the tests and ships. Now and then a test fails and it goes back to fix the code.",
@@ -393,9 +393,9 @@ export const SITE: SiteContent = {
     heading: "Orchestra",
     intro: "Orchestra is a Claude Code plugin. Independent departments pass tickets to each other, from idea to release.",
     principles: [
-      "The process lives in code, not prompts.",
-      "Every transition is checked against evidence.",
-      "Merges, releases and rollbacks are done by code, never by an agent.",
+      "The workflow rules are written in code, not in prompts.",
+      "Each step is checked against evidence, like test results.",
+      "Merges, releases and rollbacks are run by code, not by an agent.",
     ],
     stats: [
       { value: "7", label: "Departments" },
@@ -442,8 +442,8 @@ export const SITE: SiteContent = {
   },
   contact: {
     label: "Contact",
-    heading: "Let's build something that ships.",
-    body: "I'm most useful where product, front end and back end meet.",
+    heading: "Get in touch",
+    body: "If you'd like to work together or just talk, email is the best way to reach me.",
     email: "lucasgustavogarciaort@gmail.com",
     links: [
       { label: "Email me", href: "mailto:lucasgustavogarciaort@gmail.com" },

@@ -16,9 +16,9 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     back: { label: "Back to the portfolio", href: "/#ai" },
   },
   hero: {
-    label: "Featured project",
+    label: "Project",
     heading: "Orchestra",
-    lede: "An autonomous software company as a Claude Code plugin. Departments of agents take a feature from idea to release, and code, not a model, decides whether each step is allowed.",
+    lede: "Orchestra is a Claude Code plugin I built. It organizes AI agents into departments that take a feature from idea to release, and regular code checks every step before it is allowed.",
     facts: ["16 agents", "7 departments", "3 parallel workflows", "Built on Claude Code"],
     repo: { label: "View the code on GitHub ↗", href: "https://github.com/Lucheti/orchestra" },
   },
@@ -30,7 +30,7 @@ export const ORCHESTRA_PAGE: OrchestraPage = {
     {
       kind: "points",
       title: "The idea",
-      intro: "An autonomous software company that you set up once and then leave running.",
+      intro: "You set it up once for a project, and then it plans, builds and ships work on its own.",
       points: [
         {
           lead: "Departments of agents.",
