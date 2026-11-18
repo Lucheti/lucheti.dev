@@ -17,7 +17,7 @@ export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactN
           heading={craft.heading}
           intro={craft.intro}
           panel={<LaptopPanel laptop={craft.laptop} />}
-          aside={<SkillList areas={craft.areas} label={`${craft.heading} skills`} />}
+          aside={<SkillList areas={craft.areas} title={subsections.skills.title} label={`${craft.heading} skills`} />}
         />
         <section aria-labelledby="craft-repos">
           <SubsectionHeader id="craft-repos" title={subsections.repos.title} caption={subsections.repos.caption} />
