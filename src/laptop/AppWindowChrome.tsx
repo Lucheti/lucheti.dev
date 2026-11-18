@@ -45,7 +45,7 @@ export function AppWindowChrome({ corner, size, children }: AppWindowChromeProps
 /** The window's sidebar shell, translucent over the desktop the way macOS sidebars are, 200 px wide. */
 export function SidebarShell({ children }: Readonly<{ children: ReactNode }>): ReactNode {
   return (
-    <div className="absolute inset-y-0 left-0 flex w-[200px] flex-col bg-[rgb(250_241_234/0.74)] px-[10px] pt-[50px] shadow-[inset_-0.5px_0_0_rgb(60_30_15/0.12)] backdrop-blur-[40px] backdrop-saturate-[1.8]">
+    <div className="absolute inset-y-0 left-0 flex w-[200px] flex-col bg-[rgb(244_244_242/0.85)] px-[10px] pt-[50px] shadow-[inset_-0.5px_0_0_rgb(60_30_15/0.12)] backdrop-blur-[40px] backdrop-saturate-[1.8]">
       {children}
     </div>
   );

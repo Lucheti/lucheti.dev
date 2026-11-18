@@ -60,6 +60,7 @@ export function LaptopPanel({ laptop }: Readonly<{ laptop: Laptop }>): ReactNode
   return (
     <LaptopStage
       corner={CORNER}
+      desktop="white"
       label={laptop.label}
       menu={{ app: laptop.app, menus: laptop.menus, clock: parts.clock }}
       boxRef={boxRef}
