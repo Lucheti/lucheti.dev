@@ -2,14 +2,14 @@
 
 import { useSyncExternalStore, type ReactNode } from "react";
 import type { Laptop } from "@/content";
-import { AppWindowChrome, type Corner } from "@/laptop";
+import { AppWindowChrome, WINDOW_HEIGHT, type Corner } from "@/laptop";
 import type { LaptopParts } from "./composeLaptop";
 import { PaletteView } from "./PaletteView";
 import { Sidebar } from "./Sidebar";
 import { TaskList } from "./TaskList";
 
 const CORNER: Corner = { kind: "top-left" };
-const SIZE = { width: 980, height: 900 } as const;
+const SIZE = { width: 980, height: WINDOW_HEIGHT } as const;
 
 type AppWindowProps = Readonly<{
   content: Laptop;

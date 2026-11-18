@@ -56,7 +56,7 @@ export function LaptopPanel({ laptop }: Readonly<{ laptop: Laptop }>): ReactNode
   }, [palette]);
 
   return (
-    <AppStage label={laptop.label} boxRef={boxRef} ghost={director} screen={surface} rest={REST}>
+    <AppStage corner={{ kind: "top-left" }} label={laptop.label} boxRef={boxRef} ghost={director} screen={surface} rest={REST}>
       <AppWindow content={laptop} parts={parts} reduced={reduced} />
     </AppStage>
   );

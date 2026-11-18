@@ -50,7 +50,7 @@ export function ServiceMapPanel({ map }: Readonly<{ map: ServiceMapCopy }>): Rea
   useEffect(() => runner.listen((events) => setMessage(events.map((event) => announcer.say(event)).join(" "))), [runner, announcer]);
 
   return (
-    <AppStage label={map.label} boxRef={boxRef} ghost={director} screen={surface} rest={REST}>
+    <AppStage corner={{ kind: "top-right" }} label={map.label} boxRef={boxRef} ghost={director} screen={surface} rest={REST}>
       <OpsWindow copy={map} parts={parts} live={onScreen} reduced={reduced} message={message} />
     </AppStage>
   );

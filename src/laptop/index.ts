@@ -3,7 +3,7 @@
  * and crops it to a corner, the window's chrome, the shared look of the apps, and the ghost cursor that plays
  * a loop of real actions while nobody is touching the panel.
  */
-export { AppStage, type GhostSeat, type ScreenBindings } from "./AppStage";
+export { AppStage, WINDOW_HEIGHT, type GhostSeat, type ScreenBindings } from "./AppStage";
 export { AppWindowChrome, SidebarShell, Toolbar } from "./AppWindowChrome";
 export { assertNever } from "./assertNever";
 export { BrowserFrames, BrowserTimers, MAX_FRAME_MS, type FrameScheduler, type Timers } from "./browser";

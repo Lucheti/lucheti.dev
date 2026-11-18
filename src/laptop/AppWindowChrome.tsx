@@ -30,7 +30,7 @@ export function AppWindowChrome({ corner, size, children }: AppWindowChromeProps
   return (
     <div
       className={cx(
-        "absolute overflow-hidden rounded-[12px] shadow-[0_0_0_0.5px_rgb(40_15_5/0.35),0_24px_60px_-6px_rgb(70_20_0/0.45),0_8px_20px_-4px_rgb(70_20_0/0.2)]",
+        "absolute overflow-hidden rounded-[12px] bg-white shadow-[0_0_0_0.5px_rgb(20_20_30/0.16),0_24px_50px_-14px_rgb(20_20_40/0.28),0_6px_16px_-6px_rgb(20_20_40/0.12)]",
         windowPlace(corner),
       )}
       style={size}

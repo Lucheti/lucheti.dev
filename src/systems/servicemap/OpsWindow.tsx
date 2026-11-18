@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore, type ReactNode } from "react";
 import type { ServiceMapCopy } from "@/content";
-import { AppWindowChrome, ChevronDownGlyph, ChevronRightGlyph, SearchGlyph, SidebarShell, TAG_PILL, Toolbar, type Corner } from "@/laptop";
+import { AppWindowChrome, ChevronDownGlyph, ChevronRightGlyph, SearchGlyph, SidebarShell, TAG_PILL, Toolbar, WINDOW_HEIGHT, type Corner } from "@/laptop";
 import { cx } from "@/ui";
 import type { ServiceMapParts } from "./composeServiceMap";
 import { BoltGlyph, ClockGlyph } from "./glyphs";
@@ -11,7 +11,7 @@ import type { MapSnapshot } from "./types";
 
 const CORNER: Corner = { kind: "top-right" };
 /** Narrower than the task tracker's, so its sidebar's edge peeks in at the crop. */
-const SIZE = { width: 760, height: 900 } as const;
+const SIZE = { width: 760, height: WINDOW_HEIGHT } as const;
 
 /**
  * The sidebar, mostly off the crop to the left: only its right edge shows, with the selected page's highlight
