@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import type { Repo, RepoFeature, RepoLabels, RepoStatus } from "@/content";
 import { ButtonLink } from "./ButtonLink";
 import { Chip } from "./Chip";
@@ -81,13 +81,35 @@ function Title({ repo, labels, skin, tone }: TitleProps): ReactNode {
   }
 }
 
-/** A note on a card that points somewhere else on the site, with its own button above the card's link. */
-function FeatureNote({ feature }: Readonly<{ feature: RepoFeature }>): ReactNode {
+/** A dotted arrow drawn by hand, curving up from the sticky note into the card above it. */
+function NoteArrow(): ReactNode {
   return (
-    <div className="relative z-10 mt-6 flex flex-col gap-4 rounded-md bg-signal-soft/60 p-4 ring-1 ring-inset ring-signal/25 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-[15px] leading-[1.5] text-ink">{feature.note}</p>
-      <div className="shrink-0">
-        <ButtonLink href={feature.href}>{feature.cta}</ButtonLink>
+    <svg
+      aria-hidden
+      viewBox="0 0 140 92"
+      fill="none"
+      className="pointer-events-none absolute -left-2 -top-[88px] h-[92px] w-[140px] text-ink"
+    >
+      <path d="M118 90 C 122 52, 62 52, 48 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="0.5 8" />
+      <path d="M36 20 L 47 7 L 59 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * A sticky note under a card, pointing up at it with a dotted arrow: a line about the repository and a button
+ * to more about it on this site. Slightly turned, like paper stuck to the page.
+ */
+function StickyNote({ feature }: Readonly<{ feature: RepoFeature }>): ReactNode {
+  return (
+    <div className="relative ml-[8%] mt-14 max-w-[24rem] md:ml-[14%]">
+      <NoteArrow />
+      <div className="relative -rotate-[1.5deg] rounded-[3px] bg-[#ffe7a1] px-5 pb-5 pt-6 text-ink shadow-[0_1px_1px_rgb(60_40_0/0.08),0_14px_24px_-14px_rgb(60_40_0/0.45)]">
+        <span aria-hidden className="absolute -top-2.5 right-8 h-5 w-16 rotate-[3deg] bg-white/55 shadow-[0_1px_2px_rgb(0_0_0/0.08)]" />
+        <p className="text-[15px] leading-[1.5]">{feature.note}</p>
+        <div className="mt-4">
+          <ButtonLink href={feature.href}>{feature.cta}</ButtonLink>
+        </div>
       </div>
     </div>
   );
@@ -103,20 +125,42 @@ function RepoCard({ repo, labels, skin, tone }: TitleProps): ReactNode {
       </div>
       <p className={cx("mt-5 text-[15px] leading-[1.55]", skin.description)}>{repo.description}</p>
       <ToolPills tools={repo.tools} tone={tone} className="mt-auto pt-6" />
-      {repo.feature === undefined ? null : <FeatureNote feature={repo.feature} />}
     </article>
   );
 }
 
-/** A grid of repository cards: public ones link to GitHub, in-progress ones say so and link nowhere. */
+/** Where a card and its note sit in the two-column grid: the card in its row, its note in the row below it. */
+type GridCell = Readonly<{ "--col": number; "--row": number }>;
+
+function cardCell(index: number): GridCell {
+  return { "--col": (index % 2) + 1, "--row": Math.floor(index / 2) * 2 + 1 };
+}
+
+function noteCell(index: number): GridCell {
+  return { "--col": (index % 2) + 1, "--row": Math.floor(index / 2) * 2 + 2 };
+}
+
+const PLACED = "md:[grid-column:var(--col)] md:[grid-row:var(--row)]";
+
+/**
+ * A grid of repository cards: public ones link to GitHub, in-progress ones say so and link nowhere. A card
+ * with a feature gets a sticky note under it; on phones the note follows its own card.
+ */
 export function RepoCards({ repos, labels, tone = "light" }: RepoCardsProps): ReactNode {
   const skin = SKINS[tone];
   return (
     <ul className="grid gap-4 md:grid-cols-2">
-      {repos.map((repo) => (
-        <li key={repo.name} className="min-w-0">
-          <RepoCard repo={repo} labels={labels} skin={skin} tone={tone} />
-        </li>
+      {repos.map((repo, index) => (
+        <Fragment key={repo.name}>
+          <li className={cx("min-w-0", PLACED)} style={cardCell(index) as CSSProperties}>
+            <RepoCard repo={repo} labels={labels} skin={skin} tone={tone} />
+          </li>
+          {repo.feature === undefined ? null : (
+            <li className={cx("min-w-0", PLACED)} style={noteCell(index) as CSSProperties}>
+              <StickyNote feature={repo.feature} />
+            </li>
+          )}
+        </Fragment>
       ))}
     </ul>
   );

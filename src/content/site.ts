@@ -373,7 +373,7 @@ export const SITE: SiteContent = {
         status: { kind: "public", href: "https://github.com/Lucheti/orchestra" },
         illustration: "departments",
         feature: {
-          note: "This is the AI SDLC I built. Its own page explains how the departments work and shows the board running live.",
+          note: "This is the AI SDLC I built. Its page shows how the departments work, with the board running live.",
           href: "/orchestra",
           cta: "See how it works",
         },
