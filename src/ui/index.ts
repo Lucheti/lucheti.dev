@@ -11,7 +11,7 @@ export { EASE_OUT_EXPO } from "./motion";
 export { MotionRoot } from "./MotionRoot";
 export { FeaturePanel, LoopTimeline, usePanelLoop } from "./panels";
 export { Reveal } from "./Reveal";
-export { RepoCards, type RepoCardSurface } from "./RepoCards";
+export { RepoCards } from "./RepoCards";
 export { SceneBoundary } from "./SceneBoundary";
 export { SectionHeader } from "./SectionHeader";
 export { SkillList } from "./SkillList";

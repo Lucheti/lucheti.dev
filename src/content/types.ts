@@ -77,13 +77,6 @@ export type Timeline = Readonly<{
   milestoneKinds: Readonly<Record<MilestoneKind, string>>;
 }>;
 
-export type SpecNote = Readonly<{
-  /** Stable key the specimen uses to place the annotation. */
-  id: "padding" | "radius" | "type" | "contrast" | "focus" | "motion" | "role";
-  label: string;
-  value: string;
-}>;
-
 /** One row of a resume skill table. */
 export type SkillArea = Readonly<{
   /** Short: "Frameworks", "Motion & 3D". */
@@ -133,7 +126,7 @@ export type Capabilities = Readonly<{
   heading: string;
   intro: string;
   repoLabels: RepoLabels;
-  subsections: Readonly<{ skills: Subsection; repos: Subsection; demo: Subsection }>;
+  subsections: Readonly<{ skills: Subsection; repos: Subsection }>;
 }>;
 
 /** One part of a feature panel, painted with the brand swatch of the tool it runs on. */
@@ -335,11 +328,6 @@ export type AgentPanel = Readonly<{
 export type Craft = Domain &
   Readonly<{
     laptop: Laptop;
-    /** The line under the "Live demo" sub-section title. */
-    demoCaption: string;
-    specimen: Readonly<{ title: string; subtitle: string; status: string; action: string; switchLabel: string }>;
-    notes: readonly SpecNote[];
-    toggle: Readonly<{ show: string; hide: string }>;
   }>;
 
 /** The back-end domain: skills and repositories, introduced by the message-queue panel. */

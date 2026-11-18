@@ -118,7 +118,6 @@ export const SITE: SiteContent = {
     subsections: {
       skills: { title: "Skills", caption: "The areas I work in, and the libraries I use in each." },
       repos: { title: "Repositories", caption: "Code you can open and read." },
-      demo: { title: "Live demo", caption: "" },
     },
   },
   craft: {
@@ -209,24 +208,6 @@ export const SITE: SiteContent = {
         illustration: "website",
       },
     ],
-    demoCaption: "A component and its spec. Turn the spec on to see the measurements, states and semantics behind it.",
-    specimen: {
-      title: "WhatsApp",
-      subtitle: "Channel connected · 3 inboxes",
-      status: "Live",
-      action: "Manage",
-      switchLabel: "Receive messages",
-    },
-    notes: [
-      { id: "padding", label: "Padding", value: "24 px" },
-      { id: "radius", label: "Radius", value: "16 px" },
-      { id: "type", label: "Type", value: "15 / 24 Geist" },
-      { id: "contrast", label: "Contrast", value: "WCAG AA" },
-      { id: "focus", label: "Focus", value: "2 px ring · 3 px offset" },
-      { id: "motion", label: "Motion", value: "320 ms · ease-out-expo" },
-      { id: "role", label: "Semantics", value: "role=switch · aria-checked" },
-    ],
-    toggle: { show: "Show spec", hide: "Hide spec" },
   },
   diorama: {
     label:

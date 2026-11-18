@@ -3,11 +3,10 @@ import type { Capabilities, Craft } from "@/content";
 import { Chapter } from "@/story";
 import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
 import { LaptopPanel } from "./LaptopPanel";
-import { SpecWorkbench } from "./SpecWorkbench";
 
 type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
 
-/** The front end: its heading and a compact skill list beside the laptop corner, then repositories, and a specimen whose spec the visitor can switch on. */
+/** The front end: its heading and a compact skill list beside the laptop corner, then repositories. */
 export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
@@ -21,14 +20,7 @@ export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactN
         />
         <section aria-labelledby="craft-repos">
           <SubsectionHeader id="craft-repos" title={subsections.repos.title} caption={subsections.repos.caption} />
-          <RepoCards repos={craft.repos} labels={capabilities.repoLabels} surface="paper" />
-        </section>
-        <section aria-labelledby="craft-demo">
-          <SubsectionHeader id="craft-demo" title={subsections.demo.title} caption={subsections.demo.caption} />
-          <SpecWorkbench
-            craft={craft}
-            header={<p className="max-w-[34rem] text-base leading-[1.55] text-ink-soft">{craft.demoCaption}</p>}
-          />
+          <RepoCards repos={craft.repos} labels={capabilities.repoLabels} />
         </section>
       </Container>
     </Chapter>

@@ -7,16 +7,11 @@ import { RepoIllustration } from "./illustrations";
 import type { Tone } from "./Tone";
 import { ToolPills } from "./ToolPill";
 
-/** The card ground: `paper` for chapters lighter than it, `raised` for chapters that are paper or darker. */
-export type RepoCardSurface = "paper" | "raised";
-
 type RepoCardsProps = Readonly<{
   repos: readonly Repo[];
   labels: RepoLabels;
   /** Which ground the chapter sits on; light by default. */
   tone?: Tone;
-  /** The card background; it must contrast with the chapter's own. */
-  surface?: RepoCardSurface;
 }>;
 
 type Skin = Readonly<{ rule: string; hover: string; name: string; description: string; mark: string }>;
@@ -38,18 +33,8 @@ const SKINS: Readonly<Record<Tone, Skin>> = {
   },
 };
 
-const CARD = "flex h-full w-full flex-col rounded-lg border p-6 text-left";
-
-function surfaceClass(surface: RepoCardSurface): string {
-  switch (surface) {
-    case "paper":
-      return "bg-paper";
-    case "raised":
-      return "bg-paper-raised";
-    default:
-      return assertNever(surface);
-  }
-}
+/** White cards, the same ground as the feature panels and the skill card. */
+const CARD = "flex h-full w-full flex-col rounded-lg border bg-white p-6 text-left";
 
 function assertNever(value: never): never {
   throw new Error(`Unhandled variant: ${String(value)}`);
@@ -84,9 +69,9 @@ function TitleMark({ status, labels, skin, tone }: TitleMarkProps): ReactNode {
   }
 }
 
-type CardProps = Readonly<{ repo: Repo; labels: RepoLabels; skin: Skin; tone: Tone; surface: string }>;
+type CardProps = Readonly<{ repo: Repo; labels: RepoLabels; skin: Skin; tone: Tone }>;
 
-function RepoCard({ repo, labels, skin, tone, surface }: CardProps): ReactNode {
+function RepoCard({ repo, labels, skin, tone }: CardProps): ReactNode {
   const body = (
     <>
       <div className="flex items-start justify-between gap-4">
@@ -110,27 +95,26 @@ function RepoCard({ repo, labels, skin, tone, surface }: CardProps): ReactNode {
           href={repo.status.href}
           target="_blank"
           rel="noreferrer"
-          className={cx("group transition-colors duration-300", CARD, skin.rule, skin.hover, surface)}
+          className={cx("group transition-colors duration-300", CARD, skin.rule, skin.hover)}
         >
           {body}
         </a>
       );
     case "soon":
-      return <article className={cx(CARD, skin.rule, surface)}>{body}</article>;
+      return <article className={cx(CARD, skin.rule)}>{body}</article>;
     default:
       return assertNever(repo.status);
   }
 }
 
 /** A grid of repository cards: public ones link to GitHub, in-progress ones say so and link nowhere. */
-export function RepoCards({ repos, labels, tone = "light", surface = "paper" }: RepoCardsProps): ReactNode {
+export function RepoCards({ repos, labels, tone = "light" }: RepoCardsProps): ReactNode {
   const skin = SKINS[tone];
-  const ground = surfaceClass(surface);
   return (
     <ul className="grid gap-4 md:grid-cols-2">
       {repos.map((repo) => (
         <li key={repo.name} className="min-w-0">
-          <RepoCard repo={repo} labels={labels} skin={skin} tone={tone} surface={ground} />
+          <RepoCard repo={repo} labels={labels} skin={skin} tone={tone} />
         </li>
       ))}
     </ul>

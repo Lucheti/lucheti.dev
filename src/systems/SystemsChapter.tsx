@@ -19,7 +19,7 @@ export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): 
         </section>
         <section aria-labelledby="systems-repos">
           <SubsectionHeader id="systems-repos" title={subsections.repos.title} caption={subsections.repos.caption} />
-          <RepoCards repos={systems.repos} labels={capabilities.repoLabels} surface="raised" />
+          <RepoCards repos={systems.repos} labels={capabilities.repoLabels} />
         </section>
       </Container>
     </Chapter>

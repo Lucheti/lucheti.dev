@@ -25,7 +25,7 @@ export function AiChapter({ ai, capabilities, stats }: AiChapterProps): ReactNod
         </section>
         <section aria-labelledby="ai-repos">
           <SubsectionHeader id="ai-repos" title={subsections.repos.title} caption={subsections.repos.caption} />
-          <RepoCards repos={ai.repos} labels={capabilities.repoLabels} surface="raised" />
+          <RepoCards repos={ai.repos} labels={capabilities.repoLabels} />
         </section>
         <section aria-labelledby="ai-case-study">
           <SubsectionHeader id="ai-case-study" title={ai.caseStudy.title} caption={ai.caseStudy.caption} />
