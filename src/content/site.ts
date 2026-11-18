@@ -15,8 +15,8 @@ export const SITE: SiteContent = {
   city: "Buenos Aires",
   nav: [
     { label: "Build log", chapter: "timeline" },
-    { label: "Front end", chapter: "craft" },
     { label: "Back end", chapter: "systems" },
+    { label: "Front end", chapter: "craft" },
     { label: "AI", chapter: "ai" },
     { label: "Contact", chapter: "contact" },
   ],

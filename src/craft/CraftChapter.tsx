@@ -14,6 +14,7 @@ export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactN
       <Container className="relative flex flex-col gap-24 lg:gap-36">
         <DomainHeader
           stage="peach"
+          side="left"
           heading={craft.heading}
           intro={craft.intro}
           panel={<LaptopPanel laptop={craft.laptop} />}
