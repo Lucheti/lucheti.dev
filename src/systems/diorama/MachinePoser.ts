@@ -1,12 +1,11 @@
 import type { Group } from "three";
 import type { ServiceView } from "../queue/types";
-import { Approach, pulse, squash, type Point3 } from "./kit";
+import { Approach, pulse, puffsAt, squash, type Point3 } from "./kit";
 import { LAMP, LAMP_OFF } from "./palette";
 import type { QueueModel } from "./QueueModel";
 import type { MachineRig } from "./QueueLayout";
 import { lampLit, lookOf } from "./ServiceLook";
 import type { ServiceMotion } from "./ServiceMotion";
-import { puffsAt } from "./Smoke";
 
 /** How quickly a machine slumps over and stands back up, per second. */
 const SLUMP_RATE = 7;

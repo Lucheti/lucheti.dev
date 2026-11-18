@@ -1,17 +1,28 @@
 import type { QueuePanel } from "@/content";
 import { composeQueueToy, FlightRelay, type QueueToy } from "../queue";
-import { BigButton, BrowserSeconds, type Seconds } from "./BigButton";
-import { ButtonPress } from "./ButtonPress";
 import { HopperPile } from "./HopperPile";
-import { DioramaFraming, DragGesture, HoverTilt, IsometricView, point, PointerCursor, TurnSpring, Waker, type Point3 } from "./kit";
-import { LabelPins, type PinKey } from "./LabelPins";
+import {
+  BigButton,
+  BrowserSeconds,
+  ButtonPress,
+  DioramaFraming,
+  DragGesture,
+  HoverTilt,
+  IsometricView,
+  LabelPins,
+  point,
+  PointerCursor,
+  TurnSpring,
+  Waker,
+  type LeanReach,
+  type Point3,
+  type Seconds,
+} from "./kit";
 import { ParcelDrop } from "./ParcelDrop";
 import { ParcelTracks } from "./ParcelTracks";
-import { QueueLayout } from "./QueueLayout";
+import { QueueLayout, type PinKey } from "./QueueLayout";
+import { SendBatch } from "./SendBatch";
 import { ServiceMotion } from "./ServiceMotion";
-
-/** How far the island leans toward the pointer at most, in radians: a turn across and a tip up and down. */
-export type LeanReach = Readonly<{ yaw: number; tilt: number }>;
 
 /** Everything the queue diorama runs on that needs no WebGL, made once. */
 export type QueueDioramaParts = Readonly<{
@@ -35,7 +46,7 @@ export type QueueDioramaParts = Readonly<{
   view: IsometricView;
   framing: DioramaFraming;
   /** The HTML labels pinned to the island. */
-  pins: LabelPins;
+  pins: LabelPins<PinKey>;
 }>;
 
 const DEGREE = Math.PI / 180;
@@ -80,7 +91,7 @@ export function composeQueueDiorama(panel: QueuePanel): QueueDioramaParts {
     pile: new HopperPile(hopper.levels, hopper.fillOrder),
     drop: new ParcelDrop(GRAVITY, layout.tracks().mouth.y),
     motion: new ServiceMotion(),
-    button: new BigButton(toy.loop, panel.send.count, clock, waker),
+    button: new BigButton(new SendBatch(toy.loop, panel.send.count), clock, waker),
     press: new ButtonPress({ push: 0.07, hold: 0.07, frequency: 2.6, decay: 6.5, squash: 0.38 }),
     clock,
     waker,

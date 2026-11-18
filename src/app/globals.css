@@ -152,7 +152,7 @@ body {
   }
 }
 
-/* Message queue diorama: the "Send 10" label over the big button bobs gently, inviting a press. */
+/* The islands' big buttons ("Send 10" on the queue, "Drop an idea" in the office): the label over the button bobs gently, inviting a press. */
 @keyframes queue-bob {
   0%,
   100% {

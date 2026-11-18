@@ -1,39 +1,16 @@
-import {
-  BoxGeometry,
-  CanvasTexture,
-  Color,
-  Group,
-  LinearFilter,
-  Mesh,
-  MeshBasicMaterial,
-  PlaneGeometry,
-  SRGBColorSpace,
-  type BufferGeometry,
-  type MeshToonMaterial,
-} from "three";
-import { point, type Extent, type Point3, type ToonKit } from "./kit";
+import { BoxGeometry, Group, Mesh, MeshBasicMaterial, type BufferGeometry, type MeshToonMaterial } from "three";
+import { ball, block, BUTTON_TARGET, ignorePointer, IslandShadow, point, SolidMeshes, type Extent, type GroundShadow, type Point3, type ToonKit } from "./kit";
 import { PART, TONE } from "./palette";
 import { ParcelPool, type ParcelPaints } from "./ParcelPool";
 import type { QueueLayout } from "./QueueLayout";
-import { ball, block } from "./shapes";
-import { ignorePointer, SolidMeshes } from "./SolidMeshes";
 
 type Disposable = Readonly<{ dispose: () => void }>;
-
-/** The island's soft shadow on the page: how far it reaches past the plinth, how soft it is, and its colour. */
-export type GroundShadow = Readonly<{ spill: number; softness: number; color: string; opacity: number }>;
 
 /** How many parcels each pool holds: in the air, piled in the hopper, and on one machine's tray. */
 export type PoolSizes = Readonly<{ flying: number; pile: number; tray: number; puffs: number }>;
 
 /** One machine's moving parts. */
 export type MachineParts = Readonly<{ body: Group; lamp: MeshToonMaterial; fuse: Group; tray: ParcelPool; puffs: readonly Group[] }>;
-
-/** The pointer's target on the island: only the big button answers. */
-export const BUTTON_TARGET = "button";
-
-/** Texels per island unit in the shadow's texture: it is blurred, so this is plenty. */
-const SHADOW_TEXELS = 40;
 
 /**
  * The queue island as three.js objects, built once from the layout: the still solids merged by tone, the
@@ -90,7 +67,8 @@ export class QueueModel {
 
     // The glass goes last, so everything inside it has been drawn before it is laid over them.
     this.root.add(this.glass(layout, kit));
-    this.root.add(this.groundShadow(layout, shadow));
+    const ground = this.own(new IslandShadow({ half: layout.half(), bottom: layout.bottom() }, shadow));
+    this.root.add(ground.object());
   }
 
   /** The island's root, which turns as a whole. */
@@ -195,43 +173,6 @@ export class QueueModel {
     const mesh = new Mesh(geometry, this.own(new MeshBasicMaterial({ visible: false })));
     mesh.position.set((min.x + max.x) / 2, (min.y + max.y) / 2, (min.z + max.z) / 2);
     mesh.userData.target = BUTTON_TARGET;
-    return mesh;
-  }
-
-  /** A soft rounded shadow under the plinth, drawn once into a blurred texture. */
-  private groundShadow(layout: QueueLayout, shadow: GroundShadow): Mesh {
-    const half = layout.half();
-    const spanX = 2 * (half.x + shadow.spill);
-    const spanZ = 2 * (half.z + shadow.spill);
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(spanX * SHADOW_TEXELS);
-    canvas.height = Math.round(spanZ * SHADOW_TEXELS);
-    const context = canvas.getContext("2d");
-    if (context !== null) {
-      // Draw the shape far off the canvas and let only its blurred shadow land on it.
-      const away = canvas.width * 4;
-      const inset = shadow.spill * SHADOW_TEXELS;
-      context.shadowColor = "#ffffff";
-      context.shadowBlur = shadow.softness * SHADOW_TEXELS;
-      context.shadowOffsetX = away;
-      context.fillStyle = "#ffffff";
-      context.beginPath();
-      context.roundRect(inset - away, inset, 2 * half.x * SHADOW_TEXELS, 2 * half.z * SHADOW_TEXELS, 0.7 * SHADOW_TEXELS);
-      context.fill();
-    }
-    const texture = this.own(new CanvasTexture(canvas));
-    texture.colorSpace = SRGBColorSpace;
-    texture.minFilter = LinearFilter;
-    texture.generateMipmaps = false;
-    const geometry = this.own(new PlaneGeometry(spanX, spanZ));
-    geometry.rotateX(-Math.PI / 2);
-    const material = this.own(
-      new MeshBasicMaterial({ color: new Color(shadow.color), alphaMap: texture, transparent: true, opacity: shadow.opacity, depthWrite: false }),
-    );
-    const mesh = new Mesh(geometry, material);
-    mesh.position.set(0.1, layout.bottom() - 0.01, 0.15);
-    mesh.renderOrder = -1;
-    ignorePointer(mesh);
     return mesh;
   }
 

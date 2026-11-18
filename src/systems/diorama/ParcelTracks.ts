@@ -1,8 +1,7 @@
 import { assertNever } from "../queue/assertNever";
 import type { FlightView } from "../queue/types";
-import type { Point3 } from "./kit";
+import { arc, lerp, type Point3 } from "./kit";
 import { DISPATCH_HOP, RETURN_HOP, type TrackAnchors } from "./QueueLayout";
-import { arc, lerp } from "./shapes";
 
 /** A parcel in the air: where it is, and whether it is a message handed back by a machine that fell over. */
 export type ParcelPlace = Readonly<{

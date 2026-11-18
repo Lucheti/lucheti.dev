@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ServiceMotion } from "./ServiceMotion";
-import { puffsAt } from "./Smoke";
+import { puffsAt } from "./kit";
 
 describe("ServiceMotion", () => {
   it("times each status from the moment it was first seen", () => {

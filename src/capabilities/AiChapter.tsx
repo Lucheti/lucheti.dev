@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import type { Ai, Capabilities } from "@/content";
 import { Chapter } from "@/story";
 import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
-import { AgentAtWorkPanel } from "./agent/AgentAtWorkPanel";
+import { OfficeDiorama } from "./OfficeDiorama";
 
 type AiChapterProps = Readonly<{ ai: Ai; capabilities: Capabilities }>;
 
-/** AI: its heading and a compact skill list beside the agent, then repositories; Orchestra's card points to its own page. */
+/** AI: its heading and a compact skill list beside the Orchestra office, then repositories; Orchestra's card points to its own page. */
 export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
@@ -15,7 +15,7 @@ export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
         <DomainHeader
           heading={ai.heading}
           intro={ai.intro}
-          panel={<AgentAtWorkPanel panel={ai.panel} />}
+          panel={<OfficeDiorama office={ai.office} panel={ai.panel} />}
           aside={<SkillList areas={ai.areas} label={`${ai.heading} skills`} />}
         />
         <section aria-labelledby="ai-repos">
