@@ -100,6 +100,17 @@ export type Repo = Readonly<{
   tools: readonly string[];
   status: RepoStatus;
   illustration: RepoIllustrationKind;
+  /** A note at the foot of the card pointing to more about it on this site, e.g. its own page. */
+  feature?: RepoFeature;
+}>;
+
+/** A card's note with a button to a page on this site. */
+export type RepoFeature = Readonly<{
+  /** One or two sentences. */
+  note: string;
+  href: string;
+  /** The button's label; its arrow is drawn by the button. */
+  cta: string;
 }>;
 
 export type RepoLabels = Readonly<{
@@ -331,23 +342,8 @@ export type Craft = Domain &
 /** The back-end domain: skills and repositories, introduced by the message-queue panel. */
 export type Systems = Domain & Readonly<{ panel: QueuePanel }>;
 
-/** The wide link card that opens the Orchestra page, the featured project, from the AI chapter. */
-export type CaseStudyCard = Readonly<{
-  /** The sub-section title. */
-  title: string;
-  /** The sub-section caption. */
-  caption: string;
-  /** The card's own title. */
-  name: string;
-  /** One sentence. */
-  lede: string;
-  href: string;
-  /** The orange call to action; its arrow is drawn by the card. */
-  cta: string;
-}>;
-
-/** The AI domain; its third part is the case study that lives on its own page. */
-export type Ai = Domain & Readonly<{ panel: AgentPanel; caseStudy: CaseStudyCard }>;
+/** The AI domain: skills and repositories, introduced by the agent panel. Orchestra's card points to its own page. */
+export type Ai = Domain & Readonly<{ panel: AgentPanel }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 

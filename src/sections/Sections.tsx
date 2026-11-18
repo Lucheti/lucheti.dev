@@ -37,7 +37,7 @@ export function Sections({ content }: SectionsProps): ReactNode {
         />
         <CraftChapter craft={content.craft} capabilities={content.capabilities} />
         <SystemsChapter systems={content.systems} capabilities={content.capabilities} />
-        <AiChapter ai={content.ai} capabilities={content.capabilities} stats={content.orchestra.stats} />
+        <AiChapter ai={content.ai} capabilities={content.capabilities} />
         <ContactSection contact={content.contact} timeZone={content.timeZone} city={content.city} />
       </main>
     </MotionRoot>

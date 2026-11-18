@@ -372,6 +372,11 @@ export const SITE: SiteContent = {
         tools: ["Claude Code", "plugins & hooks", "sub-agents", "TypeScript", "Bun"],
         status: { kind: "public", href: "https://github.com/Lucheti/orchestra" },
         illustration: "departments",
+        feature: {
+          note: "This is the AI SDLC I built. Its own page explains how the departments work and shows the board running live.",
+          href: "/orchestra",
+          cta: "See how it works",
+        },
       },
       {
         name: "shot-planner",
@@ -382,14 +387,6 @@ export const SITE: SiteContent = {
         illustration: "storyboard",
       },
     ],
-    caseStudy: {
-      title: "Featured project",
-      caption: "Orchestra in depth: how it works, and the board running live.",
-      name: "Orchestra",
-      lede: "A Claude Code plugin that runs a software company: seven departments of agents take a feature from idea to release, and code checks every step.",
-      href: "/orchestra",
-      cta: "See how it works",
-    },
   },
   orchestra: {
     label: "Live demo",
