@@ -290,6 +290,65 @@ export type QueuePanel = Readonly<{
   announcements: Readonly<{ down: string; restarting: string; recovered: string; settled: string }>;
 }>;
 
+/** A service behind the gateway on the Back end's service map. */
+export type MapServiceId = "orders" | "payments" | "inventory";
+
+/** A data store or queue the services use. */
+export type MapStoreId = "postgres" | "nats" | "redis";
+
+/** A box on the service map: its name, and the tool whose brand mark it wears, if it has one. */
+export type MapNodeCopy = Readonly<{ name: string; tool?: string }>;
+
+/**
+ * The Back end panel: the top-right corner of the same laptop, with an ops app open on a live service map.
+ * Copy only; the panel decides how it looks. In the templates, `{service}` is a service's name and `{n}` a
+ * number.
+ */
+export type ServiceMapCopy = Readonly<{
+  /** What the panel shows, for screen readers. */
+  label: string;
+  /** The app's name, bold in the menu bar. */
+  app: string;
+  /** The menu bar's menus after the app's name. */
+  menus: readonly string[];
+  /** The environment in the sidebar's switcher and at the start of the breadcrumb. */
+  environment: string;
+  /** The sidebar's pages; the selected one is the map. Their counts show at the crop's edge. */
+  pages: readonly Readonly<{ name: string; selected: boolean; count: "incidents" | null }>[];
+  /** The sidebar's search field. */
+  search: string;
+  /** The page's title, ending the breadcrumb. */
+  title: string;
+  /** The toolbar's time range. */
+  range: string;
+  /** The indicator: the map is live, or paused while the panel is off screen or motion is reduced. */
+  live: Readonly<{ on: string; off: string }>;
+  /** The spike button, and its words while a spike runs. */
+  spike: Readonly<{ label: string; running: string }>;
+  clients: MapNodeCopy;
+  gateway: MapNodeCopy;
+  services: Readonly<Record<MapServiceId, MapNodeCopy>>;
+  stores: Readonly<Record<MapStoreId, MapNodeCopy>>;
+  /** The tiny metric on each card. */
+  metrics: Readonly<{ rate: string; ops: string; p95: string; queued: string; failedFast: string }>;
+  /** A service's health, and the action its card takes. */
+  health: Readonly<{ up: string; down: string; recovering: string }>;
+  takeDown: string;
+  /** The gateway's circuit breaker on an edge, when it is not closed. */
+  breaker: Readonly<{ open: string; halfOpen: string }>;
+  /** The legend under the map. */
+  legend: Readonly<{ request: string; probe: string; open: string }>;
+  /** Live-region sentences. */
+  announcements: Readonly<{
+    down: string;
+    opened: string;
+    probing: string;
+    back: string;
+    spike: string;
+    settled: string;
+  }>;
+}>;
+
 /** A stop on the agent's round: where tickets wait, its four tools, and where finished work goes. */
 export type AgentStationId = "inbox" | "read" | "search" | "code" | "test" | "ship";
 
@@ -361,8 +420,11 @@ export type Craft = Domain &
     laptop: Laptop;
   }>;
 
-/** The back-end domain: skills and repositories, introduced by the message-queue panel. */
-export type Systems = Domain & Readonly<{ panel: QueuePanel }>;
+/**
+ * The back-end domain: skills and repositories, introduced by the service map in a laptop's top-right
+ * corner. The message-queue panel's copy stays for its parked diorama.
+ */
+export type Systems = Domain & Readonly<{ map: ServiceMapCopy; panel: QueuePanel }>;
 
 /**
  * The AI domain: skills and repositories, introduced by the Orchestra office island (with the agent panel

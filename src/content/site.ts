@@ -241,6 +241,50 @@ export const SITE: SiteContent = {
   systems: {
     heading: "Back end",
     intro: "I build and architect APIs and services that work at scale, along with the messaging and data layers behind them.",
+    map: {
+      label:
+        "The top-right corner of a laptop screen with a live service map open. Requests flow from clients through an API gateway to three services, Orders, Payments and Inventory, and on to Postgres, Redis and a NATS queue. Take a service down and the gateway opens its circuit breaker, tests the service with a few requests and closes it again once the service is back. Simulate a spike and the queue fills up, latency rises, then both settle.",
+      app: "Ops",
+      menus: ["File", "Edit", "View", "Window", "Help"],
+      environment: "Production",
+      pages: [
+        { name: "Overview", selected: false, count: null },
+        { name: "Service map", selected: true, count: null },
+        { name: "Incidents", selected: false, count: "incidents" },
+        { name: "Deploys", selected: false, count: null },
+        { name: "Logs", selected: false, count: null },
+      ],
+      search: "Search",
+      title: "Service map",
+      range: "Last 15 min",
+      live: { on: "Live", off: "Paused" },
+      spike: { label: "Simulate spike", running: "Spike running" },
+      clients: { name: "Clients" },
+      gateway: { name: "API gateway" },
+      services: {
+        orders: { name: "Orders", tool: "NestJS" },
+        payments: { name: "Payments", tool: "NestJS" },
+        inventory: { name: "Inventory", tool: "NestJS" },
+      },
+      stores: {
+        postgres: { name: "Postgres", tool: "PostgreSQL" },
+        nats: { name: "NATS", tool: "NATS" },
+        redis: { name: "Redis", tool: "Redis" },
+      },
+      metrics: { rate: "{n} req/s", ops: "{n} ops/s", p95: "p95 {n} ms", queued: "{n} queued", failedFast: "{n} failed fast" },
+      health: { up: "Healthy", down: "Down", recovering: "Restarting" },
+      takeDown: "Take down",
+      breaker: { open: "Open", halfOpen: "Half-open" },
+      legend: { request: "Request", probe: "Test request", open: "Breaker open" },
+      announcements: {
+        down: "{service} is down. Requests to it are failing.",
+        opened: "The gateway opened its circuit breaker for {service}.",
+        probing: "The gateway is sending a few test requests to {service}.",
+        back: "{service} is back.",
+        spike: "Traffic spike. The NATS queue is filling up.",
+        settled: "The queue is empty again and latency is back to normal.",
+      },
+    },
     panel: {
       label:
         "A toy message queue. Checkout publishes a steady flow of messages to a NATS queue, which deals each one to the least busy of three services: Orders, Payments and Inventory. Send more to flood it: an overloaded service goes down, hands its messages back to the queue, restarts and drains the backlog. No message is ever lost.",

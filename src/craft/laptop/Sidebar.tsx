@@ -2,15 +2,12 @@
 
 import type { ReactNode } from "react";
 import type { Laptop } from "@/content";
+import { ChevronDownGlyph, PRESSABLE, SearchGlyph, SidebarShell } from "@/laptop";
 import { cx } from "@/ui";
-import { ChevronDownGlyph, ComposeGlyph, DoneGlyph, PersonGlyph, SearchGlyph, StackGlyph } from "./glyphs";
+import { ComposeGlyph, DoneGlyph, PersonGlyph, StackGlyph } from "./glyphs";
 import type { Roster } from "./Roster";
 import type { BoardSnapshot } from "./TaskBoard";
 import { viewKey, type View, type ViewKey } from "./views";
-
-/** Hover and press, for the visitor's pointer and for the ghost's. */
-const PRESSABLE =
-  "transition-colors duration-150 hover:bg-[rgb(60_30_15/0.055)] data-[ghost-over]:bg-[rgb(60_30_15/0.055)] active:bg-[rgb(60_30_15/0.1)] data-[ghost-press]:bg-[rgb(60_30_15/0.1)] motion-reduce:transition-none";
 
 type NavItemProps = Readonly<{
   view: View;
@@ -59,7 +56,7 @@ export function Sidebar({ content, roster, board, onSelect, onSearch }: SidebarP
   const current = viewKey(board.view);
   const countOf = (key: ViewKey): number => board.counts.get(key) ?? 0;
   return (
-    <div className="absolute inset-y-0 left-0 flex w-[200px] flex-col bg-[rgb(250_241_234/0.74)] px-[10px] pt-[50px] shadow-[inset_-0.5px_0_0_rgb(60_30_15/0.12)] backdrop-blur-[40px] backdrop-saturate-[1.8]">
+    <SidebarShell>
       <div className="flex items-center justify-between pl-[4px]">
         <div className="flex min-w-0 items-center gap-[8px] rounded-[7px] py-[4px] pl-[3px] pr-[6px]">
           <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[6px] bg-[linear-gradient(145deg,#ff8a4c,#ff5a1f_55%,#e2430f)] text-[11px] font-semibold text-white shadow-[inset_0_0.5px_0_rgb(255_255_255/0.4),0_0.5px_1px_rgb(120_40_10/0.4)]">
@@ -113,6 +110,6 @@ export function Sidebar({ content, roster, board, onSelect, onSearch }: SidebarP
           })}
         </ul>
       </nav>
-    </div>
+    </SidebarShell>
   );
 }

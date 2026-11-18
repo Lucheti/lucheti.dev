@@ -1,16 +1,23 @@
 import type { Laptop } from "@/content";
-import { BrowserFrames, BrowserTimers } from "./browser";
-import { Cadence } from "./Cadence";
+import {
+  BrowserFrames,
+  BrowserTimers,
+  Cadence,
+  DomGhostSurface,
+  FrameLoop,
+  GhostDirector,
+  GhostPresence,
+  GhostScript,
+  MenuClock,
+  type GhostStep,
+} from "@/laptop";
 import { CommandPalette, type Destination } from "./CommandPalette";
-import { DomGhostSurface } from "./DomGhostSurface";
-import { GhostDirector } from "./GhostDirector";
-import { GhostHands } from "./GhostHands";
-import { GhostPresence } from "./GhostPresence";
-import { GhostScript, type GhostStep } from "./GhostScript";
-import { MenuClock } from "./MenuClock";
 import { Roster } from "./Roster";
 import { TaskActions } from "./TaskActions";
+import { TaskArrivals } from "./TaskArrivals";
 import { TaskBoard } from "./TaskBoard";
+import { TaskMarks, type TaskEffect, type TaskTarget } from "./taskGhost";
+import { TaskHands } from "./TaskHands";
 
 /** The most open tasks the list holds; arrivals wait while it is full. */
 const CAPACITY = 7;
@@ -24,8 +31,10 @@ const FIRST_ARRIVAL_MS = 9_000;
 /** The ghost comes back this long after the visitor's pointer leaves. */
 const RESUME_MS = 4_000;
 
+const typing = (query: string): TaskEffect => ({ kind: "type", query });
+
 /** The ghost's loop: hover a task, finish it, search for something, look at "My tasks", and come back. */
-function ghostLoop(query: string): readonly GhostStep[] {
+function ghostLoop(query: string): readonly GhostStep<TaskTarget, TaskEffect>[] {
   return [
     { kind: "wait", ms: 1200 },
     { kind: "move", to: { kind: "row", slot: 0 }, ms: 1400 },
@@ -38,7 +47,7 @@ function ghostLoop(query: string): readonly GhostStep[] {
     { kind: "wait", ms: 300 },
     { kind: "click", effect: { kind: "open-palette" }, ms: 400 },
     { kind: "wait", ms: 600 },
-    { kind: "type", text: query, msPerKey: 190 },
+    { kind: "type", text: query, msPerKey: 190, keystroke: typing },
     { kind: "wait", ms: 1800 },
     { kind: "key", effect: { kind: "close-palette" }, ms: 500 },
     { kind: "move", to: { kind: "view", view: { kind: "mine" } }, ms: 1300 },
@@ -59,13 +68,14 @@ export type LaptopParts = Readonly<{
   board: TaskBoard;
   palette: CommandPalette;
   actions: TaskActions;
-  director: GhostDirector;
-  surface: DomGhostSurface;
+  director: GhostDirector<TaskTarget, TaskEffect>;
+  loop: FrameLoop;
+  surface: DomGhostSurface<TaskTarget>;
   clock: MenuClock;
   roster: Roster;
 }>;
 
-/** The laptop panel's composition root: builds the task board, the palette and the ghost. */
+/** The laptop panel's composition root: builds the task board, the palette, the ghost and the frames they run on. */
 export function composeLaptop(content: Laptop): LaptopParts {
   const board = new TaskBoard({ tasks: content.tasks, incoming: content.incoming, me: content.me, capacity: CAPACITY });
   const destinations: readonly Destination[] = [
@@ -76,22 +86,20 @@ export function composeLaptop(content: Laptop): LaptopParts {
   ];
   const palette = new CommandPalette(board, destinations, PALETTE_LIMITS);
   const actions = new TaskActions(board, new BrowserTimers(), LINGER_MS);
-  const surface = new DomGhostSurface();
-  const director = new GhostDirector(
+  const surface = new DomGhostSurface<TaskTarget>(new TaskMarks());
+  const director = new GhostDirector<TaskTarget, TaskEffect>(
     new GhostScript(ghostLoop(content.search.sample)),
     new GhostPresence(RESUME_MS),
-    new GhostHands(board, palette, actions),
-    new Cadence(ARRIVAL_EVERY_MS, FIRST_ARRIVAL_MS),
-    board,
-    palette,
+    new TaskHands(board, palette, actions),
     surface,
-    new BrowserFrames(),
   );
+  const arrivals = new TaskArrivals(new Cadence(ARRIVAL_EVERY_MS, FIRST_ARRIVAL_MS), board, palette);
   return {
     board,
     palette,
     actions,
     director,
+    loop: new FrameLoop(new BrowserFrames(), [director, arrivals]),
     surface,
     clock: new MenuClock(),
     roster: new Roster(content),

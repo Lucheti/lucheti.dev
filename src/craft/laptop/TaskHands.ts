@@ -1,11 +1,12 @@
+import type { GhostHands } from "@/laptop";
 import { assertNever } from "../layers/assertNever";
 import type { CommandPalette } from "./CommandPalette";
-import type { GhostEffect } from "./GhostScript";
 import type { TaskActions } from "./TaskActions";
 import type { TaskBoard } from "./TaskBoard";
+import type { TaskEffect } from "./taskGhost";
 
-/** Turns the ghost's clicks and key presses into the same actions a visitor's would take. */
-export class GhostHands {
+/** Turns the ghost's clicks and key presses into the same actions a visitor's would take in the task tracker. */
+export class TaskHands implements GhostHands<TaskEffect> {
   public constructor(
     private readonly board: TaskBoard,
     private readonly palette: CommandPalette,
@@ -13,7 +14,7 @@ export class GhostHands {
   ) {}
 
   /** Applies one click or key press. */
-  public apply(effect: GhostEffect): void {
+  public apply(effect: TaskEffect): void {
     switch (effect.kind) {
       case "complete": {
         const id = this.board.listed(effect.slot);

@@ -3,10 +3,11 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
 import type { Laptop } from "@/content";
+import { SearchGlyph } from "@/laptop";
 import { cx } from "@/ui";
 import { assertNever } from "../layers/assertNever";
 import type { PaletteItem, PaletteSnapshot } from "./CommandPalette";
-import { DoneGlyph, PersonGlyph, SearchGlyph, StackGlyph } from "./glyphs";
+import { DoneGlyph, PersonGlyph, StackGlyph } from "./glyphs";
 import type { Roster } from "./Roster";
 import { StatusIcon } from "./StatusIcon";
 

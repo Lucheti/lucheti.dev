@@ -1,50 +1,36 @@
-import { assertNever } from "../layers/assertNever";
-import type { View } from "./views";
+import { assertNever } from "./assertNever";
 
 /** A point on the screen, in its own pixels from its top left. */
 export type Point = Readonly<{ x: number; y: number }>;
 
-/** Something on the screen the cursor can go to. Rows and their status icons are counted from the top of the list. */
-export type GhostTarget =
-  | Readonly<{ kind: "rest" }>
-  | Readonly<{ kind: "row"; slot: number }>
-  | Readonly<{ kind: "status"; slot: number }>
-  | Readonly<{ kind: "search" }>
-  | Readonly<{ kind: "view"; view: View }>;
-
-/** What a click or a key press does to the app. */
-export type GhostEffect =
-  | Readonly<{ kind: "complete"; slot: number }>
-  | Readonly<{ kind: "open-palette" }>
-  | Readonly<{ kind: "type"; query: string }>
-  | Readonly<{ kind: "close-palette" }>
-  | Readonly<{ kind: "select"; view: View }>;
-
-/** One beat of the loop. Durations in ms. */
-export type GhostStep =
-  | Readonly<{ kind: "move"; to: GhostTarget; ms: number }>
+/**
+ * One beat of the loop, for an app whose places on screen are `T` and whose clicks and key presses are `E`.
+ * Typing sends one effect per letter, made by `keystroke` from the text typed so far. Durations in ms.
+ */
+export type GhostStep<T, E> =
+  | Readonly<{ kind: "move"; to: T; ms: number }>
   | Readonly<{ kind: "wait"; ms: number }>
-  | Readonly<{ kind: "click"; effect: GhostEffect; ms: number }>
-  | Readonly<{ kind: "type"; text: string; msPerKey: number }>
-  | Readonly<{ kind: "key"; effect: GhostEffect; ms: number }>;
+  | Readonly<{ kind: "click"; effect: E; ms: number }>
+  | Readonly<{ kind: "type"; text: string; msPerKey: number; keystroke: (typed: string) => E }>
+  | Readonly<{ kind: "key"; effect: E; ms: number }>;
 
 /** Where the cursor is and what it is doing at one moment. */
-export type GhostFrame = Readonly<{
+export type GhostFrame<T> = Readonly<{
   point: Point;
   /** The button is held down. */
   pressed: boolean;
   /** What the cursor rests over; null while it travels. */
-  over: GhostTarget | null;
+  over: T | null;
 }>;
 
 /** Where a target is on the screen right now. */
-export type Locator = (target: GhostTarget) => Point;
+export type Locator<T> = (target: T) => Point;
 
 /** How long a click holds the button down; the click lands as it lets go. */
 export const PRESS_MS = 140;
 
-type TimedStep = Readonly<{ step: GhostStep; start: number; end: number; from: GhostTarget }>;
-type TimedEffect = Readonly<{ at: number; effect: GhostEffect }>;
+type TimedStep<T, E> = Readonly<{ step: GhostStep<T, E>; start: number; end: number; from: T }>;
+type TimedEffect<E> = Readonly<{ at: number; effect: E }>;
 
 /**
  * The ghost cursor's loop: a list of steps (move, wait, click, type, press a key) laid out in time. It is a
@@ -52,20 +38,20 @@ type TimedEffect = Readonly<{ at: number; effect: GhostEffect }>;
  * says which clicks and key presses landed in a stretch of time, so the caller can apply them. The loop
  * repeats; the first move starts from where the last one ended.
  */
-export class GhostScript {
-  private readonly timed: readonly TimedStep[];
-  private readonly effects: readonly TimedEffect[];
+export class GhostScript<T, E> {
+  private readonly timed: readonly TimedStep<T, E>[];
+  private readonly effects: readonly TimedEffect<E>[];
   private readonly total: number;
 
-  public constructor(steps: readonly GhostStep[]) {
-    const moves = steps.filter((step): step is Extract<GhostStep, { kind: "move" }> => step.kind === "move");
+  public constructor(steps: readonly GhostStep<T, E>[]) {
+    const moves = steps.filter((step): step is Extract<GhostStep<T, E>, { kind: "move" }> => step.kind === "move");
     if (moves.length === 0) {
       throw new Error("A ghost loop needs at least one move");
     }
-    let from: GhostTarget = moves[moves.length - 1].to;
+    let from: T = moves[moves.length - 1].to;
     let clock = 0;
-    const timed: TimedStep[] = [];
-    const effects: TimedEffect[] = [];
+    const timed: TimedStep<T, E>[] = [];
+    const effects: TimedEffect<E>[] = [];
     for (const step of steps) {
       const length = GhostScript.lengthOf(step);
       if (!(length > 0) || !Number.isFinite(length)) {
@@ -89,7 +75,7 @@ export class GhostScript {
   }
 
   /** The cursor at `time` ms since the loop first started; it wraps round. */
-  public frameAt(time: number, locate: Locator): GhostFrame {
+  public frameAt(time: number, locate: Locator<T>): GhostFrame<T> {
     const local = this.wrap(time);
     const index = this.timed.findIndex((entry) => local < entry.end);
     const current = this.timed[index === -1 ? this.timed.length - 1 : index];
@@ -116,12 +102,12 @@ export class GhostScript {
   }
 
   /** The effects that landed after `from` and up to `to`, both in ms since the loop first started, in order. */
-  public effectsBetween(from: number, to: number): readonly GhostEffect[] {
+  public effectsBetween(from: number, to: number): readonly E[] {
     if (!(to > from)) {
       return [];
     }
     const start = Math.max(from, to - this.total);
-    const landed: GhostEffect[] = [];
+    const landed: E[] = [];
     for (let loop = Math.floor(start / this.total); loop * this.total <= to; loop += 1) {
       for (const { at, effect } of this.effects) {
         const when = loop * this.total + at;
@@ -137,7 +123,7 @@ export class GhostScript {
     return ((time % this.total) + this.total) % this.total;
   }
 
-  private static lengthOf(step: GhostStep): number {
+  private static lengthOf<T, E>(step: GhostStep<T, E>): number {
     switch (step.kind) {
       case "move":
       case "wait":
@@ -151,7 +137,7 @@ export class GhostScript {
     }
   }
 
-  private static effectsOf(step: GhostStep, start: number): readonly TimedEffect[] {
+  private static effectsOf<T, E>(step: GhostStep<T, E>, start: number): readonly TimedEffect<E>[] {
     switch (step.kind) {
       case "move":
       case "wait":
@@ -163,7 +149,7 @@ export class GhostScript {
       case "type":
         return [...step.text].map((_, index) => ({
           at: start + (index + 0.5) * step.msPerKey,
-          effect: { kind: "type", query: step.text.slice(0, index + 1) },
+          effect: step.keystroke(step.text.slice(0, index + 1)),
         }));
       default:
         return assertNever(step);

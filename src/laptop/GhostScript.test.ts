@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { GhostScript, PRESS_MS, type GhostTarget, type Locator, type Point } from "./GhostScript";
+import { GhostScript, PRESS_MS, type Locator, type Point } from "./GhostScript";
+
+type Place = Readonly<{ kind: "rest" }> | Readonly<{ kind: "row"; slot: number }> | Readonly<{ kind: "search" }>;
+type Effect = Readonly<{ kind: "complete"; slot: number }> | Readonly<{ kind: "type"; query: string }> | Readonly<{ kind: "close" }>;
 
 const PLACES: Readonly<Record<string, Point>> = {
   rest: { x: 0, y: 0 },
@@ -7,7 +10,7 @@ const PLACES: Readonly<Record<string, Point>> = {
   search: { x: 100, y: 100 },
 };
 
-const locate: Locator = (target: GhostTarget) => {
+const locate: Locator<Place> = (target) => {
   switch (target.kind) {
     case "rest":
     case "search":
@@ -19,13 +22,15 @@ const locate: Locator = (target: GhostTarget) => {
   }
 };
 
+const keystroke = (query: string): Effect => ({ kind: "type", query });
+
 // 0–1000 move to the row, 1000–1500 wait, 1500–1900 click, 1900–2300 type "ab", 2300–2800 key, 2800–3800 back to rest.
-const script = new GhostScript([
+const script = new GhostScript<Place, Effect>([
   { kind: "move", to: { kind: "row", slot: 0 }, ms: 1000 },
   { kind: "wait", ms: 500 },
   { kind: "click", effect: { kind: "complete", slot: 0 }, ms: 400 },
-  { kind: "type", text: "ab", msPerKey: 200 },
-  { kind: "key", effect: { kind: "close-palette" }, ms: 500 },
+  { kind: "type", text: "ab", msPerKey: 200, keystroke },
+  { kind: "key", effect: { kind: "close" }, ms: 500 },
   { kind: "move", to: { kind: "rest" }, ms: 1000 },
 ]);
 
@@ -64,7 +69,7 @@ describe("GhostScript", () => {
     expect(script.effectsBetween(1700, 2800)).toEqual([
       { kind: "type", query: "a" },
       { kind: "type", query: "ab" },
-      { kind: "close-palette" },
+      { kind: "close" },
     ]);
   });
 
@@ -76,7 +81,7 @@ describe("GhostScript", () => {
   });
 
   it("refuses a loop without moves or with a step that takes no time", () => {
-    expect(() => new GhostScript([{ kind: "wait", ms: 100 }])).toThrow();
-    expect(() => new GhostScript([{ kind: "move", to: { kind: "search" }, ms: 0 }])).toThrow();
+    expect(() => new GhostScript<Place, Effect>([{ kind: "wait", ms: 100 }])).toThrow();
+    expect(() => new GhostScript<Place, Effect>([{ kind: "move", to: { kind: "search" }, ms: 0 }])).toThrow();
   });
 });

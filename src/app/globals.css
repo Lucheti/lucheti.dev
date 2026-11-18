@@ -254,6 +254,18 @@ body {
   }
 }
 
+/* The Back end laptop (src/systems/servicemap): a breaker's pill pops onto its edge. */
+@keyframes map-pill {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* The laptop's menu bar clock: the separator flashes once a second. */
 @keyframes clock-flash {
   0% {
