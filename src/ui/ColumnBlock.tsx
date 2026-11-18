@@ -8,14 +8,13 @@ type ColumnBlockProps = Readonly<{
 }>;
 
 /**
- * A titled block in a chapter's narrow column, such as "Reference projects" or "Skills": a small title led by
- * a signal square, then its content. A lighter landmark than `SubsectionHeader`, sized for the column.
+ * A titled block in a chapter's narrow column, such as "Reference projects" or "Skills": a small title, then
+ * its content. A lighter landmark than `SubsectionHeader`, sized for the column.
  */
 export function ColumnBlock({ id, title, children }: ColumnBlockProps): ReactNode {
   return (
     <section aria-labelledby={id} className="flex flex-col gap-4">
-      <h3 id={id} className="flex items-center gap-2.5 font-display text-xl font-semibold tracking-[-0.025em] text-ink">
-        <span aria-hidden className="size-2.5 bg-signal" />
+      <h3 id={id} className="font-display text-xl font-semibold tracking-[-0.025em] text-ink">
         {title}
       </h3>
       {children}

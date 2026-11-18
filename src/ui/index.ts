@@ -11,7 +11,6 @@ export { EASE_OUT_EXPO } from "./motion";
 export { MotionRoot } from "./MotionRoot";
 export { FeaturePanel, LoopTimeline, usePanelLoop } from "./panels";
 export { Reveal } from "./Reveal";
-export { RepoCards } from "./RepoCards";
 export { RepoList } from "./RepoList";
 export { ColumnBlock } from "./ColumnBlock";
 export { SceneBoundary } from "./SceneBoundary";
