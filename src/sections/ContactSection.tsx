@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ContactArtifact } from "@/artifact";
 import type { Contact } from "@/content";
 import { Chapter } from "@/story";
 import { ButtonLink, Container, Label, Reveal } from "@/ui";
@@ -22,14 +23,14 @@ function splitLastWord(heading: string): Readonly<{ lead: string; last: string }
   return { lead: heading.slice(0, cut + 1), last: heading.slice(cut + 1) };
 }
 
-/** The last chapter: one line, one button, sign-off. The right 40% stays clear for the artifact. */
+/** The last chapter: one line, one button, sign-off, and the 3D object fixed in the right column on wide screens. */
 export function ContactSection({ contact, timeZone, city }: ContactSectionProps): ReactNode {
   const { lead, last } = splitLastWord(contact.heading);
   const [firstLink, ...otherLinks] = contact.links;
 
   return (
     <Chapter id="contact" className="relative flex min-h-[80dvh] flex-col bg-paper bg-grid">
-      <Container className="flex flex-1 flex-col justify-center gap-10 py-28 lg:py-32">
+      <Container className="flex flex-1 flex-col justify-center gap-10 py-28 lg:flex-row lg:items-center lg:justify-between lg:py-32">
         <div className="flex flex-col gap-8 lg:max-w-[60%]">
           <Reveal>
             <Label marked>{contact.label}</Label>
@@ -55,6 +56,7 @@ export function ContactSection({ contact, timeZone, city }: ContactSectionProps)
             <CopyEmail email={contact.email} />
           </Reveal>
         </div>
+        <ContactArtifact className="hidden w-[36%] shrink-0 lg:block" />
       </Container>
 
       <div className="border-t border-line">

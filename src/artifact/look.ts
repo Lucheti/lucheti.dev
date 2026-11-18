@@ -29,5 +29,5 @@ export const LOOK = {
   /** Hairlines along the shell's edges that light up as the last shards close. */
   seams: { radius: 0.992, opacity: 0.95 },
   nodes: { dotSize: 0.06, glowSize: 0.22, glowOpacity: 0.35 },
-  motion: { turnRadiansPerSecond: 0.05, poseLambda: 4, tiltX: 0.22, tiltY: 0.32 },
+  motion: { turnRadiansPerSecond: 0.05, tiltX: 0.22, tiltY: 0.32 },
 } as const;

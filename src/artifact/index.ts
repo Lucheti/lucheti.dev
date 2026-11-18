@@ -1,1 +1,1 @@
-export { ArtifactStage } from "./ArtifactStage";
+export { ContactArtifact } from "./ContactArtifact";

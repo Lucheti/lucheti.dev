@@ -14,43 +14,31 @@ import {
   type PointLight,
   type SpriteMaterial,
 } from "three";
-import type { Story } from "@/story";
 import { AssemblyChoreography } from "./AssemblyChoreography";
 import { createGlowTexture } from "./glowTexture";
 import { LOOK } from "./look";
 import { PointerLean } from "./PointerLean";
-import { NARROW_BELOW_PX, PoseFollower, PoseTrack, StageLayout, type Placement, type PoseValues } from "./PoseTrack";
 import { ShardField } from "./ShardField";
 import { ThreadNetwork } from "./ThreadNetwork";
 
-type Props = Readonly<{ story: Story; reducedMotion: boolean }>;
+type Props = Readonly<{ reducedMotion: boolean }>;
 
-/** Below this pose scale the object is folded away and not drawn at all. */
-const MIN_VISIBLE_SCALE = 0.02;
-
-/** Mutable scratch shared by every frame so the loop allocates nothing. */
-type FrameScratch = {
-  readonly target: PoseValues;
-  readonly placement: Placement;
-};
+/** The object's diameter as a share of the smaller side of its canvas. */
+const FILL = 0.78;
+/** The object is always whole: every shard is home. */
+const ASSEMBLED = 1;
 
 /**
- * The assembled-or-scattered object: shards, threads, travelling nodes, core
- * and halo. Thin on purpose; the maths lives in the pure classes it drives.
+ * The assembled object, centred in its own canvas: shards, threads, travelling nodes, core and halo. It
+ * turns slowly and leans toward the pointer; it does not move with the scroll. Thin on purpose; the maths
+ * lives in the pure classes it drives.
  */
-export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
+export function ArtifactRig({ reducedMotion }: Props): ReactNode {
   const [field] = useState(() => new ShardField());
   const [choreography] = useState(() => new AssemblyChoreography(field));
   const [poses] = useState(() => choreography.allocate());
   const [threads] = useState(() => new ThreadNetwork(field.neighbourPairs()));
-  const [tracks] = useState(() => ({ wide: PoseTrack.wide(), narrow: PoseTrack.narrow() }));
-  const [follower] = useState(() => new PoseFollower(LOOK.motion.poseLambda));
-  const [layout] = useState(() => new StageLayout());
   const [lean] = useState(() => new PointerLean());
-  const [scratch] = useState<FrameScratch>(() => ({
-    target: { x: 0, y: 0, scale: 1, assembly: 0, spin: 0 },
-    placement: { x: 0, y: 0, scale: 1 },
-  }));
   const [glow] = useState(() => createGlowTexture());
   const [seams] = useState(() => {
     const shell = new IcosahedronGeometry(LOOK.seams.radius, 0);
@@ -98,26 +86,16 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
     const liveliness = reducedMotion ? 0 : 1;
     const time = state.clock.elapsedTime;
 
-    const track = state.size.width < NARROW_BELOW_PX ? tracks.narrow : tracks.wide;
-    track.sample(story.chapters().current(), scratch.target);
-    follower.follow(scratch.target, seconds);
-    const pose = follower.values();
-
     lean.settle(seconds);
-    layout.place(state.viewport.width, state.viewport.height, pose, scratch.placement);
 
     const frame = outer.current;
     const spinner = inner.current;
     if (!frame || !spinner) return;
-    // Points keep their screen size whatever the group's scale, so a folded-away
-    // object must be hidden outright or its nodes linger as stray dots.
-    frame.visible = pose.scale > MIN_VISIBLE_SCALE;
-    frame.position.set(scratch.placement.x, scratch.placement.y, 0);
-    frame.scale.setScalar(scratch.placement.scale);
+    frame.scale.setScalar((FILL * Math.min(state.viewport.width, state.viewport.height)) / 2);
     frame.rotation.set(-lean.y() * LOOK.motion.tiltX, lean.x() * LOOK.motion.tiltY, 0);
-    spinner.rotation.y = pose.spin + time * LOOK.motion.turnRadiansPerSecond * liveliness;
+    spinner.rotation.y = time * LOOK.motion.turnRadiansPerSecond * liveliness;
 
-    const input = { assembly: pose.assembly, time, pointerX: lean.x(), pointerY: lean.y(), liveliness };
+    const input = { assembly: ASSEMBLED, time, pointerX: lean.x(), pointerY: lean.y(), liveliness };
     for (let i = 0; i < poses.length; i++) {
       choreography.place(i, input, poses[i]);
       const mesh = meshes.current[i];
@@ -130,7 +108,7 @@ export function ArtifactRig({ story, reducedMotion }: Props): ReactNode {
     threads.stretch(poses);
     if (!reducedMotion) threads.advance(time);
 
-    const a = pose.assembly;
+    const a = ASSEMBLED;
     if (lineMaterial.current) {
       lineMaterial.current.opacity = MathUtils.lerp(LOOK.threads.opacityScattered, LOOK.threads.opacityAssembled, a);
     }
