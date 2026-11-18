@@ -13,7 +13,6 @@ const ICONLESS = new Set([
   "WCAG 2.2 AA",
   "WAI-ARIA",
   "Motion",
-  "Lenis",
   "MediaBunny",
   "WebCodecs",
   "Web Workers",

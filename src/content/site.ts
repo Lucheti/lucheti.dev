@@ -184,31 +184,13 @@ export const SITE: SiteContent = {
       empty: "All clear.",
     },
     areas: [
-      {
-        name: "UI engineering",
-        summary: "Component libraries and design systems in React and TypeScript.",
-        tools: ["React", "TypeScript", "Next.js", "Vite", "Tailwind CSS", "Radix UI", "shadcn/ui"],
-      },
-      {
-        name: "State & data",
-        summary: "Server state, forms and typed API clients.",
-        tools: ["TanStack Query", "Redux Toolkit", "Zustand", "React Hook Form", "Zod", "GraphQL Codegen"],
-      },
-      {
-        name: "Accessibility",
-        summary: "Keyboard and screen-reader support across a component library.",
-        tools: ["WCAG 2.2 AA", "WAI-ARIA", "Radix UI", "Testing Library"],
-      },
-      {
-        name: "Motion & 3D",
-        summary: "Animations, transitions and WebGL scenes, like this site.",
-        tools: ["Motion", "three.js", "React Three Fiber", "Lenis", "anime.js"],
-      },
-      {
-        name: "Testing",
-        summary: "Unit and component tests, and the test strategy behind them.",
-        tools: ["Vitest", "Jest", "Testing Library"],
-      },
+      { name: "Languages", tools: ["TypeScript", "JavaScript", "HTML", "CSS"] },
+      { name: "Frameworks", tools: ["React", "Next.js", "Vite"] },
+      { name: "Styling", tools: ["Tailwind CSS", "Radix UI", "shadcn/ui"] },
+      { name: "Data", tools: ["TanStack Query", "Redux Toolkit", "Zustand", "React Hook Form", "Zod"] },
+      { name: "Motion & 3D", tools: ["Motion", "three.js", "React Three Fiber", "WebGL"] },
+      { name: "Testing", tools: ["Vitest", "Jest", "Testing Library"] },
+      { name: "Accessibility", tools: ["WCAG 2.2 AA", "WAI-ARIA"] },
     ],
     repos: [
       {

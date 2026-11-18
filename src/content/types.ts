@@ -86,9 +86,10 @@ export type SpecNote = Readonly<{
 
 /** One row of a resume skill table. */
 export type SkillArea = Readonly<{
+  /** Short: "Frameworks", "Motion & 3D". */
   name: string;
-  /** One short line. */
-  summary: string;
+  /** One short line, for the full skill table; the compact list leaves it out. */
+  summary?: string;
   /** Libraries, frameworks and standards, most important first. */
   tools: readonly string[];
 }>;

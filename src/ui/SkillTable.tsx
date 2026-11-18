@@ -64,7 +64,9 @@ export function SkillTable({ areas, caption, columns = DEFAULT_COLUMNS, tone = "
               <span className={cx("block font-display text-xl font-semibold tracking-[-0.02em]", skin.name)}>
                 {area.name}
               </span>
-              <span className={cx("mt-1 block text-sm leading-[1.5]", skin.summary)}>{area.summary}</span>
+              {area.summary === undefined ? null : (
+                <span className={cx("mt-1 block text-sm leading-[1.5]", skin.summary)}>{area.summary}</span>
+              )}
             </th>
             <td role="cell" className="mt-4 block lg:col-span-8 lg:mt-0">
               <ToolPills tools={area.tools} tone={tone} />
