@@ -121,7 +121,7 @@ export const SITE: SiteContent = {
   },
   craft: {
     heading: "Front end",
-    intro: "I build web apps with React and TypeScript, from design systems to the product screens people use every day.",
+    intro: "I build web apps and design systems, from the components up to the product screens people use every day.",
     laptop: {
       label:
         "The top-left corner of a laptop screen with a small task tracker open: a sidebar of views and projects, and a list of front-end tasks you can complete, assign and search.",
@@ -240,7 +240,7 @@ export const SITE: SiteContent = {
   },
   systems: {
     heading: "Back end",
-    intro: "I build APIs and services in Node.js, along with the queues and databases behind them. I've also worked in Java and Scala.",
+    intro: "I build and architect APIs and services that work at scale, along with the messaging and data layers behind them.",
     panel: {
       label:
         "A toy message queue. Checkout publishes a steady flow of messages to a NATS queue, which deals each one to the least busy of three services: Orders, Payments and Inventory. Send more to flood it: an overloaded service goes down, hands its messages back to the queue, restarts and drains the backlog. No message is ever lost.",
