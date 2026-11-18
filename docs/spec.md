@@ -1298,3 +1298,79 @@ style as the v2.12 room, with **a big, satisfying 3D button you press to send th
   mapping using `assertNever`.
 - **Button press curve:** squash and release as a function of time.
 - **Composition:** one composition root; nothing is instantiated at module load.
+
+## v2.15 — The AI panel becomes the Orchestra office diorama (WP-O3)
+
+The owner's direction (2026-11-17): the "Agent at work" toy doesn't convince. They chose a 3D cartoon diorama of
+**the Orchestra office**. It shares one look with the Back end queue island, and it shows the owner's real project
+(Orchestra, a Claude Code plugin where departments of agents take a feature from idea to release).
+
+### What stays
+- **Fallback:** `AgentAtWorkPanel` stays as the fallback for no WebGL or a failed scene, and for reduced motion,
+  exactly as `QueuePanel` does for the queue.
+- **Placement:** the diorama replaces it in the AI chapter's `DomainHeader` panel slot, with no card frame. The
+  island floats on the page like the queue island.
+- **Alignment:** the island's visible top lines up with the top of the "AI" heading, like the other panels (see `DomainHeader` and the negative top margin on `QueueDiorama`).
+
+### The scene (react-three-fiber + drei, everything built in code)
+- **Style:** the v2.12 / v2.14 cartoon look. That means toon shading, warm-ink outlines, chunky rounded shapes, a
+  layered island edge, a soft tinted shadow and signal orange `#ff5a1f` as the accent.
+  - **Reuse:** the toolkit from `src/diorama` via one local re-export file, as the queue does with
+    `src/systems/diorama/kit.ts`. Generic pieces in `src/systems/diorama` (labels, solid meshes, shapes, big
+    button, press curve, lights) can be moved into `src/diorama` so both islands share them. Moved code keeps its
+    tests, and the queue must keep working unchanged.
+  - **Palette:** its own, so the three islands don't look like triplets. For example, a warm sand or lilac floor
+    with cream and ink furniture.
+- **The office floor:** a small open-plan office island, read left to right in a fixed three-quarter view, with
+  five stations:
+  - **Product:** a desk with a robot and a big rubber stamp.
+  - **Design:** a desk with an easel or tablet.
+  - **Engineering:** three desks with three robots working in parallel.
+  - **QA:** a desk with a magnifier and a traffic-light lamp.
+  - **Release:** a launch pad with a tiny rocket.
+
+  The robots are chunky little characters: a rounded body, a screen face with simple eyes, and an antenna with an
+  orange tip. Each department has a small HTML name sign (crisp, via drei `Html`, like the queue's labels).
+- **The ticket:** a glowing card or envelope that travels a path between stations: Product → Design → Engineering
+  (it splits into three small cards, one per engineer, then joins again) → QA → Release. At each station, that
+  station's action plays:
+  - **Product:** the stamp thumps.
+  - **Design:** a little sketch appears on the easel.
+  - **Engineering:** the robots type, with screens flickering.
+  - **QA:** the magnifier sweeps, then a green light, or now and then a red light that sends the ticket back to
+    Engineering with a small bounce.
+  - **Release:** the rocket launches with a puff and comes back down to its pad.
+- **The button:** a big chunky orange **"Drop an idea"** button on a pedestal at the Product end. It is the most
+  obviously clickable thing in the scene, with the same press feel as the queue's button. Pressing it drops a new
+  ticket into Product.
+  - **Queue of ideas:** several presses queue tickets, shown as a small stack in Product's inbox tray, capped with
+    a "+N" tag.
+  - **Concurrency:** only a couple of tickets are in flight at once, so it stays readable.
+- **Always alive:** with no clicks, a ticket goes through the whole office on a slow loop. The robots idle (they
+  blink, bob and turn their heads), so the scene is never still.
+- **Readout:** a small crisp HTML strip under the island, like the queue's: the title "Orchestra", the ticket
+  currently in flight (its short name, from the existing ticket titles in `ai.panel`) and a "Shipped" count.
+- **Interaction:** pointer lean, and a drag-to-turn clamped to about ±30° with spring back, as on the queue. The
+  live-region announcements say when a ticket ships or bounces back. There is also a hidden, focusable HTML
+  button with the same action as the 3D button.
+- **Determinism:** the QA bounce is seeded and deterministic, as the queue simulation is. It happens roughly one
+  ticket in four.
+
+### Copy
+- **Content:** add a new `ai.office` entry in `src/content/site.ts` (with types) for the label, title, button
+  text, department names, readout words and announcements. Keep it plain language, with no slogans.
+- **Ticket names:** reuse the ticket titles already in `ai.panel`.
+
+### Fallbacks and performance
+- **2D fallback:** `AgentAtWorkPanel` until WebGL draws, cross-faded out; it stays if WebGL fails, and it is the
+  reduced-motion view.
+- **Phones:** taps work, with drag and lean off. If 375 px can't be made readable, the 2D panel is fine there.
+- **Rendering:** one `<Canvas>`, `dpr` capped at 2, and pooled meshes. Render every frame only while on screen.
+
+### Logic (pure, tested)
+- **Office script:** a ticket's route and timings through the stations as a pure function of time. It covers the
+  split and join at Engineering, a QA bounce, and the release.
+- **Idea queue:** dropped tickets, how many are in flight, and the cap.
+- **Station look per action:** what each station is doing for a given state, as a pure mapping using
+  `assertNever`.
+- **Composition:** one composition root; nothing is instantiated at module load.
