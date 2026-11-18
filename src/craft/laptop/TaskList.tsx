@@ -3,8 +3,10 @@
 import { AnimatePresence } from "motion/react";
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import type { Laptop } from "@/content";
+import { ChevronRightGlyph, COUNT_PILL, Toolbar } from "@/laptop";
+import { cx } from "@/ui";
 import { assertNever } from "../layers/assertNever";
-import { ChevronRightGlyph, DoneGlyph } from "./glyphs";
+import { DoneGlyph } from "./glyphs";
 import type { Roster } from "./Roster";
 import { StatusIcon } from "./StatusIcon";
 import type { BoardSnapshot, BoardTask } from "./TaskBoard";
@@ -78,12 +80,12 @@ export function TaskList({ content, roster, board, reduced, onToggle, onAssign }
 
   return (
     <div className="absolute inset-y-0 left-[200px] right-0 flex flex-col bg-white">
-      <div className="flex h-[50px] shrink-0 items-center gap-[6px] px-[18px] shadow-[inset_0_-0.5px_0_rgb(60_30_15/0.1)]">
+      <Toolbar>
         <span className="text-[13.5px] font-medium text-[#8a7f78]">{content.workspace}</span>
         <ChevronRightGlyph className="size-[13px] text-[#b3aaa4]" />
         <h3 className="text-[13.5px] font-semibold tracking-[-0.01em] text-[#1d1612]">{title}</h3>
-        <span className="ml-[4px] rounded-full bg-[rgb(60_30_15/0.06)] px-[7px] py-[2px] text-[11.5px] font-medium tabular-nums text-[#6b615b]">{total}</span>
-      </div>
+        <span className={cx("ml-[4px]", COUNT_PILL)}>{total}</span>
+      </Toolbar>
 
       <div ref={listRef} className="relative flex-1">
         {board.groups.length === 0 ? (

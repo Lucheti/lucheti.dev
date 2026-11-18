@@ -1,37 +1,31 @@
-import { assertNever } from "../layers/assertNever";
 import type { GhostSurface } from "./GhostDirector";
-import type { GhostFrame, GhostTarget, Point } from "./GhostScript";
-import { viewKey } from "./views";
+import type { GhostFrame, Point } from "./GhostScript";
 
-/** The `data-ghost` name of the element a target points at. */
-export function ghostKey(target: GhostTarget): string {
-  switch (target.kind) {
-    case "rest":
-    case "search":
-      return target.kind;
-    case "row":
-    case "status":
-      return `${target.kind}-${target.slot}`;
-    case "view":
-      return `view-${viewKey(target.view)}`;
-    default:
-      return assertNever(target);
-  }
+/** An element's size, in the screen's pixels. */
+export type Size = Readonly<{ width: number; height: number }>;
+
+/** How an app's places are marked in its DOM, and where on each the cursor aims. */
+export interface GhostMarks<T> {
+  /** Where the cursor goes when its target is missing; the screen marks it too. */
+  readonly rest: T;
+  /** The `data-ghost` name of the element a target points at. */
+  keyOf(target: T): string;
+  /** Where on the target's element the cursor rests, from the element's top left. */
+  aim(target: T, size: Size): Point;
 }
-
-/** Where on a row the cursor rests: over its title, not dead centre. */
-const ROW_AIM_X = 150;
 
 /**
  * The ghost cursor on the real DOM. Targets are elements marked `data-ghost` inside the screen; points are
- * measured from the screen's top left by layout offsets, so the laptop's 3D turn does not skew them. The
- * element under the cursor gets `data-ghost-over` (and `data-ghost-press` while the button is down), so it
- * can show its hover state.
+ * measured from the screen's top left by layout offsets, so a scaled stage does not skew them. The element
+ * under the cursor gets `data-ghost-over` (and `data-ghost-press` while the button is down), so it can show
+ * its hover state.
  */
-export class DomGhostSurface implements GhostSurface {
+export class DomGhostSurface<T> implements GhostSurface<T> {
   private screen: HTMLElement | null = null;
   private cursor: HTMLElement | null = null;
   private over: Element | null = null;
+
+  public constructor(private readonly marks: GhostMarks<T>) {}
 
   /** Ref callback for the screen, the cursor's frame of reference. */
   public readonly bindScreen = (element: HTMLElement | null): void => {
@@ -43,27 +37,17 @@ export class DomGhostSurface implements GhostSurface {
     this.cursor = element;
   };
 
-  public locate(target: GhostTarget): Point {
-    const element = this.find(target) ?? this.find({ kind: "rest" });
+  public locate(target: T): Point {
+    const element = this.find(target) ?? this.find(this.marks.rest);
     if (element === null) {
       return { x: 0, y: 0 };
     }
     const { x, y } = this.offsetOf(element);
-    switch (target.kind) {
-      case "row":
-        return { x: x + Math.min(ROW_AIM_X, element.offsetWidth / 2), y: y + element.offsetHeight / 2 };
-      case "view":
-      case "search":
-        return { x: x + Math.min(64, element.offsetWidth / 2), y: y + element.offsetHeight / 2 };
-      case "rest":
-      case "status":
-        return { x: x + element.offsetWidth / 2, y: y + element.offsetHeight / 2 };
-      default:
-        return assertNever(target);
-    }
+    const aim = this.marks.aim(target, { width: element.offsetWidth, height: element.offsetHeight });
+    return { x: x + aim.x, y: y + aim.y };
   }
 
-  public paint(frame: GhostFrame): void {
+  public paint(frame: GhostFrame<T>): void {
     if (this.cursor !== null) {
       this.cursor.style.transform = `translate3d(${frame.point.x}px, ${frame.point.y}px, 0)`;
       this.cursor.dataset.pressed = String(frame.pressed);
@@ -91,8 +75,8 @@ export class DomGhostSurface implements GhostSurface {
     }
   }
 
-  private find(target: GhostTarget): HTMLElement | null {
-    return this.screen?.querySelector<HTMLElement>(`[data-ghost="${ghostKey(target)}"]`) ?? null;
+  private find(target: T): HTMLElement | null {
+    return this.screen?.querySelector<HTMLElement>(`[data-ghost="${this.marks.keyOf(target)}"]`) ?? null;
   }
 
   /** The element's top left in the screen's pixels, summed up the offset parents. */

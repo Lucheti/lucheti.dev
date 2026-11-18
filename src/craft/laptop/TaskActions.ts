@@ -1,5 +1,5 @@
 import { assertNever } from "../layers/assertNever";
-import type { Timers } from "./browser";
+import type { Timers } from "@/laptop";
 import type { BoardTask, TaskBoard } from "./TaskBoard";
 
 /**

@@ -2,11 +2,14 @@ import type { ReactNode } from "react";
 import type { Capabilities, Systems } from "@/content";
 import { Chapter } from "@/story";
 import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
-import { QueueDiorama } from "./QueueDiorama";
+import { ServiceMapPanel } from "./ServiceMapPanel";
 
 type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabilities }>;
 
-/** The back end: its heading and a compact skill list beside the queue diorama, then repositories. */
+/**
+ * The back end: its heading and a compact skill list beside the service map in the laptop's top-right
+ * corner, then repositories. The 3D queue diorama (`QueueDiorama`) is parked: kept whole, rendered nowhere.
+ */
 export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
@@ -15,7 +18,7 @@ export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): 
         <DomainHeader
           heading={systems.heading}
           intro={systems.intro}
-          panel={<QueueDiorama panel={systems.panel} />}
+          panel={<ServiceMapPanel map={systems.map} />}
           aside={<SkillList areas={systems.areas} label={`${systems.heading} skills`} />}
         />
         <section aria-labelledby="systems-repos">

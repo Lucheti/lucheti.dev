@@ -1,49 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { Timers } from "./browser";
-import { Cadence } from "./Cadence";
-import { GhostPresence } from "./GhostPresence";
+import type { Timers } from "@/laptop";
 import { TaskActions } from "./TaskActions";
 import { TaskBoard } from "./TaskBoard";
-
-describe("GhostPresence", () => {
-  it("plays until the visitor comes in, and comes back a while after they leave", () => {
-    const presence = new GhostPresence(4000);
-    expect(presence.playing(0)).toBe(true);
-    presence.enter();
-    expect(presence.playing(100)).toBe(false);
-    presence.leave(1000);
-    expect(presence.playing(4999)).toBe(false);
-    expect(presence.playing(5000)).toBe(true);
-  });
-
-  it("stays away if the visitor comes back before the wait is over", () => {
-    const presence = new GhostPresence(4000);
-    presence.enter();
-    presence.leave(1000);
-    presence.enter();
-    expect(presence.playing(9000)).toBe(false);
-  });
-
-  it("refuses a negative wait", () => {
-    expect(() => new GhostPresence(-1)).toThrow();
-  });
-});
-
-describe("Cadence", () => {
-  it("falls first after the lead-in, then once a period", () => {
-    const cadence = new Cadence(1000, 300);
-    expect(cadence.advance(299)).toBe(0);
-    expect(cadence.advance(1)).toBe(1);
-    expect(cadence.advance(999)).toBe(0);
-    expect(cadence.advance(1)).toBe(1);
-    expect(cadence.advance(2500)).toBe(2);
-  });
-
-  it("refuses a period of zero and time running backwards", () => {
-    expect(() => new Cadence(0, 0)).toThrow();
-    expect(() => new Cadence(1000, 0).advance(-1)).toThrow();
-  });
-});
 
 /** Timers run by hand. */
 class ManualTimers implements Timers {
