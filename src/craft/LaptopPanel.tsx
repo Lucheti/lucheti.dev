@@ -68,7 +68,9 @@ export function LaptopPanel({ laptop }: Readonly<{ laptop: Laptop }>): ReactNode
   }, [palette]);
 
   return (
-    <figure className="relative">
+    // The device sits 46 px down a 700 px-wide stage; pulling the box up by that share of its width puts the
+    // laptop's top edge level with the heading beside it.
+    <figure className="relative lg:-mt-[6.57%]">
       <figcaption className="sr-only">{laptop.label}</figcaption>
       <div
         ref={boxRef}

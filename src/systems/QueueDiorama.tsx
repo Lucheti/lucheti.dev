@@ -201,7 +201,9 @@ export function QueueDiorama({ panel }: Readonly<{ panel: QueuePanelContent }>):
   const ready = solid && status === "ready";
 
   return (
-    <figure ref={rootRef} className="relative grid">
+    // The drawing keeps a margin above the island's top labels; pulling the box up by about that much puts
+    // them level with the heading beside it.
+    <figure ref={rootRef} className="relative grid lg:-mt-[5%]">
       <figcaption className="sr-only">{panel.label}</figcaption>
       <div
         aria-hidden={ready}
