@@ -13,9 +13,10 @@ type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabiliti
 export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
-    <Chapter id="systems" className="relative bg-paper-sunk py-32 lg:py-48">
+    <Chapter id="systems" className="relative overflow-hidden bg-paper-sunk py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
         <DomainHeader
+          stage="sky"
           heading={systems.heading}
           intro={systems.intro}
           panel={<ServiceMapPanel map={systems.map} />}

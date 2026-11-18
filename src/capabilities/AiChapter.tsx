@@ -10,9 +10,10 @@ type AiChapterProps = Readonly<{ ai: Ai; capabilities: Capabilities }>;
 export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
-    <Chapter id="ai" className="relative bg-paper py-32 lg:py-48">
+    <Chapter id="ai" className="relative overflow-hidden bg-paper py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
         <DomainHeader
+          stage="lilac"
           heading={ai.heading}
           intro={ai.intro}
           panel={<OfficeDiorama office={ai.office} panel={ai.panel} />}

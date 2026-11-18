@@ -10,9 +10,10 @@ type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
 export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
-    <Chapter id="craft" className="relative bg-paper-raised py-32 lg:py-48">
+    <Chapter id="craft" className="relative overflow-hidden bg-paper-raised py-32 lg:py-48">
       <Container className="relative flex flex-col gap-24 lg:gap-36">
         <DomainHeader
+          stage="peach"
           heading={craft.heading}
           intro={craft.intro}
           panel={<LaptopPanel laptop={craft.laptop} />}
