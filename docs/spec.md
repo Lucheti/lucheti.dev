@@ -1441,3 +1441,53 @@ behaviour, mirrored to the other corner. The 3D queue diorama is parked, not del
   randomness.
 - **Ghost loop:** the ghost script for this panel.
 - **Composition:** one composition root per panel; nothing is instantiated at module load.
+
+## v2.17 — The AI panel becomes an agent coding session window (WP-A)
+
+The owner's direction (2026-11-18): bring AI into the same "side app" family as Back end and Front end.
+
+**Since v2.16 the family has changed:**
+- There is no MacBook frame any more. Each panel is a frameless app window on a coloured, dot-grid stage (`DomainHeader` `stage`), built with the shared kit in `src/laptop/` (`AppStage`, `AppWindowChrome`, the ghost cursor engine and its tokens).
+- The page order is Back end (stage on the right), Front end (mirrored, stage on the left), then AI (stage on the right, lilac).
+- Each window's cut edge sits exactly on its stage line, and its top is level with the heading.
+
+AI gets a **frameless app window showing an agent coding session**, in the same white app style, with its **top-right corner in view** and the window cut on the left at the stage line, exactly like Back end's `ServiceMapPanel`.
+
+### Parking the office
+- **AI chapter:** it stops rendering `OfficeDiorama`.
+- **Code:** keep `OfficeDiorama`, `src/capabilities/office/`, `src/capabilities/diorama/`, the 2D `AgentAtWorkPanel` and the `ai.office`/`ai.panel` copy. Nothing renders them for now.
+
+### The app: one column session
+- **Layout:** a single top-to-bottom stream, like a clean desktop agent app, sized to read at its real size. Nothing important sits near the left edge, where the crop cuts.
+- **Toolbar** (its right end is the visible corner):
+  - a breadcrumb such as "portfolio › session";
+  - a model pill;
+  - a "Running" / "Done" status dot;
+  - three **prompt chips**: "Add dark mode", "Fix the slow page", "Write tests". These are what the ghost (and the visitor) clicks to start a run.
+- **The stream for one run, step by step:**
+  1. **The request:** the chosen chip becomes the user's message, as a right-aligned bubble.
+  2. **The plan:** the agent replies with a short plan of 2–3 lines.
+  3. **Tool-call rows**, each a tidy row with an icon, a call name and a result:
+     - `read_file("src/…")`;
+     - `search("…")`;
+     - `edit("src/…")`, which expands into a small inline diff of 2–4 lines with green and red gutters;
+     - `run_tests()`.
+  4. **A failing test:** sometimes `run_tests()` fails ("1 failed") and the agent edits again. It is deterministic and seeded, roughly one run in three.
+  5. **Tests pass:** a green row.
+  6. **Review:** a short review comment row, then "Resolved".
+  7. **The ending:** a "Pull request opened" card with a check mark, a PR number and a "+12 −3" style diffstat.
+- **Pacing:** rows stream in calmly, with a typing caret on the agent text. Long runs scroll the stream smoothly inside the window, so the newest row stays in view. Starting a new run clears the stream, or folds the previous one.
+- **Copy:** it lives in `src/content/site.ts` under `ai.session` (with types), in plain language. File names and diffs are plausible and small. Don't name a real product in the app: no "Claude Code" title. The app is just "Agent".
+
+### Behaviour
+- **Ghost cursor:** the same engine as the other two panels. Its calm loop is: click a chip, watch the run play out, rest, then the next chip. It yields to the visitor's pointer or focus and resumes about 4 s after they leave.
+- **Visitor:** can click any chip to start a run, or restart one.
+- **Accessibility:** live-region announcements at key moments, such as "Tests failed, fixing.", "Tests pass." and "Pull request opened."
+- **Reduced motion:** no ghost and no streaming. A chip click shows the finished run at once.
+- **Phones:** the same crop, scaled, like the others.
+
+### Logic (pure, tested)
+- **Session script:** a run's steps and timings as a pure function of time, for each prompt, including the seeded fail-and-fix branch.
+- **Session state:** the current run, its visible rows and the run count, with domain methods.
+- **Ghost loop:** the ghost script for this panel.
+- **Composition:** one composition root; nothing is instantiated at module load.
