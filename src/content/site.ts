@@ -337,6 +337,128 @@ export const SITE: SiteContent = {
   ai: {
     heading: "AI",
     intro: "I use AI agents to write and review code, and I've worked on products built around AI models.",
+    session: {
+      label:
+        "The top-right corner of an app window called Agent, showing a coding session. Pick a request, such as Add dark mode, and the agent replies with a short plan, reads a file, searches the code, makes a small edit and runs the tests. Now and then a test fails and it fixes the code before the tests pass. A reviewer leaves a comment, the agent answers it, and the session ends with a pull request.",
+      app: "Agent",
+      repo: "portfolio",
+      untitled: "New session",
+      history: ["Fix the login redirect", "Empty state for lists", "Search filters", "Speed up the build"],
+      model: "Large model",
+      status: { running: "Running", done: "Done", idle: "Ready" },
+      prompts: "Start a session",
+      order: ["dark-mode", "slow-page", "tests"],
+      runs: {
+        "dark-mode": {
+          chip: "Add dark mode",
+          request: "Add dark mode that follows the system setting.",
+          plan: ["Read the theme and find where the colours are set.", "Give each colour a dark value.", "Run the tests, then open a pull request."],
+          read: { path: "src/styles/theme.css", result: "48 lines" },
+          search: { query: "prefers-color-scheme", result: "2 matches" },
+          edit: {
+            path: "src/styles/theme.css",
+            diff: [
+              { sign: "remove", code: "--paper: #ffffff;" },
+              { sign: "remove", code: "--ink: #1d1612;" },
+              { sign: "add", code: "--paper: light-dark(#ffffff, #17130f);" },
+              { sign: "add", code: "--ink: light-dark(#1d1612, #f2ede8);" },
+            ],
+          },
+          passed: "24 passed",
+          failure: {
+            result: "1 failed",
+            note: "The header test still expects the old white. Updating it.",
+            fix: {
+              path: "src/ui/Header.test.tsx",
+              diff: [
+                { sign: "remove", code: 'expect(bg).toBe("#ffffff");' },
+                { sign: "add", code: 'expect(bg).toBe("var(--paper)");' },
+              ],
+            },
+          },
+          review: {
+            comment: "Muted text looks a little faint on the dark background.",
+            fix: { path: "src/styles/theme.css", diff: [{ sign: "remove", code: "--muted: #8a7f78;" }, { sign: "add", code: "--muted: light-dark(#8a7f78, #a89d96);" }] },
+          },
+          pr: { number: 128, title: "Add dark mode", added: 14, removed: 4 },
+        },
+        "slow-page": {
+          chip: "Fix the slow page",
+          request: "The orders page takes seconds to load. Can you fix it?",
+          plan: ["Find the query behind the orders page.", "Load each order with its customer in one query.", "Run the tests, then open a pull request."],
+          read: { path: "src/app/orders/page.tsx", result: "36 lines" },
+          search: { query: "loadCustomer", result: "3 matches" },
+          edit: {
+            path: "src/server/orders.ts",
+            diff: [
+              { sign: "remove", code: "const orders = await listOrders();" },
+              { sign: "remove", code: "await Promise.all(orders.map(loadCustomer));" },
+              { sign: "add", code: "const orders = await listOrders({ withCustomer: true });" },
+            ],
+          },
+          passed: "40 passed",
+          failure: {
+            result: "1 failed",
+            note: "One test still counts the old lookups. Updating it.",
+            fix: {
+              path: "src/server/orders.test.ts",
+              diff: [
+                { sign: "remove", code: "expect(loadCustomer).toHaveBeenCalledTimes(3);" },
+                { sign: "add", code: "expect(listOrders).toHaveBeenCalledOnce();" },
+              ],
+            },
+          },
+          review: {
+            comment: "Worth adding an index on customer_id as well?",
+            fix: { path: "db/migrations/0012_orders.sql", diff: [{ sign: "add", code: "create index orders_customer on orders (customer_id);" }] },
+          },
+          pr: { number: 131, title: "Load orders with their customers", added: 9, removed: 6 },
+        },
+        tests: {
+          chip: "Write tests",
+          request: "Write tests for the cart total.",
+          plan: ["Read how the cart total is worked out.", "Cover an empty cart, discounts and tax.", "Run them, then open a pull request."],
+          read: { path: "src/cart/total.ts", result: "29 lines" },
+          search: { query: "cartTotal", result: "5 matches" },
+          edit: {
+            path: "src/cart/total.test.ts",
+            diff: [
+              { sign: "add", code: 'it("is zero for an empty cart", () => {' },
+              { sign: "add", code: "  expect(cartTotal([])).toBe(0);" },
+              { sign: "add", code: "});" },
+            ],
+          },
+          passed: "12 passed",
+          failure: {
+            result: "1 failed",
+            note: "Tax is a cent off. The total should round once, at the end.",
+            fix: {
+              path: "src/cart/total.ts",
+              diff: [
+                { sign: "remove", code: "return round(subtotal) * (1 + tax);" },
+                { sign: "add", code: "return round(subtotal * (1 + tax));" },
+              ],
+            },
+          },
+          review: {
+            comment: "Could you add a case with two discounts?",
+            fix: { path: "src/cart/total.test.ts", diff: [{ sign: "add", code: 'it("stacks two discounts", () => {' }] },
+          },
+          pr: { number: 134, title: "Tests for the cart total", added: 38, removed: 1 },
+        },
+      },
+      reviewer: "Reviewer",
+      resolved: "Resolved",
+      opened: "Pull request opened",
+      working: "Running",
+      announcements: {
+        started: "Started: {prompt}.",
+        failed: "Tests failed, fixing.",
+        passed: "Tests pass.",
+        resolved: "Review comment resolved.",
+        opened: "Pull request opened.",
+      },
+    },
     panel: {
       label:
         "A little animated agent picks up a ticket and carries it through its tools: it reads a file, searches the code, edits it, runs the tests and ships. Now and then a test fails and it goes back to fix the code.",

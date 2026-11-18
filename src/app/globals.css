@@ -266,6 +266,18 @@ body {
   }
 }
 
+/* The AI panel's agent window (src/capabilities/session): the caret on the text the agent types. */
+@keyframes caret-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0;
+  }
+}
+
 /* The laptop's menu bar clock: the separator flashes once a second. */
 @keyframes clock-flash {
   0% {

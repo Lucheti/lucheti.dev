@@ -411,6 +411,72 @@ export type OfficePanel = Readonly<{
   announcements: Readonly<{ dropped: string; full: string; bounced: string; shipped: string }>;
 }>;
 
+/** A prompt the agent session window offers as a chip. */
+export type SessionPromptId = "dark-mode" | "slow-page" | "tests";
+
+/** One line of a small diff: added or removed, and its code. */
+export type DiffLineCopy = Readonly<{ sign: "add" | "remove"; code: string }>;
+
+/** An edit the agent makes: the file, and the few lines of it that change. */
+export type SessionEditCopy = Readonly<{ path: string; diff: readonly DiffLineCopy[] }>;
+
+/** One run of the agent: what it is asked, what it plans, the calls it makes and the pull request it opens. */
+export type SessionPromptCopy = Readonly<{
+  /** The chip's words. */
+  chip: string;
+  /** The visitor's message, as the chip sends it. */
+  request: string;
+  /** The agent's short plan, one line per step. */
+  plan: readonly string[];
+  read: Readonly<{ path: string; result: string }>;
+  search: Readonly<{ query: string; result: string }>;
+  edit: SessionEditCopy;
+  /** The passing test run's result, e.g. "24 passed". */
+  passed: string;
+  /** On the runs where a test fails first: the result, the agent's note, and the edit that fixes it. */
+  failure: Readonly<{ result: string; note: string; fix: SessionEditCopy }>;
+  /** The reviewer's comment, and the edit that answers it. */
+  review: Readonly<{ comment: string; fix: SessionEditCopy }>;
+  /** The pull request: its number, title and size. */
+  pr: Readonly<{ number: number; title: string; added: number; removed: number }>;
+}>;
+
+/**
+ * The AI panel: a frameless "Agent" app window, its top-right corner in view, showing a coding session. A
+ * prompt chip starts a run that streams in: the request, a plan, tool calls, tests, a review and a pull
+ * request. Copy only; the panel decides how it looks. In the templates, `{prompt}` is a chip's words.
+ */
+export type SessionCopy = Readonly<{
+  /** What the panel shows, for screen readers. */
+  label: string;
+  /** The app's name. */
+  app: string;
+  /** The repository, at the start of the breadcrumb. */
+  repo: string;
+  /** The breadcrumb's end before any run. */
+  untitled: string;
+  /** Past sessions in the sidebar, which the crop hides; decorative. */
+  history: readonly string[];
+  /** The model pill. */
+  model: string;
+  /** The status beside it. */
+  status: Readonly<{ running: string; done: string; idle: string }>;
+  /** The chips' group, for screen readers. */
+  prompts: string;
+  /** The chips, in order; the first run is open when the page loads. */
+  order: readonly SessionPromptId[];
+  runs: Readonly<Record<SessionPromptId, SessionPromptCopy>>;
+  /** Who writes the review comment, and the word when it is answered. */
+  reviewer: string;
+  resolved: string;
+  /** The ending card's heading. */
+  opened: string;
+  /** A tool call's word while it runs. */
+  working: string;
+  /** Live-region sentences. */
+  announcements: Readonly<{ started: string; failed: string; passed: string; resolved: string; opened: string }>;
+}>;
+
 export type Craft = Domain &
   Readonly<{
     laptop: Laptop;
@@ -423,10 +489,10 @@ export type Craft = Domain &
 export type Systems = Domain & Readonly<{ map: ServiceMapCopy; panel: QueuePanel }>;
 
 /**
- * The AI domain: skills and repositories, introduced by the Orchestra office island (with the agent panel
- * as its 2D stand-in). Orchestra's card points to its own page.
+ * The AI domain: skills and repositories, introduced by the agent session window. The Orchestra office
+ * island and its 2D agent panel are parked; their copy stays. Orchestra's card points to its own page.
  */
-export type Ai = Domain & Readonly<{ panel: AgentPanel; office: OfficePanel }>;
+export type Ai = Domain & Readonly<{ session: SessionCopy; panel: AgentPanel; office: OfficePanel }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 

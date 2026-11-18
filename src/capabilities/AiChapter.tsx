@@ -2,11 +2,15 @@ import type { ReactNode } from "react";
 import type { Ai, Capabilities } from "@/content";
 import { Chapter } from "@/story";
 import { ColumnBlock, Container, DomainHeader, RepoList, SkillList } from "@/ui";
-import { OfficeDiorama } from "./OfficeDiorama";
+import { AgentSessionPanel } from "./AgentSessionPanel";
 
 type AiChapterProps = Readonly<{ ai: Ai; capabilities: Capabilities }>;
 
-/** AI: its heading, reference projects and skills in one column beside the Orchestra office; Orchestra's card points to its own page. */
+/**
+ * AI: its heading, reference projects and skills in one column beside the agent session window in its
+ * top-right corner; Orchestra's card points to its own page. The Orchestra office (`OfficeDiorama`) is
+ * parked: kept whole, rendered nowhere.
+ */
 export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
@@ -16,7 +20,7 @@ export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
           stage="lilac"
           heading={ai.heading}
           intro={ai.intro}
-          panel={<OfficeDiorama office={ai.office} panel={ai.panel} />}
+          panel={<AgentSessionPanel session={ai.session} />}
           aside={
             <div className="flex flex-col gap-10">
               <ColumnBlock id="ai-repos" title={subsections.repos.title}>
