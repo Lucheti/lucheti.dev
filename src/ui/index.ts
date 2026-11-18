@@ -12,6 +12,8 @@ export { MotionRoot } from "./MotionRoot";
 export { FeaturePanel, LoopTimeline, usePanelLoop } from "./panels";
 export { Reveal } from "./Reveal";
 export { RepoCards } from "./RepoCards";
+export { RepoList } from "./RepoList";
+export { ColumnBlock } from "./ColumnBlock";
 export { SceneBoundary } from "./SceneBoundary";
 export { SectionHeader } from "./SectionHeader";
 export { SkillList } from "./SkillList";

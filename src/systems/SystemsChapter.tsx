@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Systems } from "@/content";
 import { Chapter } from "@/story";
-import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
+import { ColumnBlock, Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
 import { ServiceMapPanel } from "./ServiceMapPanel";
 
 type SystemsChapterProps = Readonly<{ systems: Systems; capabilities: Capabilities }>;
@@ -19,7 +19,11 @@ export function SystemsChapter({ systems, capabilities }: SystemsChapterProps): 
           heading={systems.heading}
           intro={systems.intro}
           panel={<ServiceMapPanel map={systems.map} />}
-          aside={<SkillList areas={systems.areas} label={`${systems.heading} skills`} />}
+          aside={
+            <ColumnBlock id="systems-skills" title={subsections.skills.title}>
+              <SkillList areas={systems.areas} label={`${systems.heading} skills`} />
+            </ColumnBlock>
+          }
         />
         <section aria-labelledby="systems-repos">
           <SubsectionHeader id="systems-repos" title={subsections.repos.title} caption={subsections.repos.caption} />

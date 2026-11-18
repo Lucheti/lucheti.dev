@@ -116,7 +116,8 @@ export const SITE: SiteContent = {
       pending: "Coming soon",
     },
     subsections: {
-      repos: { title: "Repositories", caption: "Public projects on GitHub." },
+      repos: { title: "Reference projects", caption: "Public projects on GitHub." },
+      skills: { title: "Skills" },
     },
   },
   craft: {

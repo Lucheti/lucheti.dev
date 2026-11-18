@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import type { Capabilities, Craft } from "@/content";
 import { Chapter } from "@/story";
-import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
+import { ColumnBlock, Container, DomainHeader, RepoList, SkillList } from "@/ui";
 import { LaptopPanel } from "./LaptopPanel";
 
 type CraftChapterProps = Readonly<{ craft: Craft; capabilities: Capabilities }>;
 
-/** The front end: its heading and a compact skill list beside the laptop corner, then repositories. */
+/** The front end: its heading, reference projects and skills in one column beside the laptop corner. */
 export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactNode {
   const { subsections } = capabilities;
   return (
@@ -16,12 +16,17 @@ export function CraftChapter({ craft, capabilities }: CraftChapterProps): ReactN
           heading={craft.heading}
           intro={craft.intro}
           panel={<LaptopPanel laptop={craft.laptop} />}
-          aside={<SkillList areas={craft.areas} label={`${craft.heading} skills`} />}
+          aside={
+            <div className="flex flex-col gap-10">
+              <ColumnBlock id="craft-repos" title={subsections.repos.title}>
+                <RepoList repos={craft.repos} labels={capabilities.repoLabels} />
+              </ColumnBlock>
+              <ColumnBlock id="craft-skills" title={subsections.skills.title}>
+                <SkillList areas={craft.areas} label={`${craft.heading} skills`} />
+              </ColumnBlock>
+            </div>
+          }
         />
-        <section aria-labelledby="craft-repos">
-          <SubsectionHeader id="craft-repos" title={subsections.repos.title} caption={subsections.repos.caption} />
-          <RepoCards repos={craft.repos} labels={capabilities.repoLabels} />
-        </section>
       </Container>
     </Chapter>
   );

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Ai, Capabilities } from "@/content";
 import { Chapter } from "@/story";
-import { Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
+import { ColumnBlock, Container, DomainHeader, RepoCards, SkillList, SubsectionHeader } from "@/ui";
 import { OfficeDiorama } from "./OfficeDiorama";
 
 type AiChapterProps = Readonly<{ ai: Ai; capabilities: Capabilities }>;
@@ -16,7 +16,11 @@ export function AiChapter({ ai, capabilities }: AiChapterProps): ReactNode {
           heading={ai.heading}
           intro={ai.intro}
           panel={<OfficeDiorama office={ai.office} panel={ai.panel} />}
-          aside={<SkillList areas={ai.areas} label={`${ai.heading} skills`} />}
+          aside={
+            <ColumnBlock id="ai-skills" title={subsections.skills.title}>
+              <SkillList areas={ai.areas} label={`${ai.heading} skills`} />
+            </ColumnBlock>
+          }
         />
         <section aria-labelledby="ai-repos">
           <SubsectionHeader id="ai-repos" title={subsections.repos.title} caption={subsections.repos.caption} />

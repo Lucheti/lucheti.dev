@@ -135,7 +135,7 @@ export type Capabilities = Readonly<{
   heading: string;
   intro: string;
   repoLabels: RepoLabels;
-  subsections: Readonly<{ repos: Subsection }>;
+  subsections: Readonly<{ repos: Subsection; skills: Readonly<{ title: string }> }>;
 }>;
 
 /** One part of a feature panel, painted with the brand swatch of the tool it runs on. */
