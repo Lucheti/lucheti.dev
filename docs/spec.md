@@ -1374,3 +1374,70 @@ The owner's direction (2026-11-17): the "Agent at work" toy doesn't convince. Th
 - **Station look per action:** what each station is doing for a given state, as a pure mapping using
   `assertNever`.
 - **Composition:** one composition root; nothing is instantiated at module load.
+
+## v2.16 — The Back end panel becomes a MacBook's top-right corner with a live service map (WP-S)
+
+The owner's direction (2026-11-17): the Back end goes back to a flat design, and it must look and feel
+**coherent with the Front end MacBook corner (v2.13)**. That means the same device, the same app style and the same
+behaviour, mirrored to the other corner. The 3D queue diorama is parked, not deleted.
+
+### Parking the queue
+- **Back end chapter:** it stops rendering `QueueDiorama`.
+- **Code:** keep `src/systems/QueueDiorama.tsx`, `src/systems/diorama/`, `src/systems/queue/` and the 2D
+  `QueuePanel`, together with their tests and copy, as the room is kept in `src/diorama`. Nothing renders them for now.
+- **Reuse:** the new panel may reuse the deterministic pieces in `src/systems/queue/` (clock, seeded random, loop).
+
+### One laptop kit for both panels
+- **Move the generic parts** of `src/craft/laptop/` into a shared module, `src/laptop/`:
+  - the device frame;
+  - the stage scaling (the fixed stage scaled to its column);
+  - the menu bar and menu clock;
+  - the wallpaper;
+  - the app window chrome (traffic lights, toolbar, sidebar shell);
+  - the ghost cursor engine (script, presence, director, DOM surface, cursor view);
+  - cadence and the browser timers and frames.
+- **Front end parts stay:** the task-tracker parts (board, palette, rows, actions) stay in `src/craft/laptop/`.
+- **Front end panel:** it must look and behave **identically** after the move. Tests come along.
+- **Corner:** the device frame takes which corner it shows, `top-left` or `top-right`, as a discriminated union. It
+  renders the matching rounded bezel corner and aluminium edge, with the screen running off the other sides. The
+  menu bar mirrors too: the right corner shows the status icons and the clock, and the app menus run off to the
+  left.
+- **Layout:** it is the same as the Front end. The square straight-on view has no perspective and no tilt. The box is
+  pulled up so the device's top edge is level with the heading. The page shadow and the crop fade at the bottom are
+  the same.
+
+### What the screen shows
+- **App:** an ops app in exactly the Front end app's style, with the same tokens, type, spacing, pills, avatars and
+  orange accent. Its window's **top-right** part is in view: the toolbar's right end, with a "Simulate spike"
+  button, a time-range pill and a live/paused indicator, and the main canvas. A narrow sidebar may peek in from the
+  left edge of the crop. The copy lives in `src/content/site.ts` under `systems`. Plain words only.
+- **Service map:** the main content is a clean architecture diagram:
+  - **Nodes:** Clients → API gateway → three services (Orders, Payments, Inventory) → Postgres, Redis and a NATS
+    queue.
+  - **Node cards:** small rounded cards in the app's style, each with an icon (the brand swatches we already use where
+    they exist), a name, a status dot and a tiny metric (requests per second or p95).
+  - **Edges:** hairlines. Requests travel along them as small orange dots.
+- **Behaviour**, from a deterministic, seeded and tested simulation:
+  - **Steady traffic:** dots flow from the clients through the gateway to the services and their stores.
+  - **Taking a service down:** clicking a service card (or its menu) takes it down. The card greys, with a red status
+    and a small "Down" pill. The gateway's circuit breaker for that edge opens, shown as a broken or dashed edge with
+    an "Open" pill. Requests to it stop or are retried a few times and then fail fast, shown on the gateway's metric.
+    After a few seconds the breaker goes half-open: a few probe dots go through. The service recovers, the breaker
+    closes, and the edge turns solid again.
+  - **Simulate spike:** traffic multiplies for a while. The NATS node shows a queue depth bar filling and the services
+    draining it. p95 rises, then settles. It must stay readable: cap the number of dots.
+- **Ghost cursor** (same engine and feel as the Front end): a calm loop. It hovers a service, clicks it to take it
+  down, waits while the breaker opens and recovers, moves to "Simulate spike", clicks it, and rests. It yields the
+  moment the visitor's pointer enters the panel and comes back a few seconds after it leaves. The menu bar clock
+  ticks.
+- **Interaction:** real DOM. Service cards and the spike button are keyboard reachable, with live-region
+  announcements such as "Payments is down. The gateway opened its circuit breaker." and "Payments is back."
+- **Reduced motion:** no ghost cursor and no flowing dots. States still change on click, at once.
+- **Phones:** the same crop, scaled, as the Front end.
+
+### Logic (pure, tested)
+- **Service map simulation:** request flow, service health (up, down, recovering), circuit breaker per edge
+  (closed, open, half-open), retries and fail-fast, spike and queue depth. It uses an injected clock and seeded
+  randomness.
+- **Ghost loop:** the ghost script for this panel.
+- **Composition:** one composition root per panel; nothing is instantiated at module load.
