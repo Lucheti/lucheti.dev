@@ -1,7 +1,7 @@
-import type { Part, Point3, Solid, Tone, Turn } from "./kit";
-import { point } from "./kit";
+import type { Part, Solid, Tone, Turn } from "./Solid";
+import { point, type Point3 } from "./space";
 
-/** Small makers for the toolkit's solids, so the layout reads as a list of things rather than of fields. */
+/** Small makers for the toolkit's solids, so a layout reads as a list of things rather than of fields. */
 
 /** A rounded box centred on `at`. */
 export function block(part: Part, tone: Tone, at: Point3, size: Point3, radius: number, turn?: Turn): Solid {

@@ -7,9 +7,10 @@ const LIFE = 1.4;
 const RISE = 1.1;
 
 /**
- * The smoke over a machine that is down, as a pure function of how long it has been down: `count` puffs
- * rise in turn from the chimney, swelling and shrinking away as they go, drifting a little to the right.
- * The first second is a big "poof": every puff starts out larger and fades to its usual size.
+ * Cartoon smoke, as a pure function of how long it has been puffing (a machine that is down, a rocket on
+ * its pad): `count` puffs rise in turn from the source, swelling and shrinking away as they go, drifting a
+ * little to the right. The first second is a big "poof": every puff starts out larger and fades to its
+ * usual size.
  */
 export function puffsAt(seconds: number, count: number): readonly Puff[] {
   if (!Number.isFinite(seconds) || seconds < 0 || count < 1) {

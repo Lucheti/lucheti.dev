@@ -3,11 +3,12 @@ import type { QueuePanel } from "@/content";
 import { cx } from "@/ui";
 import { assertNever } from "../queue/assertNever";
 import type { QueueSnapshot, ServiceView } from "../queue/types";
-import type { LabelPins, PinKey } from "./LabelPins";
+import type { LabelPins } from "./kit";
+import type { PinKey } from "./QueueLayout";
 import { lookOf } from "./ServiceLook";
 
 /** A label pinned to a point on the island; hidden until the scene first moves it into place. */
-function Pin({ pins, at, className, children }: Readonly<{ pins: LabelPins; at: PinKey; className?: string; children: ReactNode }>): ReactNode {
+function Pin({ pins, at, className, children }: Readonly<{ pins: LabelPins<PinKey>; at: PinKey; className?: string; children: ReactNode }>): ReactNode {
   return (
     <div ref={pins.bind(at)} className="invisible absolute left-0 top-0 will-change-transform">
       <div className={cx("select-none whitespace-nowrap", className)}>{children}</div>
@@ -35,7 +36,7 @@ function ScreenFace({ service, down }: Readonly<{ service: ServiceView; down: st
   }
 }
 
-type LabelsProps = Readonly<{ pins: LabelPins; panel: QueuePanel; snapshot: QueueSnapshot; overflow: number }>;
+type LabelsProps = Readonly<{ pins: LabelPins<PinKey>; panel: QueuePanel; snapshot: QueueSnapshot; overflow: number }>;
 
 const PILL =
   "rounded-full px-[5px] py-px text-[9px] font-semibold leading-[14px] shadow-[0_2px_0_#2b2236] ring-[1.5px] ring-[#2b2236] sm:px-2 sm:py-0.5 sm:text-[11px] sm:leading-4";

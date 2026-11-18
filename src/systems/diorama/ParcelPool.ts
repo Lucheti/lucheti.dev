@@ -1,6 +1,5 @@
 import { Group, Mesh, type BufferGeometry, type Material } from "three";
-import type { Point3 } from "./kit";
-import { ignorePointer } from "./SolidMeshes";
+import { ignorePointer, type Point3 } from "./kit";
 
 /** The two looks of a parcel: an orange box with cream tape, and a handed-back one in cream with orange tape. */
 export type ParcelPaints = Readonly<{

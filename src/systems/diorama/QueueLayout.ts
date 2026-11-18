@@ -1,9 +1,10 @@
-import { point, type Extent, type Point3, type Solid, type Tone } from "./kit";
+import { arc, arcadeButton, ball, block, drum, lerp, offset, pad, point, rod, torus, type ButtonRig, type Extent, type Piece, type Point3, type Solid, type Tone } from "./kit";
 import { PART, TONE } from "./palette";
-import { arc, ball, block, drum, lerp, offset, pad, rod, torus } from "./shapes";
 
-/** A group of solids that moves as one, about its pivot. The solids are placed in island space. */
-export type Piece = Readonly<{ pivot: Point3; solids: readonly Solid[] }>;
+export type { Piece } from "./kit";
+
+/** A label's name: the kiosk's, the button's, the broker's, the "+N" tag, or a machine's sign or screen. */
+export type PinKey = "kiosk" | "button" | "broker" | "overflow" | `sign-${number}` | `screen-${number}`;
 
 /** One service machine: what moves with it, and where its lamp, fuse, tray, chimney and labels are. */
 export type MachineRig = Readonly<{
@@ -48,9 +49,6 @@ export type TrackAnchors = Readonly<{
 
 /** Where the HTML labels float. */
 export type LabelAnchors = Readonly<{ kiosk: Point3; button: Point3; broker: Point3; overflow: Point3 }>;
-
-/** The big button: its fixed housing, its cap (pivot at the cap's foot), how far it goes in, and its hit box. */
-export type ButtonRig = Readonly<{ housing: readonly Solid[]; cap: Piece; travel: number; hit: Extent }>;
 
 /** A parcel's edge, in island units. */
 const PARCEL = 0.26;
@@ -119,25 +117,7 @@ export class QueueLayout {
 
   /** The big arcade button on its pedestal. */
   public button(): ButtonRig {
-    const at = BUTTON;
-    const b = PART.button;
-    const housing: Solid[] = [
-      drum(b, TONE.ink, offset(at, 0, 0.05, 0), 0.7, 0.74, 0.1),
-      drum(b, TONE.ink, offset(at, 0, 0.32, 0), 0.5, 0.6, 0.48),
-      drum(b, TONE.cream, offset(at, 0, 0.62, 0), 0.74, 0.76, 0.16),
-      drum(b, TONE.creamShade, offset(at, 0, 0.71, 0), 0.62, 0.66, 0.04),
-    ];
-    const foot = offset(at, 0, 0.69, 0);
-    const cap: Piece = {
-      pivot: foot,
-      solids: [drum(b, TONE.signal, offset(foot, 0, 0.1, 0), 0.56, 0.56, 0.2), ball(b, TONE.signal, offset(foot, 0, 0.19, 0), 0.56, point(1, 0.4, 1))],
-    };
-    return {
-      housing,
-      cap,
-      travel: 0.17,
-      hit: { min: offset(at, -0.8, 0, -0.8), max: offset(at, 0.8, 1.2, 0.8) },
-    };
+    return arcadeButton(BUTTON);
   }
 
   /** The hopper's glass, drawn see-through. */

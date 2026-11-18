@@ -334,6 +334,28 @@ export type AgentPanel = Readonly<{
   greeted: string;
 }>;
 
+/** A department on the Orchestra office's floor, in the order a ticket passes them. */
+export type OfficeDepartmentId = "product" | "design" | "engineering" | "qa" | "release";
+
+/**
+ * The AI chapter's 3D island: the Orchestra office, where a ticket goes from Product through Design,
+ * Engineering and QA to Release. Its tickets are the ones in `AgentPanel`.
+ */
+export type OfficePanel = Readonly<{
+  /** What the island shows, for screen readers. */
+  label: string;
+  /** The title in the strip under the island. */
+  title: string;
+  /** The big button: its accessible name, and the short call floating over it. */
+  drop: Readonly<{ label: string; short: string }>;
+  /** The sign over each department's corner. */
+  departments: Readonly<Record<OfficeDepartmentId, string>>;
+  /** The strip's words: the shipped counter, the ideas waiting, and the line shown when no ticket is moving. */
+  readout: Readonly<{ shipped: string; waiting: string; idle: string }>;
+  /** Live-region sentences; `{ticket}` is filled in with the ticket's id and title. */
+  announcements: Readonly<{ dropped: string; full: string; bounced: string; shipped: string }>;
+}>;
+
 export type Craft = Domain &
   Readonly<{
     laptop: Laptop;
@@ -342,8 +364,11 @@ export type Craft = Domain &
 /** The back-end domain: skills and repositories, introduced by the message-queue panel. */
 export type Systems = Domain & Readonly<{ panel: QueuePanel }>;
 
-/** The AI domain: skills and repositories, introduced by the agent panel. Orchestra's card points to its own page. */
-export type Ai = Domain & Readonly<{ panel: AgentPanel }>;
+/**
+ * The AI domain: skills and repositories, introduced by the Orchestra office island (with the agent panel
+ * as its 2D stand-in). Orchestra's card points to its own page.
+ */
+export type Ai = Domain & Readonly<{ panel: AgentPanel; office: OfficePanel }>;
 
 export type DepartmentId = "product" | "design" | "engineering" | "qa" | "docs" | "release" | "learning";
 

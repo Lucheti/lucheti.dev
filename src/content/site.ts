@@ -357,6 +357,20 @@ export const SITE: SiteContent = {
       greet: "Say hi to the agent",
       greeted: "The agent waves and says hi.",
     },
+    office: {
+      label:
+        "A small 3D office modelled on Orchestra, a Claude Code plugin I built, where departments of agents take a feature from idea to release. Product stamps the ticket, Design sketches it, three engineers build it in parallel, QA checks it and now and then sends it back to Engineering, and Release launches it. Press the orange button to drop in a new idea.",
+      title: "Orchestra",
+      drop: { label: "Drop an idea into Product's inbox", short: "Drop an idea" },
+      departments: { product: "Product", design: "Design", engineering: "Engineering", qa: "QA", release: "Release" },
+      readout: { shipped: "Shipped", waiting: "Waiting", idle: "Waiting for an idea" },
+      announcements: {
+        dropped: "A new idea is waiting in Product's inbox.",
+        full: "Product's inbox is full. Wait for a ticket to move on.",
+        bounced: "QA found a problem in {ticket} and sent it back to Engineering.",
+        shipped: "{ticket} shipped.",
+      },
+    },
     areas: [
       { name: "Agents", tools: ["Claude Code", "plugins & hooks", "sub-agents", "Agent Teams"] },
       { name: "Tool use", tools: ["Model Context Protocol SDK", "Anthropic SDK", "Zod"] },

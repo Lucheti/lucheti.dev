@@ -1,6 +1,4 @@
-import type { BigButton } from "./BigButton";
-import type { ButtonPress } from "./ButtonPress";
-import { squash, type Approach, type Point3 } from "./kit";
+import { squash, type Approach, type BigButton, type ButtonPress, type Point3 } from "./kit";
 import type { QueueModel } from "./QueueModel";
 
 /** How far the cap rises when the pointer is over it, in island units. */

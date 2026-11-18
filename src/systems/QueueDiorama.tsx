@@ -2,13 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { QueuePanel as QueuePanelContent } from "@/content";
 import { cx, SceneBoundary, usePanelLoop } from "@/ui";
 import { composeQueueDiorama, type QueueDioramaParts } from "./diorama/composeQueueDiorama";
-import { behaviourOf, pickMode, type DioramaBehaviour } from "./diorama/kit";
+import { behaviourOf, pickMode, useIslandPointer, type DioramaBehaviour } from "./diorama/kit";
 import { QueueLabels } from "./diorama/QueueLabels";
-import { assertNever } from "./queue/assertNever";
 import type { QueueToy } from "./queue";
 import { QueuePanel } from "./QueuePanel";
 
@@ -84,70 +83,18 @@ type IslandProps = Readonly<{
 
 /** The 3D island in its box, with the pointer's lean and drag, and the strip of counters under it. */
 function Island({ parts, panel, behaviour, running, onReady, onFailed }: IslandProps): ReactNode {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const { cursor, gesture, turn, lean, waker, toy } = parts;
+  const { cursor, toy } = parts;
   const snapshot = useSyncExternalStore(toy.loop.subscribe, toy.loop.view, toy.loop.view);
-
-  useEffect(() => {
-    cursor.attach(boxRef.current);
-    return () => cursor.attach(null);
-  }, [cursor]);
-  useEffect(() => cursor.allowDrag(behaviour.drag), [cursor, behaviour]);
-
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>): void => {
-    if (behaviour.drag && event.pointerType !== "touch" && event.button === 0) {
-      gesture.down(event.clientX);
-    }
-  };
-  const onPointerMove = (event: PointerEvent<HTMLDivElement>): void => {
-    const move = gesture.move(event.clientX);
-    switch (move.kind) {
-      case "hover":
-        if (behaviour.parallax && event.pointerType !== "touch") {
-          const box = event.currentTarget.getBoundingClientRect();
-          lean.aim(event.clientX - box.left, event.clientY - box.top, box.width, box.height);
-          waker.wake();
-        }
-        break;
-      case "pending":
-        break;
-      case "start":
-        event.currentTarget.setPointerCapture(event.pointerId);
-        turn.grab();
-        turn.drag(move.dx);
-        cursor.grabbing(true);
-        waker.wake();
-        break;
-      case "drag":
-        turn.drag(move.dx);
-        waker.wake();
-        break;
-      default:
-        assertNever(move);
-    }
-  };
-  const onPointerUp = (event: PointerEvent<HTMLDivElement>): void => {
-    if (gesture.up()) {
-      turn.release();
-      cursor.grabbing(false);
-      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-        event.currentTarget.releasePointerCapture(event.pointerId);
-      }
-      waker.wake();
-    }
-  };
+  const { boxRef, ...pointer } = useIslandPointer(parts, behaviour);
 
   return (
     <>
       <div
         ref={boxRef}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onPointerLeave={() => lean.release()}
+        {...pointer}
         style={{ aspectRatio: boxAspect(parts) }}
-        className="relative isolate w-full touch-pan-y select-none"
+        // `min-h-0`: the canvas's pixel height must not hold the box taller than its aspect after a resize.
+        className="relative isolate min-h-0 w-full touch-pan-y select-none"
       >
         <SceneBoundary onError={onFailed}>
           <QueueScene
@@ -203,7 +150,8 @@ export function QueueDiorama({ panel }: Readonly<{ panel: QueuePanelContent }>):
   return (
     // The drawing keeps a margin above the island's top labels; pulling the box up by about that much puts
     // them level with the heading beside it.
-    <figure ref={rootRef} className="relative grid lg:-mt-[5%]">
+    // One column that never grows past the figure (minmax(0, 1fr)), so the canvas's pixel width can't hold it open.
+    <figure ref={rootRef} className="relative grid grid-cols-1 lg:-mt-[5%]">
       <figcaption className="sr-only">{panel.label}</figcaption>
       <div
         aria-hidden={ready}

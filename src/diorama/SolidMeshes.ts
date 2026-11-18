@@ -1,5 +1,8 @@
 import { Mesh, type BufferGeometry, type Group, type Material, type MeshToonMaterial, type Object3D } from "three";
-import { SolidGeometry, type Point3, type Solid, type Tone, type ToonKit } from "./kit";
+import type { Solid, Tone } from "./Solid";
+import { SolidGeometry } from "./SolidGeometry";
+import type { Point3 } from "./space";
+import type { ToonKit } from "./ToonKit";
 
 type Disposable = Readonly<{ dispose: () => void }>;
 
