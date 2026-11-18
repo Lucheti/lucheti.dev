@@ -2,12 +2,12 @@
 
 import type { CSSProperties, ReactNode, Ref, RefObject } from "react";
 import type { Corner } from "./corner";
+import { DesktopPicture, type Desktop } from "./Desktop";
 import { DeviceFrame } from "./DeviceFrame";
 import { GhostCursor, Screen } from "./GhostCursor";
 import type { Point } from "./GhostScript";
 import { MenuBar } from "./MenuBar";
 import type { MenuClock } from "./MenuClock";
-import { Wallpaper } from "./Wallpaper";
 
 /**
  * The panel is drawn on a fixed 700 × 530 stage and scaled to its column with CSS alone (the ratio of the
@@ -32,6 +32,8 @@ export type ScreenBindings = Readonly<{ bindScreen: Ref<HTMLDivElement>; bindCur
 
 type LaptopStageProps = Readonly<{
   corner: Corner;
+  /** What the screen shows behind the app; the warm wallpaper by default. */
+  desktop?: Desktop;
   /** What the panel shows, for screen readers. */
   label: string;
   /** The menu bar: the app's name, its menus and the clock. */
@@ -50,7 +52,7 @@ type LaptopStageProps = Readonly<{
  * The box is pulled up so the device's top edge is level with the heading beside it: the device sits 46 px
  * down a 700 px-wide stage, so the box rises by that share of its width.
  */
-export function LaptopStage({ corner, label, menu, boxRef, ghost, screen, rest, children }: LaptopStageProps): ReactNode {
+export function LaptopStage({ corner, desktop = "warm", label, menu, boxRef, ghost, screen, rest, children }: LaptopStageProps): ReactNode {
   return (
     <figure className="relative lg:-mt-[6.57%]">
       <figcaption className="sr-only">{label}</figcaption>
@@ -70,8 +72,8 @@ export function LaptopStage({ corner, label, menu, boxRef, ghost, screen, rest, 
           <div className="absolute left-0 top-0 h-[530px] w-[700px] origin-top-left" style={STAGE_SCALE}>
             <DeviceFrame corner={corner}>
               <Screen bind={screen.bindScreen}>
-                <Wallpaper corner={corner} />
-                <MenuBar corner={corner} app={menu.app} menus={menu.menus} clock={menu.clock} />
+                <DesktopPicture desktop={desktop} corner={corner} />
+                <MenuBar corner={corner} desktop={desktop} app={menu.app} menus={menu.menus} clock={menu.clock} />
                 {children}
                 <span aria-hidden data-ghost="rest" className="absolute size-px" style={{ left: rest.x, top: rest.y }} />
                 <GhostCursor bind={screen.bindCursor} />

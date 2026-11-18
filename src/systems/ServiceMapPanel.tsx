@@ -53,6 +53,7 @@ export function ServiceMapPanel({ map }: Readonly<{ map: ServiceMapCopy }>): Rea
   return (
     <LaptopStage
       corner={CORNER}
+      desktop="white"
       label={map.label}
       menu={{ app: map.app, menus: map.menus, clock: parts.clock }}
       boxRef={boxRef}

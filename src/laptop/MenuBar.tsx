@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { cx } from "@/ui";
 import { menuInsets, type Corner } from "./corner";
+import { MENU_BAR_GLASS, type Desktop } from "./Desktop";
 import { AppleGlyph, BatteryGlyph, ControlsGlyph, WifiGlyph } from "./glyphs";
 import type { ClockFace, MenuClock } from "./MenuClock";
 
@@ -17,7 +19,7 @@ function useClockFace(clock: MenuClock): ClockFace | null {
   return face;
 }
 
-type MenuBarProps = Readonly<{ corner: Corner; app: string; menus: readonly string[]; clock: MenuClock }>;
+type MenuBarProps = Readonly<{ corner: Corner; desktop: Desktop; app: string; menus: readonly string[]; clock: MenuClock }>;
 
 /**
  * The macOS menu bar across the top of the screen: translucent over the wallpaper, the apple glyph, the
@@ -25,13 +27,16 @@ type MenuBarProps = Readonly<{ corner: Corner; app: string; menus: readonly stri
  * separator flashes each second. The side away from the corner runs on past the crop. Decorative: the
  * app's own controls are in its window.
  */
-export function MenuBar({ corner, app, menus, clock }: MenuBarProps): ReactNode {
+export function MenuBar({ corner, desktop, app, menus, clock }: MenuBarProps): ReactNode {
   const face = useClockFace(clock);
   const insets = menuInsets(corner);
   return (
     <div
       aria-hidden
-      className="absolute inset-x-0 top-0 z-10 flex h-[30px] items-center justify-between bg-[rgb(255_236_222/0.42)] text-[13.5px] leading-none tracking-[-0.005em] text-[#1d1612] shadow-[inset_0_-0.5px_0_rgb(80_30_10/0.12)] backdrop-blur-[28px] backdrop-saturate-[1.6]"
+      className={cx(
+        "absolute inset-x-0 top-0 z-10 flex h-[30px] items-center justify-between text-[13.5px] leading-none tracking-[-0.005em] text-[#1d1612] backdrop-blur-[28px] backdrop-saturate-[1.6]",
+        MENU_BAR_GLASS[desktop],
+      )}
       style={{ paddingLeft: insets.left, paddingRight: insets.right }}
     >
       <div className="flex items-center">
