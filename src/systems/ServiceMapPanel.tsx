@@ -8,7 +8,7 @@ import { composeServiceMap } from "./servicemap/composeServiceMap";
 import { OpsWindow } from "./servicemap/OpsWindow";
 
 /** Where the ghost rests between moves: low on the canvas under the stores, clear of the cards and the legend. */
-const REST = { x: 471, y: 325 } as const;
+const REST = { x: 431, y: 325 } as const;
 
 /**
  * The Back end chapter's panel: an ops app's window on its own, its top-right corner in view, open on a live

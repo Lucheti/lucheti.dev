@@ -9,7 +9,7 @@ import { AppWindow } from "./laptop/AppWindow";
 import { composeLaptop } from "./laptop/composeLaptop";
 
 /** Where the ghost rests between moves: low in the list, clear of the rows it works on. */
-const REST = { x: 442, y: 315 } as const;
+const REST = { x: 420, y: 315 } as const;
 
 /**
  * The Front end chapter's panel: a small task tracker's window on its own, its top-left corner in view and

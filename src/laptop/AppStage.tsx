@@ -7,7 +7,7 @@ import { GhostCursor, Screen } from "./GhostCursor";
 import type { Point } from "./GhostScript";
 
 /** The stage every window is drawn on, in its own pixels; it is scaled to the column. */
-const STAGE = { width: 600, height: 510 } as const;
+const STAGE = { width: 560, height: 510 } as const;
 
 /** Every app window is this tall: it ends with its own rounded corners inside the stage, with room for its shadow. */
 export const WINDOW_HEIGHT = 460;
