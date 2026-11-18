@@ -90,8 +90,9 @@ function NoteArrow(): ReactNode {
       fill="none"
       className="pointer-events-none absolute -left-2 -top-[88px] h-[92px] w-[140px] text-ink"
     >
-      <path d="M118 90 C 122 52, 62 52, 48 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M37 20 L 47.5 8 L 58 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {/* One bend only: it leaves the note heading left, then rises straight into the card; the head follows the line's last direction. */}
+      <path d="M118 84 C 80 86, 46 70, 44 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M37.5 19.2 L 44 8 L 51.2 18.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
