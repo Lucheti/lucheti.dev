@@ -16,10 +16,11 @@ describe("PoseTrack", () => {
     expect(sample(wide, 6)).toEqual({ x: 0.78, y: 0.5, scale: 0.9, assembly: 1, spin: 3.4 });
   });
 
-  it("folds away in every chapter between the hero and contact", () => {
-    for (const chapter of [1, 2, 3, 4, 5]) {
+  it("shows only beside the contact line: folded away from the hero through the AI chapter", () => {
+    for (const chapter of [0, 1, 2, 3, 4, 5]) {
       expect(sample(wide, chapter).scale).toBe(0);
     }
+    expect(sample(wide, 6).scale).toBeGreaterThan(0);
   });
 
   it("is halfway between two chapters at their midpoint (smoothstep is symmetric)", () => {
@@ -35,8 +36,19 @@ describe("PoseTrack", () => {
   });
 
   it("folds away in the first stretch after a chapter that shows it", () => {
-    expect(sample(wide, 0.15).scale).toBeGreaterThan(0);
-    expect(sample(wide, 0.4).scale).toBe(0);
+    const hidden = { x: 0.5, y: 0.5, scale: 0, assembly: 0, spin: 0 };
+    const shown = { ...hidden, scale: 1 };
+    const track = new PoseTrack({
+      hero: shown,
+      timeline: hidden,
+      capabilities: hidden,
+      craft: hidden,
+      systems: hidden,
+      ai: hidden,
+      contact: hidden,
+    });
+    expect(sample(track, 0.15).scale).toBeGreaterThan(0);
+    expect(sample(track, 0.4).scale).toBe(0);
   });
 
   it("chooses the narrow table below 1024 px and the wide one from 1024", () => {

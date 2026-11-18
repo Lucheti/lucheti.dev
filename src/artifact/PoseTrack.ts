@@ -14,12 +14,12 @@ export type PoseValues = {
 type PoseTable = Readonly<Record<ChapterId, Readonly<PoseValues>>>;
 
 /**
- * The object is a scattered cloud in the hero, folds away (scale 0) through
- * the middle chapters, and re-forms whole beside the contact line.
+ * The object stays folded away (scale 0) from the hero through the middle
+ * chapters, and forms whole beside the contact line only.
  */
 const WIDE_TABLE: PoseTable = {
-  // A small loose cluster in the gap between the name and the portrait circle.
-  hero: { x: 0.52, y: 0.24, scale: 0.2, assembly: 0.0, spin: 0.0 },
+  // The hero has the portrait circle; the object is kept for the contact line.
+  hero: { x: 0.52, y: 0.24, scale: 0.0, assembly: 0.0, spin: 0.0 },
   timeline: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.4, spin: 1.0 },
   capabilities: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
   craft: { x: 0.92, y: 0.2, scale: 0.0, assembly: 0.6, spin: 1.6 },
