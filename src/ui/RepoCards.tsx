@@ -81,7 +81,7 @@ function Title({ repo, labels, skin, tone }: TitleProps): ReactNode {
   }
 }
 
-/** A dotted arrow drawn by hand, curving up from the sticky note into the card above it. */
+/** A thin arrow drawn by hand, curving up from the sticky note into the card above it. */
 function NoteArrow(): ReactNode {
   return (
     <svg
@@ -90,8 +90,8 @@ function NoteArrow(): ReactNode {
       fill="none"
       className="pointer-events-none absolute -left-2 -top-[88px] h-[92px] w-[140px] text-ink"
     >
-      <path d="M118 90 C 122 52, 62 52, 48 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="0.5 8" />
-      <path d="M36 20 L 47 7 L 59 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M118 90 C 122 52, 62 52, 48 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M37 20 L 47.5 8 L 58 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
