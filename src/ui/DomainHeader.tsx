@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cx } from "./cx";
 import { Reveal } from "./Reveal";
 import { SectionHeader } from "./SectionHeader";
@@ -9,14 +9,33 @@ export type StageTone = "peach" | "sky" | "lilac";
 /** Which side of the chapter the panel and its stage take on lg; the text takes the other. */
 export type PanelSide = "right" | "left";
 
-const STAGE_GROUNDS: Readonly<Record<StageTone, string>> = {
-  // The MacBook's warm wallpaper.
-  peach: "bg-[linear-gradient(160deg,#ffe4cf_0%,#ffc49b_100%)]",
+/** A stage's colours: its gradient, top-left to bottom-right, and the ink of its dot grid. */
+type StagePaint = Readonly<{ from: string; to: string; dot: string }>;
+
+const STAGE_PAINTS: Readonly<Record<StageTone, StagePaint>> = {
+  // The task tracker's warm accent.
+  peach: { from: "#ffe4cf", to: "#ffc49b", dot: "rgb(196 98 40 / 0.32)" },
   // Infrastructure blue.
-  sky: "bg-[linear-gradient(160deg,#dde8ff_0%,#b3c9fa_100%)]",
+  sky: { from: "#dde8ff", to: "#b3c9fa", dot: "rgb(52 86 178 / 0.28)" },
   // The Orchestra office's lilac floor.
-  lilac: "bg-[linear-gradient(160deg,#eee5ff_0%,#cdbbf8_100%)]",
+  lilac: { from: "#eee5ff", to: "#cdbbf8", dot: "rgb(104 70 196 / 0.28)" },
 };
+
+/** The dot grid's pitch, in px. */
+const DOT_PITCH = 22;
+
+/** A fine paper grain, drawn once as SVG noise and tiled. */
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E\")";
+
+/** The stage's ground: grain over a dot grid over the gradient, like a design canvas the panel sits on. */
+function stageGround(tone: StageTone): CSSProperties {
+  const paint = STAGE_PAINTS[tone];
+  return {
+    backgroundImage: `${GRAIN}, radial-gradient(circle, ${paint.dot} 1.3px, transparent 1.6px), linear-gradient(160deg, ${paint.from} 0%, ${paint.to} 100%)`,
+    backgroundSize: `160px 160px, ${DOT_PITCH}px ${DOT_PITCH}px, 100% 100%`,
+  };
+}
 
 /** Grid placement per side: the panel's 7 columns, the text's 5, and how the stage runs off the page. */
 type SideLayout = Readonly<{ panel: string; text: string; stage: string }>;
@@ -62,7 +81,7 @@ export function DomainHeader({ heading, intro, panel, aside, stage, side = "righ
       {stage === undefined ? null : (
         <div aria-hidden className={cx("pointer-events-none relative -z-10 hidden self-stretch lg:row-span-2 lg:row-start-1 lg:block", layout.panel)}>
           {/* Up to the chapter's top edge (its lg padding), and far past its bottom and the page's edge; the chapter clips it. */}
-          <div className={cx("absolute -bottom-[100vh] -top-48", layout.stage, STAGE_GROUNDS[stage])} />
+          <div className={cx("absolute -bottom-[100vh] -top-48", layout.stage)} style={stageGround(stage)} />
         </div>
       )}
       <div className={cx("lg:row-start-1", layout.text)}>
