@@ -77,12 +77,10 @@ export type Timeline = Readonly<{
   milestoneKinds: Readonly<Record<MilestoneKind, string>>;
 }>;
 
-/** One row of a resume skill table. */
+/** One row of a domain's skill card. */
 export type SkillArea = Readonly<{
   /** Short: "Frameworks", "Motion & 3D". */
   name: string;
-  /** One short line, for the full skill table; the compact list leaves it out. */
-  summary?: string;
   /** Libraries, frameworks and standards, most important first. */
   tools: readonly string[];
 }>;
@@ -126,7 +124,7 @@ export type Capabilities = Readonly<{
   heading: string;
   intro: string;
   repoLabels: RepoLabels;
-  subsections: Readonly<{ skills: Subsection; repos: Subsection }>;
+  subsections: Readonly<{ repos: Subsection }>;
 }>;
 
 /** One part of a feature panel, painted with the brand swatch of the tool it runs on. */

@@ -116,7 +116,6 @@ export const SITE: SiteContent = {
       pending: "Coming soon",
     },
     subsections: {
-      skills: { title: "Skills", caption: "The areas I work in, and the libraries I use in each." },
       repos: { title: "Repositories", caption: "Code you can open and read." },
     },
   },
@@ -264,36 +263,14 @@ export const SITE: SiteContent = {
       },
     },
     areas: [
-      {
-        name: "Services & APIs",
-        summary: "REST APIs and microservices behind one gateway.",
-        tools: ["Node.js", "NestJS", "Express", "Fastify", "OpenAPI", "JWT", "Nx"],
-      },
-      {
-        name: "Messaging & real time",
-        summary: "Event-driven services and live connections.",
-        tools: ["NATS", "RabbitMQ", "Socket.IO", "WebSockets"],
-      },
-      {
-        name: "Data & caching",
-        summary: "Relational models, migrations and caches.",
-        tools: ["PostgreSQL", "Redis", "TypeORM", "Prisma", "Drizzle", "Supabase"],
-      },
-      {
-        name: "Reliability",
-        summary: "Sagas, circuit breakers, health checks and structured logs.",
-        tools: ["Saga orchestration", "opossum", "NestJS Terminus", "Winston"],
-      },
-      {
-        name: "JVM",
-        summary: "Java and Scala services on Anypoint Platform.",
-        tools: ["Java", "Spring", "Scala"],
-      },
-      {
-        name: "Integrations",
-        summary: "Messaging channels and third-party APIs.",
-        tools: ["WhatsApp", "Zoom Contact Center", "Firebase", "Mercado Pago"],
-      },
+      { name: "Languages", tools: ["TypeScript", "Java", "Scala"] },
+      { name: "Frameworks", tools: ["Node.js", "NestJS", "Express", "Fastify", "Spring"] },
+      { name: "APIs", tools: ["OpenAPI", "JWT", "WebSockets"] },
+      { name: "Messaging", tools: ["NATS", "RabbitMQ", "Socket.IO"] },
+      { name: "Databases", tools: ["PostgreSQL", "Redis", "Supabase"] },
+      { name: "ORMs", tools: ["TypeORM", "Prisma", "Drizzle"] },
+      { name: "Reliability", tools: ["Saga orchestration", "opossum", "NestJS Terminus", "Winston"] },
+      { name: "Integrations", tools: ["WhatsApp", "Zoom Contact Center", "Firebase", "Mercado Pago"] },
     ],
     repos: [
       {
@@ -381,31 +358,11 @@ export const SITE: SiteContent = {
       greeted: "The agent waves and says hi.",
     },
     areas: [
-      {
-        name: "Agentic coding",
-        summary: "Multi-agent workflows that plan, build, review and ship code.",
-        tools: ["Claude Code", "plugins & hooks", "sub-agents", "Agent Teams"],
-      },
-      {
-        name: "Tool use & MCP",
-        summary: "MCP servers and clients that give models real tools.",
-        tools: ["Model Context Protocol SDK", "Anthropic SDK", "Zod"],
-      },
-      {
-        name: "AI products",
-        summary: "Interfaces that make computer-vision models usable.",
-        tools: ["Clarifai platform", "model inference APIs"],
-      },
-      {
-        name: "Chatbots",
-        summary: "WhatsApp assistants.",
-        tools: ["BuilderBot", "Baileys", "WhatsApp Cloud API", "Supabase"],
-      },
-      {
-        name: "Generative media",
-        summary: "Image and video generation; this site's portrait and background film.",
-        tools: ["Higgsfield", "Nano Banana Pro"],
-      },
+      { name: "Agents", tools: ["Claude Code", "plugins & hooks", "sub-agents", "Agent Teams"] },
+      { name: "Tool use", tools: ["Model Context Protocol SDK", "Anthropic SDK", "Zod"] },
+      { name: "Models", tools: ["Clarifai platform", "model inference APIs"] },
+      { name: "Chatbots", tools: ["BuilderBot", "Baileys", "WhatsApp Cloud API", "Supabase"] },
+      { name: "Image & video", tools: ["Higgsfield", "Nano Banana Pro"] },
     ],
     repos: [
       {
